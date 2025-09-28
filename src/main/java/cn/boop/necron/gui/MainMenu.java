@@ -1,6 +1,7 @@
 package cn.boop.necron.gui;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.module.impl.HUD.ModuleList;
 import cn.boop.necron.utils.RenderUtils;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
@@ -84,11 +85,18 @@ public final class MainMenu extends GuiScreen {
         GlStateManager.popMatrix();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
+        Color textChColor = ModuleList.getChromaColor(
+                new Color(142, 221, 255),
+                new Color(166, 166, 166),
+                1,
+                4
+        );
         String s1 = "Minecraft 1.8.9";
         String s2 = "Necron " + Necron.VERSION;
         String s3 = "Cheaters get banned!";
         this.mc.fontRendererObj.drawStringWithShadow(s1, 2, this.height - 10, 0xFFFFFF);
-        this.mc.fontRendererObj.drawStringWithShadow(s2, 2, this.height - 20, 0x8EDDFF);
+        //this.mc.fontRendererObj.drawStringWithShadow(s2, 2, this.height - 20, 0x8EDDFF);
+        this.mc.fontRendererObj.drawStringWithShadow(s2, 2, this.height - 20, textChColor.getRGB());
         this.mc.fontRendererObj.drawStringWithShadow(s3, this.width - fontRendererObj.getStringWidth(s3) - 2, this.height - 10, 0xFFFFFF);
     }
 

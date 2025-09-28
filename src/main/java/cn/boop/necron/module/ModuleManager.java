@@ -1,14 +1,17 @@
 package cn.boop.necron.module;
 
+import cn.boop.necron.config.impl.*;
 import cn.boop.necron.events.LootEventHandler;
 import cn.boop.necron.events.WaypointEventHandler;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
+import cn.boop.necron.module.impl.HUD.ModuleList;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModuleManager {
     private static final ArrayList<Object> modules = new ArrayList<>();
@@ -30,6 +33,7 @@ public class ModuleManager {
         modules.add(new FakeWipe());
         //modules.add(new GemstoneNuker());
         modules.add(new HurtCam());
+        modules.add(new ModuleList());
         modules.add(new Nametags());
         modules.add(new PlayerStats());
         modules.add(new TitleManager());
@@ -50,5 +54,28 @@ public class ModuleManager {
 
     public static AutoPath getAutoPath() {
         return autoPath;
+    }
+
+    public static List<String> getActiveModules() {
+        /*
+         *  有点抽象的写法 0.o
+         */
+        List<String> activeModules = new ArrayList<>();
+        if (AutoClickerOptionsImpl.autoClicker) activeModules.add("AutoClicker");
+        if (AutoGGOptionsImpl.autoGG) activeModules.add("AutoGG");
+        if (AutoPathOptionsImpl.autoPath) activeModules.add("AutoPath");
+        if (WardrobeOptionsImpl.wardrobe) activeModules.add("AutoWardrobe");
+        if (ChatBlockerOptionsImpl.chatBlocker) activeModules.add("ChatBlocker");
+        if (ChatCommandsOptionsImpl.chatCommands) activeModules.add("ChatCommands");
+        if (FarmingOptionsImpl.cropNuker) activeModules.add("CropNuker");
+        if (EtherwarpOptionsImpl.etherwarp) activeModules.add("Etherwarp");
+        if (RouterOptionsImpl.router) activeModules.add("EtherwarpRouter");
+        if (HurtCameraOptionsImpl.hurtCam) activeModules.add("HurtCam");
+        if (NametagsOptionsImpl.nametags) activeModules.add("Nametags");
+        //if (SlayerOptionsImpl.vampire) activeModules.add("Vampire");
+        if (SlayerOptionsImpl.voidgloom) activeModules.add("SlayerHelper");
+        if (WaypointOptionsImpl.waypoints) activeModules.add("Waypoints");
+
+        return activeModules;
     }
 }

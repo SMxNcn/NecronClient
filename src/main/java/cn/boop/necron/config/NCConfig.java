@@ -32,6 +32,8 @@ public class NCConfig extends Config {
     @SubConfig
     public static HurtCameraOptionsImpl hurtCamOptions = new HurtCameraOptionsImpl();
     @SubConfig
+    public static ModuleGUIOptionsImpl moduleGUIOptions = new ModuleGUIOptionsImpl();
+    @SubConfig
     public static NametagsOptionsImpl nametagsOptions = new NametagsOptionsImpl();
     @SubConfig
     public static NecronOptionsImpl necronOptions = new NecronOptionsImpl();
