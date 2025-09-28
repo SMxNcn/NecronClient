@@ -11,8 +11,8 @@ import java.awt.*;
 public class ClientButton extends GuiButton {
     private float hoverAlpha = 0f;
     private static final int CORNER_RADIUS = 4;
-    private static final float HOVER_IN_SPEED = 1f;
-    private static final float HOVER_OUT_SPEED = 0.3f;
+    private static final float HOVER_IN_SPEED = 0.5f;
+    private static final float HOVER_OUT_SPEED = 0.5f;
 
     public ClientButton(int id, int x, int y, int widthIn, int heightIn ,String text) {
         super(id, x, y, widthIn, heightIn, text);
@@ -26,9 +26,9 @@ public class ClientButton extends GuiButton {
                           mouseX < this.xPosition + this.width &&
                           mouseY < this.yPosition + this.height;
 
-        hoverAlpha += (isHovered ? HOVER_IN_SPEED : -HOVER_OUT_SPEED);
+        hoverAlpha += (isHovered ? HOVER_IN_SPEED / 10f : -HOVER_OUT_SPEED / 10f);
         hoverAlpha = MathHelper.clamp_float(hoverAlpha, 0.0F, 0.5F);
-        if (!isHovered && hoverAlpha < 0.005F) hoverAlpha = 0.0F;
+        //if (!isHovered && hoverAlpha < 0.005F) hoverAlpha = 0.0F;
 
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
