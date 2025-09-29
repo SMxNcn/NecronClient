@@ -4,6 +4,7 @@ import cn.boop.necron.Necron;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.PlayerUtils;
 import cn.boop.necron.utils.Utils;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
@@ -16,9 +17,17 @@ public class Etherwarp {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         boolean currentLeftClick = Mouse.isButtonDown(0);
+        boolean ethermerge = false;
+
         if (etherwarp && LocationUtils.inSkyBlock && Necron.mc.currentScreen == null) {
+            if (Necron.mc.thePlayer.inventory.getCurrentItem() == null) return;
+            NBTTagCompound extraAttributes = Necron.mc.thePlayer.inventory.getCurrentItem().getSubCompound("ExtraAttributes", false);
+            if (extraAttributes != null && extraAttributes.hasKey("ethermerge")) {
+                ethermerge = extraAttributes.getBoolean("ethermerge");
+            }
+
             if (EtherwarpRouter.waypointCache.isEmpty() || EtherwarpRouter.currentWaypointIndex == -1) {
-                if (!lastLeftClick && currentLeftClick) {
+                if (!lastLeftClick && currentLeftClick && ethermerge) {
                     useEtherwarp();
                 }
             }
