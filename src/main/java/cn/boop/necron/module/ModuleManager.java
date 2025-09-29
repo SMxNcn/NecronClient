@@ -2,6 +2,7 @@ package cn.boop.necron.module;
 
 import cn.boop.necron.config.impl.*;
 import cn.boop.necron.events.LootEventHandler;
+import cn.boop.necron.events.RngEventHandler;
 import cn.boop.necron.events.WaypointEventHandler;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
@@ -45,6 +46,7 @@ public class ModuleManager {
         modules.add(new LocationUtils());
         modules.add(new MainMenu());
         modules.add(new LootEventHandler());
+        modules.add(new RngEventHandler());
         modules.add(new WaypointEventHandler());
 
         for (Object module : modules) {

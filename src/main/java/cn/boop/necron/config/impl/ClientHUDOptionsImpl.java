@@ -6,22 +6,25 @@ import cc.polyfrost.oneconfig.config.annotations.Switch;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cn.boop.necron.config.ModConfig;
 
-public class ModuleGUIOptionsImpl extends ModConfig {
-    public ModuleGUIOptionsImpl() {
+public class ClientHUDOptionsImpl extends ModConfig {
+    public ClientHUDOptionsImpl() {
         super("GUI Options", "necron/guioptions.json");
         initialize();
     }
 
     @Switch(name = "Enabled", description = "Display actived modules on the screen")
     public static boolean moduleList = true;
-    @Color(name = "Start color", description = "Chroma start color", subcategory = "Chroma")
+    @Color(name = "Start color", description = "Chroma start color", subcategory = "Chroma Settings")
     public static OneColor startColor = new OneColor(200, 200, 200);
-    @Color(name = "End color", description = "Chroma end color", subcategory = "Chroma")
+    @Color(name = "End color", description = "Chroma end color", subcategory = "Chroma Settings")
     public static OneColor endColor = new OneColor(131, 131, 131);
-    @Number(name = "Chroma speed", description = "Chroma speed", min = 0, max = 10, subcategory = "Chroma")
+    @Number(name = "Chroma speed", description = "Chroma speed", min = 0, max = 10, subcategory = "Chroma Settings")
     public static int chromaSpeed = 5;
-    @Number(name = "Color offset", description = "Offset", min = 0, max = 10, subcategory = "Chroma")
+    @Number(name = "Color offset", description = "Offset", min = 0, max = 10, subcategory = "Chroma Settings")
     public static int colorOffset = 5;
+
+    @Switch(name = "Background", subcategory = "RNG Meter")
+    public static boolean RngBackground = false;
 
     private void jcolor() {
         // IDE 快速编辑颜色值 （似乎现在没有插件支持OneColor？）

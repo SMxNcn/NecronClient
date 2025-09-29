@@ -1,11 +1,13 @@
 package cn.boop.necron.config;
 
 import cc.polyfrost.oneconfig.config.Config;
+import cc.polyfrost.oneconfig.config.annotations.HUD;
 import cc.polyfrost.oneconfig.config.annotations.SubConfig;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.impl.*;
+import cn.boop.necron.module.impl.HUD.RNGMeterHUD;
 
 public class NCConfig extends Config {
     public NCConfig() {
@@ -24,6 +26,8 @@ public class NCConfig extends Config {
     @SubConfig
     public static ChatCommandsOptionsImpl chatCommandsOptions = new ChatCommandsOptionsImpl();
     @SubConfig
+    public static ClientHUDOptionsImpl moduleGUIOptions = new ClientHUDOptionsImpl();
+    @SubConfig
     public static EtherwarpOptionsImpl etherwarpOptions = new EtherwarpOptionsImpl();
     @SubConfig
     public static FakeWipeOptionsImpl fakeWipeOptions = new FakeWipeOptionsImpl();
@@ -31,8 +35,6 @@ public class NCConfig extends Config {
     public static FarmingOptionsImpl farmingOptions = new FarmingOptionsImpl();
     @SubConfig
     public static HurtCameraOptionsImpl hurtCamOptions = new HurtCameraOptionsImpl();
-    @SubConfig
-    public static ModuleGUIOptionsImpl moduleGUIOptions = new ModuleGUIOptionsImpl();
     @SubConfig
     public static NametagsOptionsImpl nametagsOptions = new NametagsOptionsImpl();
     @SubConfig
@@ -50,6 +52,8 @@ public class NCConfig extends Config {
     @SubConfig
     public static WaypointOptionsImpl waypointOptions = new WaypointOptionsImpl();
 
+    @HUD(name = "RNG Meter")
+    public static RNGMeterHUD rngMeterHUD = new RNGMeterHUD();
 
     public static final NCConfig INSTANCE = new NCConfig();
 }

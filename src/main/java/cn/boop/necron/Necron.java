@@ -18,6 +18,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.util.Map;
+
 @Mod(modid = Necron.MODID, name = Necron.MODNAME, version = Necron.VERSION, acceptedMinecraftVersions = "1.8.9", clientSideOnly = true)
 public class Necron {
     public static Minecraft mc = Minecraft.getMinecraft();
@@ -35,6 +38,10 @@ public class Necron {
         MinecraftForge.EVENT_BUS.register(this);
         ModuleManager.initModules();
         FontManager.initFonts();
+
+        Map<String, Map<String, Integer>> rngMeterValues = RngMeterManager.loadRngMeterValues();
+        RngMeterManager.INSTANCE.loadValuesFile(rngMeterValues);
+        RngMeterManager.INSTANCE.setDataFile(new File(mc.mcDataDir, "config/necron/data/data.json"));
     }
 
     @Mod.EventHandler

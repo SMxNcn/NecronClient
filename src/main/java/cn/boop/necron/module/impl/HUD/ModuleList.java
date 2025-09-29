@@ -11,7 +11,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static cn.boop.necron.config.impl.ModuleGUIOptionsImpl.*;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.*;
 
 public class ModuleList {
     @SubscribeEvent
