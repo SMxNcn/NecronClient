@@ -6,6 +6,7 @@ import cn.boop.necron.config.FontManager;
 import cn.boop.necron.config.NCConfig;
 import cn.boop.necron.config.UpdateChecker;
 import cn.boop.necron.module.ModuleManager;
+import cn.boop.necron.module.impl.ctjs.RngMeterManager;
 import cn.boop.necron.utils.RotationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
