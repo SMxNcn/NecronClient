@@ -19,6 +19,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.daemonLevel;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.hasDaemon;
+
 public class RngEventHandler {
     private static final Pattern SCORE_PATTERN = Pattern.compile("Team Score:\\s*(\\d+)\\s*\\((S\\+?)\\)$");
     private static final Pattern RESET_PATTERN = Pattern.compile("You reset your selected drop for your Catacombs \\((\\w{1,2})\\) RNG Meter!");
@@ -44,6 +47,9 @@ public class RngEventHandler {
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
 
             if (rank.equals("S")) score = (int) Math.floor(score * 0.7);
+            if (hasDaemon) {
+                score *= (int) (1 + daemonLevel / 100.0);
+            }
 
             RngMeterManager.INSTANCE.addScore(floor, score);
         }
@@ -68,7 +74,8 @@ public class RngEventHandler {
 
         if (rngMatcher.matches()) {
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
-            double percentage = RngMeterManager.INSTANCE.getMeterPercentage(floor);
+            //double percentage = RngMeterManager.INSTANCE.getMeterPercentage(floor);
+            double percentage = RngMeterManager.INSTANCE.getMeterPercentage("M7");
             Utils.modMessage("§8[§bBloom§8] §7Rng Item reset! (§6" + score + " §bScore, §6" + percentage + "§b%§7)");
             RngMeterManager.INSTANCE.setScore(floor, 0);
         }
