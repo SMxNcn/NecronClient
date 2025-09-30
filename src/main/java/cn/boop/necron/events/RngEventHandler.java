@@ -56,7 +56,7 @@ public class RngEventHandler {
         }
 
         Matcher setMatcher = SET_PATTERN.matcher(formattedMsg);
-        Matcher rngMatcher = RNG_PATTERN.matcher(Utils.removeFormatting(formattedMsg));
+        Matcher rngMatcher = RNG_PATTERN.matcher(formattedMsg);
 
         if (setMatcher.matches()) {
             String floor = setMatcher.group(1);

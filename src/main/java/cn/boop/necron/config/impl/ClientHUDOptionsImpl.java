@@ -12,8 +12,14 @@ public class ClientHUDOptionsImpl extends ModConfig {
         initialize();
     }
 
-    @Switch(name = "Enabled", description = "Display actived modules on the screen")
-    public static boolean moduleList = true;
+    @Switch(name = "Enabled", description = "Display active modules on the screen", subcategory = "Module List")
+    public static boolean moduleList = false;
+
+    @Switch(name = "Enabled", description = "Display RNG meter on the screen", subcategory = "RNG Meter")
+    public static boolean rngMeter = false;
+    @Switch(name = "Background", subcategory = "RNG Meter")
+    public static boolean RngBackground = true;
+
     @Color(name = "Start color", description = "Chroma start color", subcategory = "Chroma Settings")
     public static OneColor startColor = new OneColor(200, 200, 200);
     @Color(name = "End color", description = "Chroma end color", subcategory = "Chroma Settings")
@@ -22,9 +28,6 @@ public class ClientHUDOptionsImpl extends ModConfig {
     public static int chromaSpeed = 5;
     @Number(name = "Color offset", description = "Offset", min = 0, max = 10, subcategory = "Chroma Settings")
     public static int colorOffset = 5;
-
-    @Switch(name = "Background", subcategory = "RNG Meter")
-    public static boolean RngBackground = false;
 
     private void jcolor() {
         // IDE 快速编辑颜色值 （似乎现在没有插件支持OneColor？）

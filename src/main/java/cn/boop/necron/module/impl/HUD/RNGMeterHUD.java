@@ -12,6 +12,7 @@ import cn.boop.necron.utils.RenderUtils;
 import java.awt.*;
 
 import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.RngBackground;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.rngMeter;
 
 public class RNGMeterHUD extends BasicHud {
     public RNGMeterHUD() {
@@ -20,7 +21,7 @@ public class RNGMeterHUD extends BasicHud {
     }
 
     @Exclude public float width = 0f;
-    @Exclude public float height = 41f;
+    @Exclude public float height = 0f;
     @Exclude float paddingX = 4f, paddingY = 4f;
 
     public static class RngMeterData {
@@ -39,21 +40,18 @@ public class RNGMeterHUD extends BasicHud {
 
     @Override
     public void draw(UMatrixStack matrices, float x, float y, float scale, boolean example) {
-        if (!LocationUtils.inDungeon) return;
+        if (!(LocationUtils.inDungeon && rngMeter)) return;
         RngMeterData meter = RngMeterManager.INSTANCE.getCurrentFloorMeter();
-        float currentY = (y / scale) + 4f;
+        if (Necron.mc.thePlayer == null || meter == null) return;
 
-        if (Necron.mc.thePlayer == null || meter == null) {
-            Necron.mc.fontRendererObj.drawString("§cNo RNG Meter Data!", (int) (x + 4), (int) (y + 4), 0xFFFFFF, true);
-            return;
-        }
+        float currentY = (y / scale) + 4f;
 
         if (RngBackground) {
             RenderUtils.drawRoundedRect(
-                    (x - paddingX + 1f) / scale,
+                    (x - paddingX) / scale,
                     (y - paddingY + 3f) / scale,
                     (x + 3f + this.width) / scale,
-                    (y + 2f + this.height) / scale,
+                    (y + 3f + this.height) / scale,
                     3f,
                     new Color(0, 0, 0, 128).getRGB());
         }
