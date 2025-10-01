@@ -14,7 +14,8 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 阻止Unequip装备
 
 ## Blaze Dagger
-如果使用[NotEnoughUpdates](https://github.com/Moulberry/NotEnoughUpdates/)模组中的 `/neurename` 命令重命名Blaze武器，将无法使用自动切换功能。
+- 如果使用[NotEnoughUpdates](https://github.com/Moulberry/NotEnoughUpdates/)模组中的 `/neurename` 命令重命名Blaze武器，将无法使用自动切换功能。
+- 使用风险较高，请自行判断。
 
 ## Chat Commands
 - 在Hypixel中使用的组队命令。
@@ -37,6 +38,7 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 可加载自定义背景图，命名格式为 bg1.png，bg2.png……
 - 图片存放路径: "./config/necron/backgrounds/" （也可在配置界面中快捷打开）
 - 背景图轮换速度及显示时长可在Necron Settings中修改。
+- 可通过主界面右上角的按钮与原版主菜单互相切换
 
 ## Random RNG
 - 由Chat Commands中的 !roll 命令触发。
@@ -45,6 +47,10 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ## Reroll Protector
 - 阻止你reroll地牢奖励箱中稀有物品
 - 或者Send RNG to party！
+
+## RNG Meter HUD
+- 该功能来自[BloomModule](https://github.com/UnclaimedBloom6/BloomModule)
+- HUD使用OneConfig实现
 
 ## Title Manager
 - 可在"Title Text"中输入你想要的文字，并开启"Use your title text"选项以显示自定义标题。
