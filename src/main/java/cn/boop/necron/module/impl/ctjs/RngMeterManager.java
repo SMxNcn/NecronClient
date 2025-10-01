@@ -92,9 +92,9 @@ public class RngMeterManager {
 
     public static Map<String, Map<String, Integer>> loadRngMeterValues() {
         Gson gson = new Gson();
-        try (InputStream inputStream = RngMeterManager.class.getClassLoader().getResourceAsStream("RNGMeterValues.json")) {
+        try (InputStream inputStream = RngMeterManager.class.getResourceAsStream("/RNGMeterValues.json")) {
             if (inputStream != null) {
-                InputStreamReader reader = new InputStreamReader(inputStream);
+                InputStreamReader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
                 Type type = new TypeToken<Map<String, Map<String, Integer>>>(){}.getType();
                 return gson.fromJson(reader, type);
             } else {
