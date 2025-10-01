@@ -18,10 +18,10 @@ public class ClientHUDOptionsImpl extends ModConfig {
     @Switch(name = "Enabled", description = "Display RNG meter on the screen", subcategory = "RNG Meter")
     public static boolean rngMeter = false;
     @Switch(name = "Background", subcategory = "RNG Meter")
-    public static boolean RngBackground = true;
-    @Switch(name = "Has Daemon Shard", description = "If you unlocked the Daemon Shards, enable this")
+    public static boolean RngBackground = false;
+    @Switch(name = "Has Daemon Shard", description = "If you unlocked the Daemon Shards, enable this", subcategory = "RNG Meter")
     public static boolean hasDaemon = false;
-    @Number(name = "Daemon shard level", min = 1, max = 10)
+    @Number(name = "Daemon shard level", min = 1, max = 10, subcategory = "RNG Meter")
     public static int daemonLevel = 1;
 
     @Color(name = "Start color", description = "Chroma start color", subcategory = "Chroma Settings")

@@ -45,6 +45,15 @@ public class RNGMeterHUD extends BasicHud {
         if (Necron.mc.thePlayer == null || meter == null) return;
 
         float currentY = (y / scale) + 4f;
+        String title;
+        String floorColor = meter.meterType.startsWith("M") ? "§c" : "§a";
+
+        if ("E".equals(meter.meterType)) {
+            title = "§dRNG Meter §8- §aE";
+        } else {
+            double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
+            title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
+        }
 
         if (RngBackground) {
             RenderUtils.drawRoundedRect(
@@ -53,12 +62,9 @@ public class RNGMeterHUD extends BasicHud {
                     (x + 3f + this.width) / scale,
                     (y + 3f + this.height) / scale,
                     3f,
-                    new Color(0, 0, 0, 128).getRGB());
+                    new Color(0, 0, 0, 140).getRGB());
         }
 
-        String floorColor = meter.meterType.startsWith("M") ? "§c" : "§a";
-        double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
-        String title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
         Necron.mc.fontRendererObj.drawString(title, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
         updateDimensions(title, scale);
         currentY += 9.0f;
