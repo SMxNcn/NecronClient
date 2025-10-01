@@ -4,10 +4,13 @@ import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.HUD.RNGMeterHUD;
 import cn.boop.necron.utils.LocationUtils;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -166,6 +169,8 @@ public class RngMeterManager {
                 }
             }
 
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
             if (dataFile.exists()) {
                 try (Reader reader = new FileReader(dataFile)) {
                     Map<String, Object> fullData = gson.fromJson(reader, Map.class);
@@ -174,7 +179,8 @@ public class RngMeterManager {
                         rngMeterMap.put("data", saveData.data);
                         fullData.put("rngMeter", rngMeterMap);
 
-                        try (Writer writer = new FileWriter(dataFile)) {
+                        dataFile.getParentFile().mkdirs();
+                        try (Writer writer = new OutputStreamWriter(Files.newOutputStream(dataFile.toPath()), StandardCharsets.UTF_8)) {
                             gson.toJson(fullData, writer);
                         }
                         return;
@@ -189,7 +195,7 @@ public class RngMeterManager {
             rngMeterMap.put("data", saveData.data);
             newData.put("rngMeter", rngMeterMap);
 
-            try (Writer writer = new FileWriter(dataFile)) {
+            try (Writer writer = new OutputStreamWriter(Files.newOutputStream(dataFile.toPath()), StandardCharsets.UTF_8)) {
                 gson.toJson(newData, writer);
             }
         } catch (IOException e) {

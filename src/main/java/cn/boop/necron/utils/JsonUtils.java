@@ -1,13 +1,12 @@
 package cn.boop.necron.utils;
 
+import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.ChatCommands;
 import cn.boop.necron.module.impl.Waypoint;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +19,7 @@ public class JsonUtils {
     private static final Gson GSON = new GsonBuilder()
             .registerTypeAdapter(Waypoint.class, new WaypointSerializer())
             .registerTypeAdapter(Waypoint.class, new WaypointDeserializer())
+            .setPrettyPrinting()
             .create();
 
     public static List<String> loadTips() {
@@ -28,7 +28,7 @@ public class JsonUtils {
             JsonObject json = GSON.fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), JsonObject.class);
             return GSON.fromJson(json.get("tips"), new TypeToken<List<String>>(){}.getType());
         } catch (Exception e) {
-            e.printStackTrace();
+            Necron.LOGGER.error("Error loading tips.json");
             return getDefaultTips();
         }
     }
@@ -58,11 +58,12 @@ public class JsonUtils {
             if (!Files.exists(path)) {
                 Files.createFile(path);
             }
-            String json = GSON.toJson(waypoints);
-            Files.write(path, json.getBytes(StandardCharsets.UTF_8));
+            try (Writer writer = new OutputStreamWriter(Files.newOutputStream(path), StandardCharsets.UTF_8)) {
+                GSON.toJson(waypoints, writer);
+            }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Necron.LOGGER.error("Error saving waypoints: {}", e.getMessage());
             return false;
         }
     }
@@ -75,8 +76,6 @@ public class JsonUtils {
             obj.addProperty("x", waypoint.getX());
             obj.addProperty("y", waypoint.getY());
             obj.addProperty("z", waypoint.getZ());
-
-            // 添加新属性
             obj.addProperty("direction", waypoint.getDirection());
             obj.addProperty("rotation", waypoint.getRotation());
 
