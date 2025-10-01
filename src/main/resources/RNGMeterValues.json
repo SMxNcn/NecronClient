@@ -149,7 +149,7 @@
         "§aEnchanted Book (§d§lUltimate Wise II§a)": 5139,
         "§aEnchanted Book (§d§lCombo II§a)": 4111,
         "§aEnchanted Book (Rejuvenate III§a)": 4111,
-        "§5Necron's Handle": 274119
+        "§6Necron's Handle": 274119
     },
     "M1": {
         "§9Bonzo's Staff": 25800,
@@ -289,7 +289,7 @@
         "§cMaxor the Fish": 833760,
         "§cGoldor the Fish": 833760,
         "§6Dark Claymore": 416880,
-        "§5Necron's Handle": 231599,
+        "§6Necron's Handle": 231599,
         "§aEnchanted Book (Thunderlord VII§a)": 208440,
         "§9Master Skull - Tier 5": 173700,
         "§5Shadow Warp": 166752,
@@ -312,5 +312,57 @@
         "§aEnchanted Book (§d§lBank III§a)": 8337,
         "§aEnchanted Book (§d§lWisdom II§a)": 8337,
         "§aEnchanted Book (§d§lUltimate Jerry III§a)": 6948
+    },
+  "ZS": {
+        "§2Matcha Dye": 75000000
+    },
+  "WS": {
+        "§bCeleste Dye": 75000000
+    },
+  "SS": {
+        "§cBrick Red Dye": 75000000
+    },
+  "ES": {
+        "§aTwilight Arrow Poison": 3300,
+        "§5Summoning Eye": 74250,
+        "§fEnchanted Book (Mana Steal Iv§f)": 11183,
+        "§5Transmission Tuner": 22366,
+        "§9Null Atom": 10120,
+        "§6Hazmat Enderman": 32202,
+        "§fPocket Espresso Machine": 128809,
+        "§fEnchanted Book (Smarty Pants I§f)": 28338,
+        "§5◆ End Rune I": 75505,
+        "§fHandy Blood Chalice": 283380,
+        "§5Sinful Dice": 108992,
+        "§6Exceedingly Rare Ender Artifact Upgrade": 1771125,
+        "§5Void Conqueror Enderman Skin": 302020,
+        "§5Etherwarp Merger": 118075,
+        "§6Judgement Core": 885562,
+        "§7◆ Enchant Rune I": 1078642,
+        "§6End Stone Idol": 3542250,
+        "§5Byzantium Dye": 75000000
+    },
+  "VS": {
+        "§4Sangira Dye": 100000
+    },
+  "BS": {
+        "§a5Enchanted Blaze Powder": 2351,
+        "§c◆ Lavatears Rune I": 21660,
+        "§fWisp's Ice-Flavored Water I Splash Potion": 14270,
+        "§5Bundle of Magma Arrows": 4756,
+        "§9Mana Disintegrator": 10192,
+        "§dScorched Books": 17837,
+        "§9Kelvin Inverter": 14270,
+        "§9Gabagool Distillate": 10649,
+        "§6Scorched Power Crystal": 12558,
+        "§5Archfiend Dice": 37675,
+        "§fEnchanted Book (Fire Aspect III§f)": 32508,
+        "§c◆ Fiery Burst Rune I": 243675,
+        "§a❂ Flawed Opal Gemstone": 14776,
+        "§fEnchanted Book (§d§lDuplex I§f)": 23220,
+        "§6High Class Archfiend Dice": 194939,
+        "§6Wilson's Engineering Plans": 478058,
+        "§6Subzero Inverter": 478058,
+        "§6Flame Dye": 75000000
     }
 }
