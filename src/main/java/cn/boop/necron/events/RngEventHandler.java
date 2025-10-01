@@ -74,8 +74,7 @@ public class RngEventHandler {
 
         if (rngMatcher.matches()) {
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
-            //double percentage = RngMeterManager.INSTANCE.getMeterPercentage(floor);
-            double percentage = RngMeterManager.INSTANCE.getMeterPercentage("M7");
+            double percentage = RngMeterManager.INSTANCE.getMeterPercentage(floor);
             Utils.modMessage("§8[§bBloom§8] §7Rng Item reset! (§6" + score + " §bScore, §6" + percentage + "§b%§7)");
             RngMeterManager.INSTANCE.setScore(floor, 0);
         }
