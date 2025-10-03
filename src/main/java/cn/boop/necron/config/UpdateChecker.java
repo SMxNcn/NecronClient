@@ -77,7 +77,7 @@ public class UpdateChecker {
         Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bNecron §8»§r §a§nClick to download")
                 .setChatStyle(new ChatStyle()
                         .setUnderlined(true)
-                        .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/TLG1145/NecronClient/releases/latest"))
+                        .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gitee.com/mixturedg/necron-client/releases/latest"))
                 ));
     }
 }

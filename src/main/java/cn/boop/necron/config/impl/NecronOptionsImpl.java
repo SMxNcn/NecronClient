@@ -33,7 +33,7 @@ public class NecronOptionsImpl extends ModConfig {
     @Button(name = "Open features' guide", text = "Open", subcategory = "Client")
     Runnable guide = () -> {
         try {
-            Desktop.getDesktop().browse(new java.net.URI("https://github.com/TLG1145/NecronClient/blob/master/FEATURES.md"));
+            Desktop.getDesktop().browse(new java.net.URI("https://gitee.com/mixturedg/necron-client/blob/master/FEATURES.md"));
         } catch (Exception e) {
             Notifications.INSTANCE.send("Error", "Failed to open guide", new Icon(SVGs.X_CIRCLE_BOLD));
             Necron.LOGGER.error("Features");
