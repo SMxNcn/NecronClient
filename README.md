@@ -20,8 +20,7 @@
 
 ## 获取
 
-- 重要更新可在 [Releases](https://github.com/TLG1145/NecronClient/releases/latest) 中下载
-- 其它小更新可在 [GitHub Actions](https://github.com/TLG1145/NecronClient/actions) 中下载自动构建的mod文件
+- 重要更新可在 [Releases](https://gitee.com/mixturedg/necron-client/releases/latest) 中下载
 
 ## 功能列表
 
