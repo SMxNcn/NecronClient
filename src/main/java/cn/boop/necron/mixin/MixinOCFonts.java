@@ -12,7 +12,7 @@ import java.io.File;
 
 @Mixin(Fonts.class)
 public class MixinOCFonts {
-    @Redirect(method = "<clinit>", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/String;)Lcc/polyfrost/oneconfig/renderer/font/Font;"))
+    @Redirect(method = "<clinit>", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/String;)Lcc/polyfrost/oneconfig/renderer/font/Font;"), remap = false)
     private static Font redirectFontConstructor(String name, String path) {
         String fontPath = necronClient$mapToFontPath(path);
         String configFontPath = necronClient$getFontFromConfig(fontPath);

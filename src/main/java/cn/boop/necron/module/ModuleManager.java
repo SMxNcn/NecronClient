@@ -1,7 +1,10 @@
 package cn.boop.necron.module;
 
 import cn.boop.necron.config.impl.*;
-import cn.boop.necron.events.*;
+import cn.boop.necron.events.B64ChatEventHandler;
+import cn.boop.necron.events.LootEventHandler;
+import cn.boop.necron.events.RngEventHandler;
+import cn.boop.necron.events.WaypointEventHandler;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
 import cn.boop.necron.module.impl.HUD.ModuleList;
@@ -29,7 +32,6 @@ public class ModuleManager {
         modules.add(new EtherwarpRouter());
         modules.add(new FailSafe());
         modules.add(new FakeWipe());
-        //modules.add(new GemstoneNuker());
         modules.add(new HurtCam());
         modules.add(new ModuleList());
         modules.add(new Nametags());
@@ -71,7 +73,6 @@ public class ModuleManager {
         if (RouterOptionsImpl.router) activeModules.add("EtherwarpRouter");
         if (HurtCameraOptionsImpl.hurtCam) activeModules.add("HurtCam");
         if (NametagsOptionsImpl.nametags) activeModules.add("Nametags");
-        //if (SlayerOptionsImpl.vampire) activeModules.add("Vampire");
         if (SlayerOptionsImpl.voidgloom) activeModules.add("SlayerHelper");
         if (WaypointOptionsImpl.waypoints) activeModules.add("Waypoints");
 

@@ -2,7 +2,6 @@ package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.ModuleManager;
-import cn.boop.necron.module.impl.PlayerStats;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
@@ -13,8 +12,6 @@ import net.minecraft.util.BlockPos;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import static cn.boop.necron.utils.Utils.modMessage;
 
 public class DebugCommands extends CommandBase {
     @Override
@@ -44,15 +41,15 @@ public class DebugCommands extends CommandBase {
                 case "dungeonInfo":
                     if (!DungeonUtils.dungeonPlayers.isEmpty()) {
                         for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
-                            modMessage(String.valueOf(entry.getValue()));
+                            Utils.modMessage(String.valueOf(entry.getValue()));
                         }
                     } else {
-                        modMessage("§cNo dungeon players found.");
+                        Utils.modMessage("§cNo dungeon players found.");
                     }
                     break;
                 case "findpath":
                     if (args.length < 4) {
-                        modMessage("Usage: findpath <x> <y> <z>");
+                        Utils.modMessage("Usage: findpath <x> <y> <z>");
                         break;
                     }
 
@@ -88,15 +85,13 @@ public class DebugCommands extends CommandBase {
                             "\n§7§l | §r§7Instance player(s): " + DungeonUtils.dungeonPlayers.size());
                     break;
                 case "test":
-                    PlayerStats.inCombat = !PlayerStats.inCombat;
-                    modMessage("inCombat: " + (PlayerStats.inCombat ? "§atrue" : "§cfalse"));
                     break;
                 default:
-                    modMessage("§cUnknown debug command.");
+                    Utils.modMessage("§cUnknown debug command.");
                     break;
             }
         } else {
-            modMessage("Debug Commands: dungeonInfo, findpath, silent, stats");
+            Utils.modMessage("Debug Commands: dungeonInfo, findpath, silent, stats");
         }
     }
 }

@@ -54,7 +54,7 @@ public class LootEventHandler {
 
     @SubscribeEvent
     public void onGuiClick(GuiScreenEvent.MouseInputEvent.Pre event) {
-        if (inRewardChest && hasRareItems&& rerollProtect && event.gui instanceof GuiChest && LocationUtils.inDungeon) {
+        if (inRewardChest && hasRareItems && rerollProtect && event.gui instanceof GuiChest && LocationUtils.inDungeon) {
             if (isMouseButtonDown(0) || isMouseButtonDown(1)) {
                 GuiChest guiChest = (GuiChest) event.gui;
 
@@ -63,7 +63,7 @@ public class LootEventHandler {
                     ItemStack stack = slot.getStack();
                     if (isRerollButton(stack) && shouldDisableReroll() && blockSent) {
                         event.setCanceled(true);
-                        Utils.modMessage("§cBlocked Reroll button cause RNG item has dropped!");
+                        Utils.modMessage("§cReroll button has been §lDISABLED§r§c!");
                     }
                 }
             }
@@ -135,10 +135,13 @@ public class LootEventHandler {
     }
 
     private boolean checkRngMeter(String droppedItemName, String floor) {
+        System.out.println("droppedItemName: " + droppedItemName);
         RNGMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
 
         if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
             String currentRngItem = Utils.removeFormatting(currentMeter.item);
+            System.out.println("Current Rng Item: " + currentRngItem);
+            System.out.println("Contains check: " + droppedItemName.contains(currentRngItem));
 
             if (droppedItemName.contains(currentRngItem) && !rngMsgSent) {
                 int score = currentMeter.score;
