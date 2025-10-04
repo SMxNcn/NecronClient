@@ -5,6 +5,7 @@ import cn.boop.necron.module.impl.ChatCommands;
 import cn.boop.necron.module.impl.CropNuker;
 import cn.boop.necron.module.impl.EtherwarpRouter;
 import cn.boop.necron.module.impl.Waypoint;
+import cn.boop.necron.utils.B64Utils;
 import cn.boop.necron.utils.RotationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
@@ -13,8 +14,6 @@ import net.minecraft.util.ChatComponentText;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static cn.boop.necron.utils.Utils.modMessage;
 
 public class ClientCommands extends CommandBase {
     @Override
@@ -41,9 +40,24 @@ public class ClientCommands extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length > 0) {
             switch (args[0]) {
+                case "b64":
+                    if (args.length < 2) {
+                        Utils.modMessage("Usage: b64 <message>");
+                        break;
+                    }
+                    StringBuilder messageBuilder = new StringBuilder();
+                    for (int i = 1; i < args.length; i++) {
+                        if (i > 1) messageBuilder.append(" ");
+                        messageBuilder.append(args[i]);
+                    }
+                    String message = messageBuilder.toString();
+
+                    String encoded = B64Utils.encodeWithOffset(message);
+                    Utils.chatMessage("/ac " + encoded);
+                    break;
                 case "rotate":
                     if (args.length < 4) {
-                        modMessage("Usage: rotate <x> <y> <z>");
+                        Utils.modMessage("Usage: rotate <x> <y> <z>");
                         break;
                     }
                     try {
@@ -51,15 +65,15 @@ public class ClientCommands extends CommandBase {
                         double y = Double.parseDouble(args[2]);
                         double z = Double.parseDouble(args[3]);
                         RotationUtils.rotatingToBlock(x, y, z, 0.3f);
-                        modMessage(String.format("Rotating to Vec3d: (%.1f, %.1f, %.1f)", x, y, z));
+                        Utils.modMessage(String.format("Rotating to Vec3d: (%.1f, %.1f, %.1f)", x, y, z));
                     } catch (NumberFormatException e) {
-                        modMessage("§cInvalid position format.");
+                        Utils.modMessage("§cInvalid position format.");
                     }
                     break;
                 case "setDir":
                     if (args.length < 3) {
-                        modMessage("Usage: setDir <waypointID> <direction>");
-                        modMessage("Available directions: forward, backward, left, right.");
+                        Utils.modMessage("Usage: setDir <waypointID> <direction>");
+                        Utils.modMessage("Available directions: forward, backward, left, right.");
                         break;
                     }
                     try {
@@ -67,20 +81,20 @@ public class ClientCommands extends CommandBase {
                         String direction = args[2].toLowerCase();
 
                         if (!Arrays.asList("forward", "backward", "left", "right").contains(direction)) {
-                            modMessage("§cInvalid direction.");
-                            modMessage("Available directions: forward, backward, left, right.");
+                            Utils.modMessage("§cInvalid direction.");
+                            Utils.modMessage("Available directions: forward, backward, left, right.");
                             break;
                         }
 
                         Waypoint.setWaypointDirection(waypointId, direction);
                     } catch (NumberFormatException e) {
-                        modMessage("§cInvalid waypoint ID format.");
+                        Utils.modMessage("§cInvalid waypoint ID format.");
                     }
                     break;
                 case "setRot":
                     if (args.length < 3) {
-                        modMessage("Usage: setRot <waypointID> <yaw>");
-                        modMessage("The range of the yaw must be in 0~360.");
+                        Utils.modMessage("Usage: setRot <waypointID> <yaw>");
+                        Utils.modMessage("The range of the yaw must be in 0~360.");
                         break;
                     }
                     try {
@@ -92,7 +106,7 @@ public class ClientCommands extends CommandBase {
 
                         Waypoint.setWaypointRotation(waypointId, rotation);
                     } catch (NumberFormatException e) {
-                        modMessage("§cInvalid number format.");
+                        Utils.modMessage("§cInvalid number format.");
                     }
                     break;
                 case "tips":
@@ -100,7 +114,7 @@ public class ClientCommands extends CommandBase {
                     break;
                 case "load":
                     if (args.length < 2) {
-                        modMessage("Usage: load <file>");
+                        Utils.modMessage("Usage: load <file>");
                         break;
                     }
                     EtherwarpRouter.loadWaypoints(args[1]);
@@ -108,7 +122,7 @@ public class ClientCommands extends CommandBase {
                     CropNuker.setIndex(0);
                     break;
                 default:
-                    modMessage("§cUnknown command.");
+                    Utils.modMessage("§cUnknown command.");
                     break;
             }
         } else {

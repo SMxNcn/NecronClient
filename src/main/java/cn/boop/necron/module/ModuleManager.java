@@ -42,6 +42,7 @@ public class ModuleManager {
         modules.add(new DungeonUtils());
         modules.add(new LocationUtils());
         modules.add(new MainMenu());
+        modules.add(new B64ChatEventHandler());
         modules.add(new LootEventHandler());
         modules.add(new RngEventHandler());
         modules.add(new WaypointEventHandler());
