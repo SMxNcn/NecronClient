@@ -3,9 +3,9 @@
     "modid": "necronclient",
     "name": "Necron",
     "description": "Maybe a SkyBlock Mod",
-    "version": "0.1.4.1",
+    "version": "0.1.5",
     "mcversion": "1.8.9",
-    "url": "https://github.com/TLG1145/NecronClient",
+    "url": "https://gitee.com/mixturedg/necron-client",
     "updateUrl": "",
     "authorList": [
       "MixinNecron"
