@@ -1,7 +1,9 @@
 package cn.boop.necron.events;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.module.impl.HUD.RNGMeterHUD;
 import cn.boop.necron.module.impl.LootProtector;
+import cn.boop.necron.module.impl.ctjs.RngMeterManager;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -12,6 +14,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
@@ -22,6 +25,7 @@ public class LootEventHandler {
     private boolean inRewardChest = false;
     private boolean hasRareItems = false;
     private boolean messageSent = false;
+    private boolean rngMsgSent = false;
     private boolean blockSent = false;
 
     @SubscribeEvent
@@ -75,6 +79,11 @@ public class LootEventHandler {
         }
     }
 
+    @SubscribeEvent
+    public void onGuiClose(WorldEvent.Load event) {
+        rngMsgSent = false;
+    }
+
     private void checkForRareItems(GuiChest guiChest) {
         ContainerChest container = (ContainerChest) guiChest.inventorySlots;
         IInventory lowerChest = container.getLowerChestInventory();
@@ -100,11 +109,18 @@ public class LootEventHandler {
         for (int i = 9; i <= 17 && i < items.length; i++) {
             if (items[i] != null) {
                 String itemName = Utils.removeFormatting(items[i].getDisplayName());
+                String floor = LocationUtils.floor.name.replaceAll("[()]", "");
                 if (LootProtector.isRareItemByName(itemName)) {
                     blockSent = true;
-                    Utils.modMessage("§dRNG Item §7dropped: " + items[i].getDisplayName() + "§7!");
-                    if (sendToParty && LocationUtils.inDungeon) {
-                        Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
+                    System.out.println("Chest item: " + itemName);
+                    System.out.println("Called from floor: " + floor);
+                    if (!rngMsgSent) {
+                        if (!checkRngMeter(itemName, floor))
+                            Utils.modMessage("§dRng Item §7dropped! (" + items[i].getDisplayName() + "§7)");
+                        if (sendToParty && LocationUtils.inDungeon) {
+                            Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
+                        }
+                        rngMsgSent = true;
                     }
                     break;
                 }
@@ -116,6 +132,24 @@ public class LootEventHandler {
         if (stack == null) return false;
         String itemName = Utils.removeFormatting(stack.getDisplayName());
         return stack.getItem() == Items.feather && itemName.contains("Reroll Chest");
+    }
+
+    private boolean checkRngMeter(String droppedItemName, String floor) {
+        RNGMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
+
+        if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
+            String currentRngItem = Utils.removeFormatting(currentMeter.item);
+
+            if (droppedItemName.contains(currentRngItem) && !rngMsgSent) {
+                int score = currentMeter.score;
+                double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
+                RngMeterManager.INSTANCE.setScore(floor, 0);
+                Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
+                rngMsgSent = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isMouseButtonDown(int button) {

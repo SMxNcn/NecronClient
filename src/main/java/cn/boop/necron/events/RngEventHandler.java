@@ -26,7 +26,6 @@ public class RngEventHandler {
     private static final Pattern SCORE_PATTERN = Pattern.compile("Team Score:\\s*(\\d+)\\s*\\((S\\+?)\\)$");
     private static final Pattern RESET_PATTERN = Pattern.compile("You reset your selected drop for your Catacombs \\((\\w{1,2})\\) RNG Meter!");
     private static final Pattern SET_PATTERN = Pattern.compile("§r§aYou set your §r§dCatacombs \\((\\w{1,2})\\) RNG Meter §r§ato drop §r(.+)§r§a!§r");
-    private static final Pattern RNG_PATTERN = Pattern.compile("§d§lRNG METER! §r§aReselected the (.+?) §afor .+ §e§lCLICK HERE §r§ato select a new drop!.*");
 
     private static final Pattern FLOOR_PATTERN = Pattern.compile("^Catacombs \\((\\w{1,2})\\)$");
     private static final Pattern INV_SCORE_PATTERN = Pattern.compile("^([\\w,]+)/([\\w.,]+)$");
@@ -62,7 +61,6 @@ public class RngEventHandler {
         }
 
         Matcher setMatcher = SET_PATTERN.matcher(formattedMsg);
-        Matcher rngMatcher = RNG_PATTERN.matcher(formattedMsg);
 
         if (setMatcher.matches()) {
             String floor = setMatcher.group(1);
@@ -70,13 +68,6 @@ public class RngEventHandler {
             String formattedItem = item.replace("&", "§");
             RngMeterManager.INSTANCE.setItem(floor, formattedItem);
             Utils.modMessage("Set RNG item " + formattedItem + " §7on " + floor);
-        }
-
-        if (rngMatcher.matches()) {
-            String floor = LocationUtils.floor.name.replaceAll("[()]", "");
-            double percentage = RngMeterManager.INSTANCE.getMeterPercentage(floor);
-            Utils.modMessage("§8[§bBloom§8] §7Rng Item reset! (§6" + score + " §bScore, §6" + percentage + "§b%§7)");
-            RngMeterManager.INSTANCE.setScore(floor, 0);
         }
     }
 
@@ -99,7 +90,6 @@ public class RngEventHandler {
         if (lowerInv.getSizeInventory() < 35) return;
         scanned = true;
 
-        // 遍历19-35槽位的物品
         for (int i = 19; i < 35 && i < lowerInv.getSizeInventory(); i++) {
             ItemStack item = lowerInv.getStackInSlot(i);
             if ((item == null || item.getItem() == null)) continue;
@@ -116,7 +106,6 @@ public class RngEventHandler {
         String floor = null;
         String drop = null;
         int current = 0;
-        int needed = 0;
 
         if (item.getTagCompound() == null || !item.getTagCompound().hasKey("display")) return;
 
@@ -142,7 +131,7 @@ public class RngEventHandler {
         for (int i = 0; i < lore.length; i++) {
             String line = lore[i].replaceAll("§.", "");
             if (line.equals("Selected Drop") && i + 1 < lore.length) {
-                drop = lore[i + 1]/*.substring(2)*/;
+                drop = lore[i + 1];
                 break;
             }
         }
@@ -153,19 +142,11 @@ public class RngEventHandler {
             Matcher scoreMatcher = INV_SCORE_PATTERN.matcher(cleanLine);
             if (scoreMatcher.matches()) {
                 String currStr = scoreMatcher.group(1);
-                String finalStr = scoreMatcher.group(2);
 
                 current = Integer.parseInt(currStr.replaceAll(",", ""));
-
-                if (finalStr.endsWith("k")) {
-                    needed = (int) Double.parseDouble(finalStr.substring(0, finalStr.length() - 1)) * 1000;
-                } else {
-                    needed = (int) Double.parseDouble(finalStr.replaceAll("[.,]", ""));
-                }
                 break;
             }
 
-            // 匹配存储分数格式
             Matcher storedMatcher = STORED_SCORE_PATTERN.matcher(cleanLine);
             if (storedMatcher.matches()) {
                 current = (int) Double.parseDouble(storedMatcher.group(1).replaceAll(",", ""));
