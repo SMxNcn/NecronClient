@@ -1,9 +1,7 @@
 package cn.boop.necron.module;
 
 import cn.boop.necron.config.impl.*;
-import cn.boop.necron.events.LootEventHandler;
-import cn.boop.necron.events.RngEventHandler;
-import cn.boop.necron.events.WaypointEventHandler;
+import cn.boop.necron.events.*;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
 import cn.boop.necron.module.impl.HUD.ModuleList;
@@ -25,7 +23,6 @@ public class ModuleManager {
         modules.add(new AutoPath());
         modules.add(new AutoWardrobe());
         //modules.add(new BlazeDagger());   //由于使用该模块有较高概率被ban，故暂时禁用该功能
-        modules.add(new ChatBlocker());
         modules.add(new ChatCommands());
         modules.add(new CropNuker());
         modules.add(new Etherwarp());
@@ -67,7 +64,6 @@ public class ModuleManager {
         if (AutoGGOptionsImpl.autoGG) activeModules.add("AutoGG");
         if (AutoPathOptionsImpl.autoPath) activeModules.add("AutoPath");
         if (WardrobeOptionsImpl.wardrobe) activeModules.add("AutoWardrobe");
-        if (ChatBlockerOptionsImpl.chatBlocker) activeModules.add("ChatBlocker");
         if (ChatCommandsOptionsImpl.chatCommands) activeModules.add("ChatCommands");
         if (FarmingOptionsImpl.cropNuker) activeModules.add("CropNuker");
         if (EtherwarpOptionsImpl.etherwarp) activeModules.add("Etherwarp");
