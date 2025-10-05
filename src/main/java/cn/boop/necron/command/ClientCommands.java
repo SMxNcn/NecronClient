@@ -126,22 +126,18 @@ public class ClientCommands extends CommandBase {
                     break;
             }
         } else {
-            int i;
-            for (i = 0; i < helpMsg.length; ++i) {
-                Necron.mc.thePlayer.addChatMessage(new ChatComponentText(helpMsg[i]));
-            }
+            Necron.mc.thePlayer.addChatMessage(new ChatComponentText(helpMsg));
         }
     }
 
-    private static final String[] helpMsg = new String[]{
-            "§8§m-------------------------------------",
-            "§b             NecronClient §7v" + Necron.VERSION,
-            "§r ",
-            "§b/necron load <file> §f§l»§r§7 加载路径点文件",
-            "§b/necron rotate <x> <y> <z> §f§l»§r§7 将视角旋转至x, y, z",
-            "§b/necron setDir <ID> <direction> §f§l»§r§7 设置路径点的移动方向",
-            "§b/necron setRot <ID> <yaw> §f§l»§r§7 设置路径点的预设旋转角度",
-            "§b/necron tips §f§l»§r§7 获取一些神秘文本",
-            "§r§8§m-------------------------------------"
-    };
+    private static final String helpMsg =
+            "§8§m-------------------------------------\n" +
+            "§b             NecronClient §7v" + Necron.VERSION + "\n" +
+            "§r \n" +
+            "§b/necron load <file> §f§l»§r§7 加载路径点文件\n" +
+            "§b/necron rotate <x> <y> <z> §f§l»§r§7 将视角旋转至x, y, z\n" +
+            "§b/necron setDir <ID> <direction> §f§l»§r§7 设置路径点的移动方向\n" +
+            "§b/necron setRot <ID> <yaw> §f§l»§r§7 设置路径点的预设旋转角度\n" +
+            "§b/necron tips §f§l»§r§7 获取一些神秘文本\n" +
+            "§r§8§m-------------------------------------";
 }
