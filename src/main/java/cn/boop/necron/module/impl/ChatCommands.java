@@ -8,10 +8,7 @@ import cn.boop.necron.utils.Utils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +17,7 @@ import static cn.boop.necron.config.impl.ChatCommandsOptionsImpl.*;
 public class ChatCommands {
     public static final Pattern ChatRegex = Pattern.compile("^Party > (\\[[^]]*?])? ?(\\w{1,16})?: \\s*[!.-](.+)");
     public static final List<String> tipList = new ArrayList<>(JsonUtils.loadTips());
+    private static final long SEED = System.currentTimeMillis() + 114514;
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
@@ -68,6 +66,16 @@ public class ChatCommands {
             case "nuke":
                 if (!nuke) return;
                 Utils.chatMessage("/p disband");
+                break;
+            case "rng":
+                if (!rng) return;
+                Random random = new Random(SEED + player.hashCode());
+                int luck = random.nextInt(101);
+
+                if (luck == 0) Utils.chatMessage("/pc " + player + " 今天是0！");
+                else if (luck == 91) Utils.chatMessage("/pc " + player + " You got 91!  (O.o?)");
+                else if (luck == 100) Utils.chatMessage("/pc " + player + " You got 100!  \\o/");
+                else Utils.chatMessage("/pc " + player + " You got " + luck + " !");
                 break;
             case "roll":
                 if (!roll) return;

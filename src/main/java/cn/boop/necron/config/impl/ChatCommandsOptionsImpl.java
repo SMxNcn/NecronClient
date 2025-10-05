@@ -20,6 +20,8 @@ public class ChatCommandsOptionsImpl extends ModConfig {
     public static boolean meow = true;
     @Checkbox(name = "Party Nuker", subcategory = "Commands")
     public static boolean nuke = false;
+    @Checkbox(name = "Daily luck", subcategory = "Commands")
+    public static boolean rng = true;
     @Checkbox(name = "M7 Drops Roll", subcategory = "Commands")
     public static boolean roll = true;
     @Checkbox(name = "NTMSB?", subcategory = "Commands")
