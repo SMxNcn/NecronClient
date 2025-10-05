@@ -13,6 +13,7 @@ import net.minecraft.network.play.client.C0DPacketCloseWindow;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import static cn.boop.necron.config.impl.WardrobeOptionsImpl.*;
@@ -47,16 +48,31 @@ public class AutoWardrobe {
                         event.setCanceled(true);
                     }
                 } else {
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(400);
-                            if (Necron.mc.thePlayer != null && Necron.mc.getNetHandler() != null && autoClose) {
-                                Necron.mc.getNetHandler().addToSendQueue(new C0DPacketCloseWindow());
-                            }
-                        } catch (InterruptedException ignored) {}
-                    }).start();
+                    closeWardrobe();
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onKeyboardInput(GuiScreenEvent.KeyboardInputEvent.Pre event) {
+        if (isInWardrobe && event.gui instanceof GuiChest) {
+            if (Keyboard.getEventKeyState()) {
+                int key = Keyboard.getEventKey();
+                if (key >= 2 && key <= 10) closeWardrobe();
+            }
+        }
+    }
+
+        private static void closeWardrobe() {
+        new Thread(() -> {
+            try {
+                int delay = (int) (Math.random() * 200) + 300;
+                Thread.sleep(delay);
+                if (Necron.mc.thePlayer != null && Necron.mc.getNetHandler() != null && autoClose) {
+                    Necron.mc.getNetHandler().addToSendQueue(new C0DPacketCloseWindow());
+                }
+            } catch (InterruptedException ignored) {}
+        }).start();
     }
 }
