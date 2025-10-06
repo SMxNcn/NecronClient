@@ -25,7 +25,6 @@ public class ModuleManager {
         modules.add(new AutoGG());
         modules.add(new AutoPath());
         modules.add(new AutoWardrobe());
-        //modules.add(new BlazeDagger());   //由于使用该模块有较高概率被ban，故暂时禁用该功能
         modules.add(new ChatCommands());
         modules.add(new CropNuker());
         modules.add(new Etherwarp());
@@ -37,8 +36,6 @@ public class ModuleManager {
         modules.add(new Nametags());
         modules.add(new PlayerStats());
         modules.add(new TitleManager());
-        modules.add(new Vampire());
-        modules.add(new Voidgloom());
 
         // Other utils/events
         modules.add(new DungeonUtils());

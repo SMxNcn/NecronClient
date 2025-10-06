@@ -41,8 +41,8 @@ public class NCConfig extends Config {
     public static RerollProtectOptionsImpl rerollProtectOptions = new RerollProtectOptionsImpl();
     @SubConfig
     public static RouterOptionsImpl routerOptions = new RouterOptionsImpl();
-    @SubConfig
-    public static SlayerOptionsImpl slayerOptions = new SlayerOptionsImpl();
+//    @SubConfig
+//    public static SlayerOptionsImpl slayerOptions = new SlayerOptionsImpl();
     @SubConfig
     public static TitleOptionsImpl titleOptions = new TitleOptionsImpl();
     @SubConfig
