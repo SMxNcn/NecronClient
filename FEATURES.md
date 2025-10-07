@@ -13,10 +13,6 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 切换装备后自动关闭Wardrobe界面
 - 阻止Unequip装备
 
-## Blaze Dagger
-- 如果使用[NotEnoughUpdates](https://github.com/Moulberry/NotEnoughUpdates/)模组中的 `/neurename` 命令重命名Blaze武器，将无法使用自动切换功能。
-- 使用风险较高，请自行判断。
-
 ## Chat Commands
 - 在Hypixel中使用的组队命令。
 - Hypixel语言需设置为英文！ `/lang english`
@@ -36,7 +32,7 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
 ## Main Menu
 - 可加载自定义背景图，命名格式为 bg1.png，bg2.png……
-- 图片存放路径: "./config/necron/backgrounds/" （也可在配置界面中快捷打开）
+- 图片存放路径: `./config/necron/backgrounds/` （也可在配置界面中快捷打开）
 - 背景图轮换速度及显示时长可在Necron Settings中修改。
 - 可通过主界面右上角的按钮与原版主菜单互相切换
 
@@ -51,23 +47,18 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ## RNG Meter HUD
 - 该功能来自[BloomModule](https://github.com/UnclaimedBloom6/BloomModule)
 - HUD使用OneConfig实现
+- 目前实现尚不完善，无法重置非稀有物品的RNG。（LootProtector.java & LootEventHandler.java）
 
 ## Title Manager
 - 可在"Title Text"中输入你想要的文字，并开启"Use your title text"选项以显示自定义标题。
 - 自定义图标选项默认开启。如果不想使用自定义图标，需关闭Icon选项并重启游戏。
-
-## Vampire Helper
-- Vampire Slayer辅助
-- 手持铁剑时右键，会自动切换至Holy Ice并使用
-- 自动切换Steak Stake
-- 生命值小于 8❤ 时，自动治疗
 
 ## Voidgloom
 - 尚未完成
 
 ## Waypoint
 
-> Waypoint文件存放路径: "./config/necron/waypoints/" （也可在配置界面中快捷打开）
+> Waypoint文件存放路径: `./config/necron/waypoints/` （也可在配置界面中快捷打开）
 > 
 > 路径点元素（Box, Line, Text）的显示颜色均可修改
 > 
@@ -90,5 +81,5 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ### 其他提示：
 - 如果需要使用Crop Nuker功能，需要提前设置好路径点，并在配置中绑定一个按键。
 - 使用南瓜/西瓜农场时可使用[Squeaky Mousemat](https://wiki.hypixel.net/Squeaky_Mousemat)物品设置预设俯仰角。
-- 如果使用高级南瓜/西瓜农场，可以在Farming Helper设置中开启Melon Mode
+- Melon Mode会在移动时按住前进键。如果使用高级南瓜/西瓜农场或其他S-Shape农田，可开启此选项。
 - 相关资源文件夹可通过游戏中Necron Settings子配置来打开
