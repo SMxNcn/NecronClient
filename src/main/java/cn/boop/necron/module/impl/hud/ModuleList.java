@@ -1,4 +1,4 @@
-package cn.boop.necron.module.impl.HUD;
+package cn.boop.necron.module.impl.hud;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.ModuleManager;

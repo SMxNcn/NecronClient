@@ -1,9 +1,9 @@
 package cn.boop.necron.events;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.HUD.RNGMeterHUD;
 import cn.boop.necron.module.impl.LootProtector;
 import cn.boop.necron.module.impl.ctjs.RngMeterManager;
+import cn.boop.necron.module.impl.hud.RNGMeterHUD;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;

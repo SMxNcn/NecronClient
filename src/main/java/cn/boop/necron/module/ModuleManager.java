@@ -7,7 +7,7 @@ import cn.boop.necron.events.RngEventHandler;
 import cn.boop.necron.events.WaypointEventHandler;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
-import cn.boop.necron.module.impl.HUD.ModuleList;
+import cn.boop.necron.module.impl.hud.ModuleList;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import net.minecraftforge.common.MinecraftForge;

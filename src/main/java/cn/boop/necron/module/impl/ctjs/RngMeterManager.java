@@ -1,7 +1,7 @@
 package cn.boop.necron.module.impl.ctjs;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.HUD.RNGMeterHUD;
+import cn.boop.necron.module.impl.hud.RNGMeterHUD;
 import cn.boop.necron.utils.LocationUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

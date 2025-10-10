@@ -7,7 +7,7 @@ import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.impl.*;
-import cn.boop.necron.module.impl.HUD.RNGMeterHUD;
+import cn.boop.necron.module.impl.hud.RNGMeterHUD;
 
 public class NCConfig extends Config {
     public NCConfig() {

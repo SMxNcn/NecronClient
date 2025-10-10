@@ -1,4 +1,4 @@
-package cn.boop.necron.module.impl.HUD;
+package cn.boop.necron.module.impl.hud;
 
 import cc.polyfrost.oneconfig.config.annotations.Exclude;
 import cc.polyfrost.oneconfig.events.EventManager;

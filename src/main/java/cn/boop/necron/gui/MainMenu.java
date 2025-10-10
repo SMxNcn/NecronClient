@@ -1,7 +1,7 @@
 package cn.boop.necron.gui;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.HUD.ModuleList;
+import cn.boop.necron.module.impl.hud.ModuleList;
 import cn.boop.necron.utils.RenderUtils;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.renderer.GlStateManager;
