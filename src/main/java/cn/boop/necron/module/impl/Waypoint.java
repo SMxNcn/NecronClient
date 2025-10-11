@@ -18,9 +18,9 @@ import static cn.boop.necron.config.impl.WaypointOptionsImpl.*;
 
 public class Waypoint {
     private int id;
-    private final int x;
-    private final int y;
-    private final int z;
+    private int x;
+    private int y;
+    private int z;
     private String direction = "forward";
     private float rotation = 0.0f;
     private static int waypointCounter = 1;
@@ -41,14 +41,15 @@ public class Waypoint {
         this.rotation = rotation;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public int getX() { return x; }
+    public void setX(int xIn) { this.x = xIn; }
     public int getY() { return y; }
+    public void setY(int yIn) { this.y = yIn; }
     public int getZ() { return z; }
+    public void setZ(int zIn) { this.z = zIn; }
 
     public String getDirection() { return direction; }
     public void setDirection(String direction) { this.direction = direction != null ? direction : "forward"; }
