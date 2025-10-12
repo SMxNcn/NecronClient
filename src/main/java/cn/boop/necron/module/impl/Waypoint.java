@@ -61,7 +61,7 @@ public class Waypoint {
     private static List<Waypoint> waypoints = new ArrayList<>();
     private static String currentFile = null;
 
-    public static void loadWaypoints(String filename) {
+    public static void loadWaypoints(String filename, boolean reload) {
         if (filename == null || filename.isEmpty()) return;
         currentFile = Necron.WP_FILE_DIR + filename + ".json";
         waypoints = JsonUtils.loadWaypoints(currentFile);
@@ -69,10 +69,12 @@ public class Waypoint {
         if (waypoints.isEmpty()) {
             waypoints = new ArrayList<>();
             boolean created = JsonUtils.saveWaypoints(waypoints, currentFile);
+            Utils.modMessage("Created new waypoint file. §8[" + filename + "]");
             if (!created) return;
+        } else if (reload) {
+            Utils.modMessage("Reloaded current waypoint file. §8[" + filename + "]");
         } else {
             Utils.modMessage("Loaded " + waypoints.size() + " waypoints. §8[" + filename + "]");
-            Utils.modMessage("Press ALT to edit waypoints! ");
         }
 
         if (!waypoints.isEmpty()) {
@@ -119,40 +121,6 @@ public class Waypoint {
         } else {
             Utils.modMessage("No waypoint found at BlockPos{x=" + pos.getX() + ", y=" + pos.getY() + ", z=" + pos.getZ() + "}");
         }
-    }
-
-    public static void setWaypointDirection(int waypointId, String direction) {
-        if (currentFile == null) {
-            Utils.modMessage("Waypoints file not loaded.");
-            return;
-        }
-
-        for (Waypoint waypoint : waypoints) {
-            if (waypoint.getId() == waypointId) {
-                waypoint.setDirection(direction);
-                saveWaypoints();
-                Utils.modMessage("Set waypoint #" + waypointId + " direction to " + direction);
-                return;
-            }
-        }
-        Utils.modMessage("Waypoint #" + waypointId + " not found.");
-    }
-
-    public static void setWaypointRotation(int waypointId, float rotation) {
-        if (currentFile == null) {
-            Utils.modMessage("Waypoints file not loaded.");
-            return;
-        }
-
-        for (Waypoint waypoint : waypoints) {
-            if (waypoint.getId() == waypointId) {
-                waypoint.setRotation(rotation);
-                saveWaypoints();
-                Utils.modMessage("Set waypoint #" + waypointId + " rotation to " + rotation + " degrees");
-                return;
-            }
-        }
-        Utils.modMessage("Waypoint #" + waypointId + " not found.");
     }
 
     private static void saveWaypoints() {
@@ -208,6 +176,10 @@ public class Waypoint {
             EtherwarpRouter.routeCompleted = false;
             EtherwarpRouter.routerNotified = false;
         }
+    }
+
+    public static String getCurrentFile() {
+        return currentFile;
     }
 
     public static List<Waypoint> getWaypoints() {

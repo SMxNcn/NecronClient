@@ -60,26 +60,16 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
 > Waypoint文件存放路径: `./config/necron/waypoints/` （也可在配置界面中快捷打开）
 > 
-> 路径点元素（Box, Line, Text）的显示颜色均可修改
-> 
-> Waypoint ID会在每个路径点上渲染。
-> 
-> 按住左Alt键时，左键单击路径点所在方块可删除该路径点，右键单击一个方块则会在该方块处添加路径点。
+> 按住左Alt键时，右键单击一个方块则会在该方块处添加路径点，左键单击路径点所在方块可删除该路径点。
 
 ### 相关命令：
 
-/nc load \<File>
-- 加载目录下的路径点文件。（若文件不存在，则自动创建）
+/nc create \<fileName>
+- 在目录下新建一个路径点文件。
 
-/nc setDir \<ID> \<direction>
-- 设置玩家在指定路径点上的移动方向。（可用选项：forward, backward, left, right）
-- 如果同时设置了不同的旋转角度，移动方向需以旋转后方向为基准设置。
+/nc wp
+- 打开路径点GUI。  **(WIP)**
 
-/nc setRot \<ID> \<rotation>
-- 设置玩家在指定路径点上的旋转角度。（输入游戏中的Yaw数据，默认为0）
-
-### 其他提示：
-- 如果需要使用Crop Nuker功能，需要提前设置好路径点，并在配置中绑定一个按键。
-- 使用南瓜/西瓜农场时可使用[Squeaky Mousemat](https://wiki.hypixel.net/Squeaky_Mousemat)物品设置预设俯仰角。
-- Melon Mode会在移动时按住前进键。如果使用高级南瓜/西瓜农场或其他S-Shape农田，可开启此选项。
-- 相关资源文件夹可通过游戏中Necron Settings子配置来打开
+### 路径点GUI相关：
+- 初步实现了路径点加载，快速编辑功能
+- TODO: 添加对更多属性的编辑功能
