@@ -102,11 +102,11 @@ public final class MainMenu extends GuiScreen {
 
     @Override
     public void initGui() {
-        this.buttonList.add(new ClientButton(0, this.width / 2 - 90, this.height / 2 + 1, 180, 18, "Singleplayer"));
-        this.buttonList.add(new ClientButton(1, this.width / 2 - 90, this.height / 2 + 23, 180, 18, "Multiplayer"));
-        this.buttonList.add(new ClientButton(2, this.width / 2 - 90, this.height / 2 + 45, 180, 18, "Mods"));
-        this.buttonList.add(new ClientButton(3, this.width / 2 - 90, this.height / 2 + 67, 88, 18, "Options"));
-        this.buttonList.add(new ClientButton(4, this.width / 2 + 2, this.height / 2 + 67, 88, 18, "Quit"));
+        this.buttonList.add(new ClientButton(0, this.width / 2 - 90, this.height / 2 + 1, 180, 18, I18n.format("client.menu.singleplayer")));
+        this.buttonList.add(new ClientButton(1, this.width / 2 - 90, this.height / 2 + 23, 180, 18, I18n.format("client.menu.multiplayer")));
+        this.buttonList.add(new ClientButton(2, this.width / 2 - 90, this.height / 2 + 45, 180, 18, I18n.format("client.menu.mods")));
+        this.buttonList.add(new ClientButton(3, this.width / 2 - 90, this.height / 2 + 67, 88, 18, I18n.format("client.menu.options")));
+        this.buttonList.add(new ClientButton(4, this.width / 2 + 2, this.height / 2 + 67, 88, 18, I18n.format("client.menu.quit")));
         this.buttonList.add(new ClientButton(5, this.width - 55, 5, 50, 18, "Vanilla"));
         super.initGui();
     }

@@ -1,0 +1,7 @@
+client.menu.singleplayer=单人游戏
+client.menu.multiplayer=多人游戏
+client.menu.mods=模组
+client.menu.options=选项
+client.menu.quit=退出
+
+client.gui.reconnect=重新连接

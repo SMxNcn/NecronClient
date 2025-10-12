@@ -1,0 +1,7 @@
+client.menu.singleplayer=Singleplayer
+client.menu.multiplayer=Multiplayer
+client.menu.mods=Mods
+client.menu.options=Options
+client.menu.quit=Quit
+
+client.gui.reconnect=Reconnect
