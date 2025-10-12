@@ -56,7 +56,7 @@ public class ModuleList {
         for (int i = 0; i < modules.size(); i++) {
             String module = modules.get(i);
 
-            Color textChColor = getChromaColor(startColor.toJavaColor(), endColor.toJavaColor(), i, 0);
+            Color textChColor = RenderUtils.getChromaColor(startColor.toJavaColor(), endColor.toJavaColor(), i, 0, 5);
             int moduleNameWidth = fontRenderer.getStringWidth(module);
             int moduleX = x - maxModuleNameWidth + (maxModuleNameWidth - moduleNameWidth);
             int moduleY = y + i * (fontRenderer.FONT_HEIGHT + verticalSpacing + 1) + 1;
@@ -84,22 +84,5 @@ public class ModuleList {
                     textChColor.getRGB()
             );
         }
-    }
-
-    public static Color getChromaColor(Color start, Color end, int index, int speed) {
-        double currentTime = System.nanoTime() / 1_000_000_000.0;
-        double offset = index * (colorOffset / 100f);
-        double cSpeed;
-        if (speed == 0)  cSpeed = chromaSpeed / 10f;
-        else cSpeed = speed / 10f;
-
-        double phase = (currentTime * cSpeed + offset) * 2 * Math.PI;
-
-        float progress = (float) (0.5 + 0.5 * Math.sin(phase));
-        int r = (int) (start.getRed() + (end.getRed() - start.getRed()) * progress);
-        int g = (int) (start.getGreen() + (end.getGreen() - start.getGreen()) * progress);
-        int b = (int) (start.getBlue() + (end.getBlue() - start.getBlue()) * progress);
-
-        return new Color(r, g, b);
     }
 }

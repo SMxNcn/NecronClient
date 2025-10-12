@@ -2,13 +2,18 @@ package cn.boop.necron.utils;
 
 import cn.boop.necron.Necron;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.chromaSpeed;
 
 public class RenderUtils {
     public static void glColor(int hex) {
@@ -305,5 +310,22 @@ public class RenderUtils {
         GlStateManager.disableBlend();
         GlStateManager.enableDepth();
         GlStateManager.popMatrix();
+    }
+
+    public static Color getChromaColor(Color start, Color end, int index, int speed, int offset) {
+        double currentTime = System.nanoTime() / 1_000_000_000.0;
+        double cOffset = index * (offset / 100f);
+        double cSpeed;
+        if (speed == 0)  cSpeed = chromaSpeed / 10f;
+        else cSpeed = speed / 10f;
+
+        double phase = (currentTime * cSpeed + cOffset) * 2 * Math.PI;
+
+        float progress = (float) (0.5 + 0.5 * Math.sin(phase));
+        int r = (int) (start.getRed() + (end.getRed() - start.getRed()) * progress);
+        int g = (int) (start.getGreen() + (end.getGreen() - start.getGreen()) * progress);
+        int b = (int) (start.getBlue() + (end.getBlue() - start.getBlue()) * progress);
+
+        return new Color(r, g, b);
     }
 }
