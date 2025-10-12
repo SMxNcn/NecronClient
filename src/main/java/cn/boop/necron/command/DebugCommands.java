@@ -9,7 +9,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class DebugCommands extends CommandBase {
 
     @Override
     public List<String> getCommandAliases() {
-        return Arrays.asList("ncd");
+        return Collections.singletonList("ncd");
     }
 
     @Override

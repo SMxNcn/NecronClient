@@ -12,7 +12,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ClientCommands extends CommandBase {
@@ -23,7 +23,7 @@ public class ClientCommands extends CommandBase {
 
     @Override
     public List<String> getCommandAliases() {
-        return Arrays.asList("nc");
+        return Collections.singletonList("nc");
     }
 
     @Override
