@@ -10,10 +10,15 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static cn.boop.necron.config.impl.RouterOptionsImpl.*;
 
@@ -28,6 +33,17 @@ public class EtherwarpRouter {
     public static boolean routeCompleted = false;
     public static boolean routerNotified = false;
     private static BlockPos targetPosition = null;
+
+    private static final ExecutorService executor = Executors.newFixedThreadPool(2, new ThreadFactory() {
+        private final AtomicInteger counter = new AtomicInteger(0);
+
+        @Override
+        public Thread newThread(@NotNull Runnable r) {
+            Thread thread = new Thread(r, "EtherwarpRouter-" + counter.getAndIncrement());
+            thread.setDaemon(true);
+            return thread;
+        }
+    });
 
     public static void loadWaypoints(String filename) {
         currentFilename = filename;
@@ -63,7 +79,7 @@ public class EtherwarpRouter {
     private void handleLeftClick() {
         if (isProcessing || Necron.mc.thePlayer.inventory.getCurrentItem() == null) return;
         String itemID = Utils.getSkyBlockID(Necron.mc.thePlayer.inventory.getCurrentItem());
-        if (itemID.equals("ASPECT_OF_THE_END") || itemID.equals("ASPECT_OF_THE_VOID")){
+        if (Etherwarp.isEtherwarpItem(Necron.mc.thePlayer.inventory.getCurrentItem())){
             if (waypointCache.isEmpty()) {
                 if (!routerNotified) {
                     Utils.modMessage("Waypoints file not loaded.");
@@ -76,7 +92,6 @@ public class EtherwarpRouter {
                     if (isLoop) {
                         currentWaypointIndex = 0;
                         routeCompleted = false;
-                        routerNotified = false;
                     } else {
                         Utils.modMessage("Route completed.");
                         routeCompleted = true;
@@ -86,7 +101,6 @@ public class EtherwarpRouter {
                         currentWaypointIndex = -1;
                     }
                 }
-
                 return;
             }
 
@@ -108,11 +122,10 @@ public class EtherwarpRouter {
 
             isProcessing = true;
 
-            RotationUtils.asyncAimAt(closestFaceCenter, 0.35f);
-            if (devMsg) Utils.modMessage("Rotating.");
-
-            new Thread(() -> {
+            executor.submit(() -> {
                 try {
+                    RotationUtils.asyncAimAt(closestFaceCenter, 0.35f);
+                    if (devMsg) Utils.modMessage("Rotating.");
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
                     Necron.LOGGER.error("EtherwarpRouter", e);
@@ -122,7 +135,9 @@ public class EtherwarpRouter {
 
                 try {
                     Thread.sleep(500);
-                } catch (InterruptedException ignored) {}
+                } catch (Exception e) {
+                    Necron.LOGGER.error("EtherwarpRouter", e);
+                }
 
                 if (hasReachedTarget(targetPosition)) {
                     currentWaypointIndex++;
@@ -132,16 +147,9 @@ public class EtherwarpRouter {
 
                 isProcessing = false;
                 targetPosition = null;
-            }, "EW-Router").start();
+            }, "EtherwarpRouter");
         } else {
-            if (itemID.equals("TITANIUM_DRILL_4") ||
-                    itemID.equals("DIVAN_DRILL") ||
-                    itemID.equals("JUJU_SHORTBOW") ||
-                    itemID.equals("TERMINATOR") ||
-                    itemID.equals("DIAMOND_PICKAXE") ||
-                    itemID.equals("MITHRIL_PICKAXE") ||
-                    itemID.equals("REFINED_MITHRIL_PICKAXE"))
-                return;
+            if (isToolItem(itemID)) return;
 
             lastFilename = currentFilename;
             lastWaypointIndex = currentWaypointIndex;
@@ -151,10 +159,20 @@ public class EtherwarpRouter {
             targetPosition = null;
             if (!routerNotified) {
                 Utils.modMessage("Holding incorrect item.");
-                Utils.modMessage("§cRELOAD§7 waypoint file to continue using!");
+                Utils.modMessage("§cRELOAD§7 waypoint on the Waypoint GUI!");
                 routerNotified = true;
             }
         }
+    }
+
+    private static boolean isToolItem(String itemID) {
+        return "TITANIUM_DRILL_4".equals(itemID) ||
+                "DIVAN_DRILL".equals(itemID) ||
+                "JUJU_SHORTBOW".equals(itemID) ||
+                "TERMINATOR".equals(itemID) ||
+                "DIAMOND_PICKAXE".equals(itemID) ||
+                "MITHRIL_PICKAXE".equals(itemID) ||
+                "REFINED_MITHRIL_PICKAXE".equals(itemID);
     }
 
     private boolean hasReachedTarget(BlockPos target) {

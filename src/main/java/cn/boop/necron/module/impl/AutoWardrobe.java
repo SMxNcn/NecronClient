@@ -64,7 +64,7 @@ public class AutoWardrobe {
         }
     }
 
-        private static void closeWardrobe() {
+    private static void closeWardrobe() {
         new Thread(() -> {
             try {
                 int delay = (int) (Math.random() * 200) + 300;

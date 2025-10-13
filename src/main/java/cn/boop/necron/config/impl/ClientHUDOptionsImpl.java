@@ -10,6 +10,8 @@ public class ClientHUDOptionsImpl extends ModConfig {
     public ClientHUDOptionsImpl() {
         super("GUI Options", "necron/guioptions.json");
         initialize();
+
+        addDependency("daemonLevel", "hasDaemon");
     }
 
     @Switch(name = "Enabled", description = "Display active modules on the screen", subcategory = "Module List")

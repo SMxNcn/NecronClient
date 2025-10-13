@@ -71,16 +71,19 @@ public class WaypointEventHandler {
     private void handleMouseInput(BlockPos pos) {
         boolean leftPressed = Mouse.isButtonDown(0);
         boolean rightPressed = Mouse.isButtonDown(1);
+        boolean edited = false;
 
         if (rightPressed && !lastRightPressed) {
             Waypoint.addWaypoint(pos);
-            Waypoint.onWaypointsChanged();
+            edited = true;
         }
 
         if (leftPressed && !lastLeftPressed) {
             Waypoint.removeWaypoint(pos);
-            Waypoint.onWaypointsChanged();
+            edited = true;
         }
+
+        if (edited) Waypoint.onWaypointsChanged();
 
         lastLeftPressed = leftPressed;
         lastRightPressed = rightPressed;

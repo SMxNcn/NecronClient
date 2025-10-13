@@ -28,7 +28,6 @@ public class CropNuker {
     private static long actionStartTime = 0;
     private static String targetDirection = "forward";
     private static boolean atWaypoint = false;
-    private static float baseYaw = 0;
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
@@ -92,9 +91,7 @@ public class CropNuker {
     }
 
     private static void setMovementKeys(String direction) {
-        if (!melonMode) {
-            KeyBinding.setKeyBindState(Necron.mc.gameSettings.keyBindForward.getKeyCode(), false);
-        }
+        KeyBinding.setKeyBindState(Necron.mc.gameSettings.keyBindForward.getKeyCode(), false);
         KeyBinding.setKeyBindState(Necron.mc.gameSettings.keyBindLeft.getKeyCode(), false);
         KeyBinding.setKeyBindState(Necron.mc.gameSettings.keyBindForward.getKeyCode(), false);
         KeyBinding.setKeyBindState(Necron.mc.gameSettings.keyBindBack.getKeyCode(), false);
@@ -117,19 +114,12 @@ public class CropNuker {
         }
     }
 
-    private static float normalizeAngle(float angle) { // 标准化角度到 [-180, 180] 范围
-        while (angle > 180) angle -= 360;
-        while (angle < -180) angle += 360;
-        return angle;
-    }
-
     private void handleAutoWalk() {
         List<Waypoint> waypoints = Waypoint.getWaypoints();
         if (waypoints.isEmpty()) return;
 
         if (currentWaypointIndex >= waypoints.size()) { // 确保索引在有效范围内
             currentWaypointIndex = 0; // 重新开始
-            baseYaw = normalizeAngle(waypoints.get(0).getRotation());
             FailSafe.resetPositionTracking();
         }
 
@@ -149,9 +139,7 @@ public class CropNuker {
                 handleWaypointActions(currentWaypoint);
                 actionStartTime = System.currentTimeMillis();
             }
-        }
-
-        else if (distanceToWaypoint < 0.6) { // 如果足够接近路径点，则认为已到达
+        } else if (distanceToWaypoint < 0.6) { // 如果足够接近路径点，则认为已到达
             if (!atWaypoint) {
                 continueMovingAfterWaypoint = true;
                 waypointReachedTime = System.currentTimeMillis();
@@ -165,10 +153,8 @@ public class CropNuker {
     }
 
     private void handleWaypointActions(Waypoint waypoint) {
-        baseYaw = RotationUtils.normalizeAngle(RotationUtils.yaw());
-
         float targetRotation = RotationUtils.normalizeAngle(waypoint.getRotation()); // 设置目标旋转角度
-        RotationUtils.smoothRotateTo(targetRotation, RotationUtils.pitch(), 15.0f);
+        RotationUtils.smoothRotateTo(targetRotation, RotationUtils.pitch(), 8.0f);
         needsRotation = false;
 
         targetDirection = waypoint.getDirection(); // 设置目标方向
@@ -201,7 +187,6 @@ public class CropNuker {
         needsRotation = false;
         needsDirectionChange = false;
         atWaypoint = false;
-        baseYaw = 0;
         Necron.LOGGER.warn("{} Disabled Crop Nuker.", reason.getMessage());
     }
 
@@ -212,10 +197,6 @@ public class CropNuker {
         } else {
             targetBlockPos = null;
         }
-    }
-
-    public static boolean isAtWaypoint() {
-        return atWaypoint;
     }
 
     public static void setIndex(int index) {

@@ -57,11 +57,10 @@ public class DebugCommands extends CommandBase {
                         int x = Integer.parseInt(args[1]);
                         int y = Integer.parseInt(args[2]);
                         int z = Integer.parseInt(args[3]);
-
-                        ModuleManager.getAutoPath().setTarget(new BlockPos(x, y, z));
+                    new Thread(() -> ModuleManager.getAutoPath().setTarget(new BlockPos(x, y, z)));
 
                     } catch (NumberFormatException e) {
-                        Necron.LOGGER.error("§cInvalid position format");
+                        Utils.modMessage("§cInvalid position format");
                     }
                     break;
                 case "stats":
@@ -91,7 +90,7 @@ public class DebugCommands extends CommandBase {
                     break;
             }
         } else {
-            Utils.modMessage("Debug Commands: dungeonInfo, findpath, silent, stats");
+            Utils.modMessage("Debug Commands: dungeonInfo, findpath, stats");
         }
     }
 }

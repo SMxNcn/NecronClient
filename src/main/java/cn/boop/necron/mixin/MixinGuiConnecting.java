@@ -15,7 +15,7 @@ public class MixinGuiConnecting {
     @Inject(method = "<init>(Lnet/minecraft/client/gui/GuiScreen;Lnet/minecraft/client/Minecraft;Lnet/minecraft/client/multiplayer/ServerData;)V", at = @At("RETURN"))
     private void onInit(GuiScreen parentScreen, Minecraft mcIn, ServerData serverDataIn, CallbackInfo ci) {
         if (serverDataIn != null) {
-            ServerUtils.lastServerData = (serverDataIn);
+            ServerUtils.lastServerData = serverDataIn;
         }
     }
 

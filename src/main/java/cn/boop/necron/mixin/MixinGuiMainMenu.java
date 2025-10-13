@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static cn.boop.necron.config.impl.NecronOptionsImpl.customMainMenu;
 
 @Mixin(GuiMainMenu.class)
-public class MixinGuiMainMenu extends GuiScreen{
+public class MixinGuiMainMenu extends GuiScreen {
 
     @Inject(method = "initGui", at = @At("RETURN"))
     public void onInitGui(CallbackInfo ci) {

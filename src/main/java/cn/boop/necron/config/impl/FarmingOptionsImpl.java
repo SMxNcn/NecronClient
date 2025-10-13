@@ -5,6 +5,7 @@ import cc.polyfrost.oneconfig.config.annotations.Number;
 import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.ModConfig;
+import cn.boop.necron.config.NotificationType;
 import cn.boop.necron.utils.Utils;
 
 public class FarmingOptionsImpl extends ModConfig {
@@ -15,15 +16,13 @@ public class FarmingOptionsImpl extends ModConfig {
         registerKeyBind(cnKey, () -> {
             cropNuker = !cropNuker;
             String message = "Crop Nuker" + (cropNuker ? " Enabled" : " Disabled");
-            ClientNotification.NotificationType type = (cropNuker ? ClientNotification.NotificationType.ENABLED : ClientNotification.NotificationType.DISABLED);
+            NotificationType type = (cropNuker ? NotificationType.ENABLED : NotificationType.DISABLED);
             ClientNotification.sendNotification("Module", message, type, 2000);
         });
     }
 
     public static boolean cropNuker = true;
 
-    @Switch(name = "Enabled", description = "Useful farming features")
-    public static boolean farming = true;
     @KeyBind(name = "Bind a key", description = "Legit crop nuker", subcategory = "Crop Nuker")
     public static OneKeyBind cnKey = new OneKeyBind();
     @Slider(name = "Max speed", description = "Max speed of Rancher's Boots", min = 0, max = 400,/* step = 1,*/ subcategory = "Crop Nuker")

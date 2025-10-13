@@ -12,10 +12,6 @@ public class ClientNotification {
     public static final SVG ENABLED_ICON = new SVG("/assets/necron/icons/NotificationEnabled.svg");
     public static final SVG DISABLED_ICON = new SVG("/assets/necron/icons/NotificationDisabled.svg");
 
-    public enum NotificationType {
-        WARN, ENABLED, DISABLED
-    }
-
     public static void sendNotification(String title, String message, NotificationType type, int duration) {
         Animation animation = new EaseInOutQuad(duration, 0, 1, false);
         Notifications.INSTANCE.send(

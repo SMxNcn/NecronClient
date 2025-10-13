@@ -2,6 +2,7 @@ package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.ClientNotification;
+import cn.boop.necron.config.NotificationType;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,7 +25,7 @@ public class FailSafe {
     public void onWorldChange(WorldEvent.Load event) {
         if (cropNuker) {
             CropNuker.reset(ResetReason.WORLD_CHANGE);
-            ClientNotification.sendNotification("Crop Nuker", ResetReason.WORLD_CHANGE.getMessage(), ClientNotification.NotificationType.WARN, 6000);
+            ClientNotification.sendNotification("Crop Nuker", ResetReason.WORLD_CHANGE.getMessage(), NotificationType.WARN, 6000);
         } else if (Necron.mc.thePlayer != null) {
             posInit = false;
         }
@@ -71,7 +72,7 @@ public class FailSafe {
 
         if (distance > POSITION_THRESHOLD && !voidFalling) {
             CropNuker.reset(ResetReason.TELEPORT);
-            ClientNotification.sendNotification("Crop Nuker", ResetReason.TELEPORT.getMessage(), ClientNotification.NotificationType.WARN, 5000);
+            ClientNotification.sendNotification("Crop Nuker", ResetReason.TELEPORT.getMessage(), NotificationType.WARN, 5000);
         }
 
         voidFalling = false;
