@@ -27,7 +27,7 @@ public class NecronOptionsImpl extends ModConfig {
             Desktop.getDesktop().open(new File("./logs/roll_log.txt"));
         } catch (IOException e) {
             Notifications.INSTANCE.send("Error", "Failed to open roll log file", new Icon(SVGs.X_CIRCLE_BOLD));
-            Necron.LOGGER.error("roll result file");
+            Necron.LOGGER.error("Failed to open roll log file");
         }
     };
     @Button(name = "Open features' guide", text = "Open", subcategory = "Client")
@@ -36,7 +36,7 @@ public class NecronOptionsImpl extends ModConfig {
             Desktop.getDesktop().browse(new java.net.URI("https://gitee.com/mixturedg/necron-client/blob/master/FEATURES.md"));
         } catch (Exception e) {
             Notifications.INSTANCE.send("Error", "Failed to open guide", new Icon(SVGs.X_CIRCLE_BOLD));
-            Necron.LOGGER.error("Features");
+            Necron.LOGGER.error("Failed to open guide");
         }
     };
 

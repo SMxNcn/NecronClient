@@ -21,7 +21,7 @@ public class TitleManager {
     public void ClientTickEvent(TickEvent.ClientTickEvent event) {
         if (title) {
             try {
-                if (urTitle) {
+                if (customTitle) {
                     Display.setTitle(titleText);
                 } else {
                     Display.setTitle("Minecraft 1.8.9" + " - Spongepowered Mixin v" + Necron.VERSION);
