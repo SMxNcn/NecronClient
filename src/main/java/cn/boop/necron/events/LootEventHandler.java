@@ -23,6 +23,7 @@ import static cn.boop.necron.config.impl.RerollProtectOptionsImpl.*;
 
 public class LootEventHandler {
     private boolean inRewardChest = false;
+    private boolean inNormalChest = false;
     private boolean hasRareItems = false;
     private boolean messageSent = false;
     private boolean rngMsgSent = false;
@@ -31,30 +32,27 @@ public class LootEventHandler {
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
         String chestName;
-        if (event.gui instanceof GuiChest && reroll && (LocationUtils.inDungeon || LocationUtils.getCurrentIslandName().equals("Dungeon Hub"))) {
-            GuiChest guiChest = (GuiChest) event.gui;
-            ContainerChest container = (ContainerChest) guiChest.inventorySlots;
-            IInventory lowerChest = container.getLowerChestInventory();
-            chestName = lowerChest.getDisplayName().getUnformattedText();
+        if (!(event.gui instanceof GuiChest) || !reroll || (!LocationUtils.inDungeon && !LocationUtils.getCurrentIslandName().equals("Dungeon Hub"))) {
+            resetAllFlags();
+            return;
+        }
+        GuiChest guiChest = (GuiChest) event.gui;
+        ContainerChest container = (ContainerChest) guiChest.inventorySlots;
+        IInventory lowerChest = container.getLowerChestInventory();
+        chestName = lowerChest.getDisplayName().getUnformattedText();
 
-            inRewardChest = "Obsidian Chest".equals(chestName) || "Bedrock Chest".equals(chestName);
+        inRewardChest = "Obsidian Chest".equals(chestName) || "Bedrock Chest".equals(chestName);
+        inNormalChest = isNormalChest(chestName);
 
-            if (!inRewardChest) {
-                hasRareItems = false;
-                messageSent = false;
-                blockSent = false;
-            }
-        } else {
-            hasRareItems = false;
-            messageSent = false;
-            blockSent = false;
-            inRewardChest = false;
+        if (!inRewardChest && !inNormalChest) {
+            resetChestFlags();
         }
     }
 
     @SubscribeEvent
     public void onGuiClick(GuiScreenEvent.MouseInputEvent.Pre event) {
-        if (inRewardChest && hasRareItems && rerollProtect && event.gui instanceof GuiChest && LocationUtils.inDungeon) {
+        if ((inNormalChest || inRewardChest) && hasRareItems && event.gui instanceof GuiChest) {
+            if (!rerollProtect && !LocationUtils.inDungeon) return;
             if (isMouseButtonDown(0) || isMouseButtonDown(1)) {
                 GuiChest guiChest = (GuiChest) event.gui;
 
@@ -72,31 +70,25 @@ public class LootEventHandler {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START && inRewardChest) {
+        if (event.phase == TickEvent.Phase.START && (inRewardChest || inNormalChest)) {
             if (Necron.mc.currentScreen instanceof GuiChest) {
-                checkForRareItems((GuiChest) Necron.mc.currentScreen);
+                checkAllItems((GuiChest) Necron.mc.currentScreen);
             }
         }
     }
 
     @SubscribeEvent
-    public void onGuiClose(WorldEvent.Load event) {
+    public void onWorldLoad(WorldEvent.Load event) {
         rngMsgSent = false;
     }
 
     private void checkForRareItems(GuiChest guiChest) {
         ContainerChest container = (ContainerChest) guiChest.inventorySlots;
         IInventory lowerChest = container.getLowerChestInventory();
-        int size = lowerChest.getSizeInventory();
-        ItemStack[] items = new ItemStack[size];
 
-        for (int i = 0; i < size; i++) {
-            items[i] = lowerChest.getStackInSlot(i);
-        }
-
-        if (LootProtector.hasRareLoot(items)) {
+        if (LootProtector.hasRareLoot(lowerChest)) {
             if (!messageSent) {
-                sendRareItemNames(items);
+                sendRareItemNames(lowerChest);
                 messageSent = true;
             }
             hasRareItems = true;
@@ -105,27 +97,69 @@ public class LootEventHandler {
         }
     }
 
-    private void sendRareItemNames(ItemStack[] items) {
-        for (int i = 9; i <= 17 && i < items.length; i++) {
-            if (items[i] != null) {
-                String itemName = Utils.removeFormatting(items[i].getDisplayName());
-                String floor = LocationUtils.floor.name.replaceAll("[()]", "");
-                if (LootProtector.isRareItemByName(itemName)) {
-                    blockSent = true;
-                    System.out.println("Chest item: " + itemName);
-                    System.out.println("Called from floor: " + floor);
-                    if (!rngMsgSent) {
-                        if (!checkRngMeter(itemName, floor))
-                            Utils.modMessage("§dRng Item §7dropped! (" + items[i].getDisplayName() + "§7)");
-                        if (sendToParty && LocationUtils.inDungeon) {
-                            Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
-                        }
-                        rngMsgSent = true;
+    private void sendRareItemNames(IInventory inventory) {
+        for (int i = 9; i <= 17 && i < inventory.getSizeInventory(); i++) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (stack == null) return;
+            String itemName = Utils.removeFormatting(stack.getDisplayName());
+            String floor = LocationUtils.floor.name.replaceAll("[()]", "");
+            if (LootProtector.isRareItemByName(itemName)) {
+                blockSent = true;
+                System.out.println("Chest item: " + itemName);
+                System.out.println("Called from floor: " + floor);
+                if (!rngMsgSent) {
+                    if (!checkRngMeter(itemName, floor))
+                        Utils.modMessage("§dRng Item §7dropped! (" + stack.getDisplayName() + "§7)");
+                    if (sendToParty && LocationUtils.inDungeon) {
+                        Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
                     }
+                    rngMsgSent = true;
+                }
+                break;
+            }
+        }
+    }
+
+    private void checkAllItems(GuiChest guiChest) {
+        ContainerChest container = (ContainerChest) guiChest.inventorySlots;
+        IInventory lowerChest = container.getLowerChestInventory();
+        String floor = LocationUtils.floor.name.replaceAll("[()]", "");
+
+        for (int i = 0; i < lowerChest.getSizeInventory(); i++) {
+            ItemStack stack = lowerChest.getStackInSlot(i);
+            if (stack != null) {
+                String itemName = Utils.removeFormatting(stack.getDisplayName());
+                if (checkRngMeter(itemName, floor)) {
                     break;
                 }
             }
         }
+
+        if (inRewardChest) {
+            checkForRareItems(guiChest);
+        }
+    }
+
+    private boolean checkRngMeter(String droppedItemName, String floor) {
+        RNGMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
+
+        if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
+            String currentRngItem = Utils.removeFormatting(currentMeter.item);
+
+            if (droppedItemName.contains(currentRngItem) && !rngMsgSent) {
+                int score = currentMeter.score;
+                double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
+                RngMeterManager.INSTANCE.setScore(floor, 0);
+                Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
+                if (sendToParty && LocationUtils.inDungeon) {
+                    Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
+                    System.out.println("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
+                }
+                rngMsgSent = true;
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isRerollButton(ItemStack stack) {
@@ -134,25 +168,25 @@ public class LootEventHandler {
         return stack.getItem() == Items.feather && itemName.contains("Reroll Chest");
     }
 
-    private boolean checkRngMeter(String droppedItemName, String floor) {
-        System.out.println("droppedItemName: " + droppedItemName);
-        RNGMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
+    private boolean isNormalChest(String chestName) {
+        return "Wood Chest".equals(chestName) ||
+                "Gold Chest".equals(chestName) ||
+                "Diamond Chest".equals(chestName) ||
+                "Emerald Chest".equals(chestName);
+    }
 
-        if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
-            String currentRngItem = Utils.removeFormatting(currentMeter.item);
-            System.out.println("Current Rng Item: " + currentRngItem);
-            System.out.println("Contains check: " + droppedItemName.contains(currentRngItem));
+    private void resetAllFlags() {
+        inRewardChest = false;
+        inNormalChest = false;
+        hasRareItems = false;
+        messageSent = false;
+        blockSent = false;
+    }
 
-            if (droppedItemName.contains(currentRngItem) && !rngMsgSent) {
-                int score = currentMeter.score;
-                double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
-                RngMeterManager.INSTANCE.setScore(floor, 0);
-                Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
-                rngMsgSent = true;
-                return true;
-            }
-        }
-        return false;
+    private void resetChestFlags() {
+        hasRareItems = false;
+        messageSent = false;
+        blockSent = false;
     }
 
     private boolean isMouseButtonDown(int button) {

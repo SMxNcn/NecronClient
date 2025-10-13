@@ -1,6 +1,7 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.utils.Utils;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
 import java.util.HashSet;
@@ -16,6 +17,7 @@ public class LootProtector {
         RARE_ITEM.add("Wither Shield");
         RARE_ITEM.add("Shadow Warp");
         RARE_ITEM.add("Dark Claymore");
+        RARE_ITEM.add("Master Skull - Tier 5");
         RARE_ITEM.add("Necron Dye");
         RARE_ITEM.add("Fifth Master Star");
         RARE_ITEM.add("Fourth Master Star");
@@ -27,20 +29,17 @@ public class LootProtector {
         RARE_ITEM.add("Livid Dye");
     }
 
-    public static boolean containsRareItems(ItemStack[] items, int startSlot, int endSlot) {
-        for (int i = startSlot; i <= endSlot && i < items.length; i++) {
-            if (items[i] != null) {
-                String itemName = Utils.removeFormatting(items[i].getDisplayName());
+    public static boolean hasRareLoot(IInventory inventory) {
+        for (int i = 9; i <= 17 && i < inventory.getSizeInventory(); i++) {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if (stack != null) {
+                String itemName = Utils.removeFormatting(stack.getDisplayName());
                 if (RARE_ITEM.contains(itemName)) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    public static boolean hasRareLoot(ItemStack[] items) {
-        return containsRareItems(items, 9, 17);
     }
 
     public static boolean isRareItemByName(String itemName) {
