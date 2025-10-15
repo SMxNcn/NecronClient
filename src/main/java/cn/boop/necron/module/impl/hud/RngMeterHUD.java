@@ -14,8 +14,8 @@ import java.awt.*;
 import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.RngBackground;
 import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.rngMeter;
 
-public class RNGMeterHUD extends BasicHud {
-    public RNGMeterHUD() {
+public class RngMeterHUD extends BasicHud {
+    public RngMeterHUD() {
         super(true, 960, 60);
         EventManager.INSTANCE.register(this);
     }
