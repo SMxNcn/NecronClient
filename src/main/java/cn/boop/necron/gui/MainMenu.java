@@ -180,8 +180,8 @@ public final class MainMenu extends GuiScreen {
         int x = (width - rectWidth) / 2;
         int y = (height - rectHeight) / 2;
 
-        RenderUtils.drawRoundedRect(x, y, x + rectWidth, y + rectHeight, 8.0f, new Color(174, 174, 174, 6).getRGB());
-        RenderUtils.drawBorderedRoundedRect(x, y, rectWidth, rectHeight, 8.0f, 2.0f, new Color(150, 150, 150, 45).getRGB());
+        RenderUtils.drawRoundedRect(x, y, x + rectWidth, y + rectHeight, 8.0f, new Color(140, 140, 140, 15).getRGB());
+        RenderUtils.drawBorderedRoundedRect(x, y, rectWidth, rectHeight, 8.0f, 2.0f, new Color(150, 150, 150, 77).getRGB());
     }
 
     private void updateBackgroundTransition() {
