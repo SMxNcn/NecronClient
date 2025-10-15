@@ -11,7 +11,7 @@ public class RerollProtectOptionsImpl extends ModConfig {
 
     @Switch(name = "Enable", description = "Enable Reroll Protector")
     public static boolean reroll = true;
-    @Switch(name = "Protect Reroll", description = "Prevent click Reroll button on RNG items")
+    @Switch(name = "Protect Reroll", description = "Prevent clicking Reroll button on RNG items")
     public static boolean rerollProtect = true;
     @Switch(name = "Send RNG to party", description = "Send your RNG to teammates")
     public static boolean sendToParty = true;

@@ -13,6 +13,6 @@ public class RouterOptionsImpl extends ModConfig {
     public static boolean router = false;
     @Switch(name = "Loop", description = "Enable loop mode for current waypoints")
     public static boolean isLoop = false;
-    @Switch(name = "Dev Message", description = "Display debug message while use Etherwarp Router")
+    @Switch(name = "Dev Message", description = "Display debug message while using Etherwarp Router")
     public static boolean devMsg = false;
 }

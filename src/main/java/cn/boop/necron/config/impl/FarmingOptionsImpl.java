@@ -25,11 +25,11 @@ public class FarmingOptionsImpl extends ModConfig {
 
     @KeyBind(name = "Bind a key", description = "Legit crop nuker", subcategory = "Crop Nuker")
     public static OneKeyBind cnKey = new OneKeyBind();
-    @Slider(name = "Max speed", description = "Max speed of Rancher's Boots", min = 0, max = 400,/* step = 1,*/ subcategory = "Crop Nuker")
+    @Slider(name = "Max speed", description = "Max speed of Rancher's Boots", min = 0, max = 400, subcategory = "Crop Nuker")
     public static int maxSpeed = 200;
-    @Button(name = "Set max speed", text = "Click", description = "Set max speed of Rancher's Boots ", subcategory = "Crop Nuker")
+    @Button(name = "Set max speed", text = "Click", description = "Set max speed of Rancher's Boots", subcategory = "Crop Nuker")
     Runnable runnable = () -> Utils.chatMessage("/setmaxspeed " + maxSpeed);
-    @Number(name = "Delay Time", description = "Edit the delay after reach a waypoint", min = 0, max = 100, subcategory = "Crop Nuker")
+    @Number(name = "Delay Time", description = "Edit the delay after reaching a waypoint", min = 0, max = 100, subcategory = "Crop Nuker")
     public static int delayTime = 50;
     @Checkbox(name = "Melon mode", description = "Max speed on advanced melon/pumpkin farm", subcategory = "Crop Nuker")
     public static boolean melonMode = false;

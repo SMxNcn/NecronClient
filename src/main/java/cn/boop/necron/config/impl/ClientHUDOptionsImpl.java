@@ -21,7 +21,7 @@ public class ClientHUDOptionsImpl extends ModConfig {
     public static boolean rngMeter = false;
     @Switch(name = "Background", subcategory = "RNG Meter")
     public static boolean RngBackground = false;
-    @Switch(name = "Has Daemon Shard", description = "If you unlocked the Daemon Shards, enable this", subcategory = "RNG Meter")
+    @Switch(name = "Has Daemon Shard", description = "If you have unlocked the Daemon Shards, enable this", subcategory = "RNG Meter")
     public static boolean hasDaemon = false;
     @Number(name = "Daemon shard level", min = 1, max = 10, subcategory = "RNG Meter")
     public static int daemonLevel = 1;
@@ -34,10 +34,4 @@ public class ClientHUDOptionsImpl extends ModConfig {
     public static int chromaSpeed = 5;
     @Number(name = "Color offset", description = "Offset", min = 0, max = 10, subcategory = "Chroma Settings")
     public static int colorOffset = 5;
-
-    private void jcolor() {
-        // IDE 快速编辑颜色值 （似乎现在没有插件支持OneColor？）
-        int sC = new java.awt.Color(200, 200, 200).getRGB();
-        int eC = new java.awt.Color(122, 122, 122).getRGB();
-    }
 }

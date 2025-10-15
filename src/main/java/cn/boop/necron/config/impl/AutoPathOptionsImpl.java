@@ -9,7 +9,7 @@ public class AutoPathOptionsImpl extends ModConfig {
         initialize();
     }
 
-    @Switch(name = "Enabled", description = "A* Path finder")
+    @Switch(name = "Enabled", description = "A* path finder")
     public static boolean autoPath = false;
     @Switch(name = "Follow", description = "Follow the path", subcategory = "Path")
     public static boolean follow = false;
