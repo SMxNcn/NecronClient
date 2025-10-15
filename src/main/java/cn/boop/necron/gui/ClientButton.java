@@ -28,14 +28,13 @@ public class ClientButton extends GuiButton {
 
         hoverAlpha += (isHovered ? HOVER_IN_SPEED / 10f : -HOVER_OUT_SPEED / 10f);
         hoverAlpha = MathHelper.clamp_float(hoverAlpha, 0.0F, 0.5F);
-        //if (!isHovered && hoverAlpha < 0.005F) hoverAlpha = 0.0F;
 
         GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
 
-        int baseColor = new Color(0x33AAAAAA, true).getRGB();
-        int borderColor = new Color(0x73969696, true).getRGB();
-        int hoverColor = new Color(0xB3AAAAAA, true).getRGB();
+        int baseColor = new Color(170, 170, 170, 51).getRGB();
+        int borderColor = new Color(150, 150, 150, 115).getRGB();
+        int hoverColor = new Color(170, 170, 170, 179).getRGB();
 
         RenderUtils.drawRoundedRect(xPosition, yPosition,
             xPosition + width, yPosition + height, CORNER_RADIUS, baseColor);
