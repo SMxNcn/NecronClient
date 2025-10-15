@@ -3,6 +3,7 @@ package cn.boop.necron.command;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import cn.boop.necron.Necron;
 import cn.boop.necron.gui.GuiWaypointList;
+import cn.boop.necron.module.impl.ChatBlocker;
 import cn.boop.necron.module.impl.ChatCommands;
 import cn.boop.necron.module.impl.Waypoint;
 import cn.boop.necron.utils.B64Utils;
@@ -12,6 +13,7 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,6 +82,9 @@ public class ClientCommands extends CommandBase {
                 case "tips":
                     Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bTips §8»§r§7 " + Utils.randomSelect(ChatCommands.tipList)));
                     break;
+                case "wl":
+                    handleWhitelistCommand(Arrays.copyOfRange(args, 1, args.length));
+                    break;
                 case "wp":
                     GuiUtils.displayScreen(new GuiWaypointList());
                     break;
@@ -92,6 +97,41 @@ public class ClientCommands extends CommandBase {
         }
     }
 
+    private void handleWhitelistCommand(String[] args) {
+        if (args.length < 1) {
+            Utils.modMessage("Usage: wl <add | remove> [player]");
+            return;
+        }
+
+        switch (args[0]) {
+            case "add":
+                if (args.length < 2) {
+                    Utils.modMessage("Usage: wl add <player>");
+                    return;
+                }
+                if (ChatBlocker.addToWhitelist(args[1])) {
+                    Utils.modMessage("Added §a" + args[1] + "§7 to whitelist.");
+                } else {
+                    Utils.modMessage("§a" + args[1] + "§7 is already in whitelist.");
+                }
+                break;
+            case "remove":
+                if (args.length < 2) {
+                    Utils.modMessage("Usage: wl remove <player>");
+                    return;
+                }
+                if (ChatBlocker.removeFromWhitelist(args[1])) {
+                    Utils.modMessage("Removed §a" + args[1] + "§7 from whitelist.");
+                } else {
+                    Utils.modMessage("§a" + args[1] + "§7 is not in whitelist.");
+                }
+                break;
+            default:
+                Utils.modMessage("Usage: wl <add | remove> [player]");
+                break;
+        }
+    }
+
     private static final String helpMsg =
             "§8§m-------------------------------------\n" +
             "§b             NecronClient §7v" + Necron.VERSION + "\n" +
@@ -101,5 +141,6 @@ public class ClientCommands extends CommandBase {
             "§b/necron rotate <x> <y> <z> §f§l»§r§7 将视角旋转至x, y, z\n" +
             "§b/necron tips §f§l»§r§7 获取一些神秘文本\n" +
             "§b/necron wp §f§l»§r§7 打开Waypoint GUI\n" +
+            "§b/necron wl <add | remove> [player] §f§l»§r§7 管理白名单\n" +
             "§r§8§m-------------------------------------";
 }

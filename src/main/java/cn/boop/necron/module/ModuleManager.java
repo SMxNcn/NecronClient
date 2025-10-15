@@ -25,6 +25,7 @@ public class ModuleManager {
         modules.add(new AutoGG());
         modules.add(new AutoPath());
         modules.add(new AutoWardrobe());
+        modules.add(new ChatBlocker());
         modules.add(new ChatCommands());
         modules.add(new CropNuker());
         modules.add(new Etherwarp());

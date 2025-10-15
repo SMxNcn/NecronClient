@@ -46,7 +46,7 @@ public class JsonUtils {
             String content = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
             return GSON.fromJson(content, new TypeToken<List<Waypoint>>(){}.getType());
         } catch (Exception e) {
-            e.printStackTrace();
+            Necron.LOGGER.error("Error loading waypoints: {}", e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -65,6 +65,35 @@ public class JsonUtils {
         } catch (Exception e) {
             Necron.LOGGER.error("Error saving waypoints: {}", e.getMessage());
             return false;
+        }
+    }
+
+    public static List<String> loadWhitelist() {
+        try {
+            Path whitelistPath = Paths.get("config/necron/whitelist.json");
+            if (!Files.exists(whitelistPath)) {
+                return new ArrayList<>();
+            }
+            String content = new String(Files.readAllBytes(whitelistPath), StandardCharsets.UTF_8);
+            return GSON.fromJson(content, new TypeToken<List<String>>(){}.getType());
+        } catch (Exception e) {
+            Necron.LOGGER.error("Error loading whitelist: {}", e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public static void saveWhitelist(List<String> whitelist) {
+        try {
+            Path whitelistPath = Paths.get("config/necron/whitelist.json");
+            Files.createDirectories(whitelistPath.getParent());
+            if (!Files.exists(whitelistPath)) {
+                Files.createFile(whitelistPath);
+            }
+            try (Writer writer = new OutputStreamWriter(Files.newOutputStream(whitelistPath), StandardCharsets.UTF_8)) {
+                GSON.toJson(whitelist, writer);
+            }
+        } catch (Exception e) {
+            Necron.LOGGER.error("Error saving whitelist: {}", e.getMessage());
         }
     }
 
