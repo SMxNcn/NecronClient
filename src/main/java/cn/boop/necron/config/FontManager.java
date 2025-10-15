@@ -19,16 +19,16 @@ public class FontManager {
     public static void initFonts() {
         File fontDir = new File(FONT_DIR);
         if (!fontDir.exists()) {
-            fontDir.mkdirs();
+            if (fontDir.mkdirs()) {
+                ensureFontExists(BOLD_FONT);
+                ensureFontExists(SEMIBOLD_FONT);
+                ensureFontExists(MEDIUM_FONT);
+                ensureFontExists(REGULAR_FONT);
+            }
         }
-
-        checkAndDownloadFont(BOLD_FONT);
-        checkAndDownloadFont(SEMIBOLD_FONT);
-        checkAndDownloadFont(MEDIUM_FONT);
-        checkAndDownloadFont(REGULAR_FONT);
     }
 
-    private static void checkAndDownloadFont(String fontName) {
+    private static void ensureFontExists(String fontName) {
         File fontFile = new File(FONT_DIR, fontName);
         if (!fontFile.exists()) {
             Necron.LOGGER.info("Font {} not found, downloading...", fontName);
@@ -52,6 +52,10 @@ public class FontManager {
     }
 
     public static String getFontPath(String fontName) {
+        if (fontName.endsWith(".otf")) {
+            fontName = fontName.replace(".otf", ".ttf");
+        }
+
         File fontFile = new File(FONT_DIR, fontName);
         if (fontFile.exists()) {
             return fontFile.getAbsolutePath();
