@@ -1,7 +1,7 @@
 package cn.boop.necron.module.impl.ctjs;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.hud.RNGMeterHUD;
+import cn.boop.necron.module.impl.hud.RngMeterHUD;
 import cn.boop.necron.utils.LocationUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -17,7 +17,7 @@ import java.util.Map;
 public class RngMeterManager {
     public static final RngMeterManager INSTANCE = new RngMeterManager();
 
-    private final Map<String, RNGMeterHUD.RngMeterData> meters = new HashMap<>();
+    private final Map<String, RngMeterHUD.RngMeterData> meters = new HashMap<>();
     private final Map<String, Map<String, Integer>> rngMeterValues = new HashMap<>();
     private File dataFile;
     private final Gson gson = new Gson();
@@ -48,9 +48,9 @@ public class RngMeterManager {
     /** 检查并初始化某层数据 */
     public void checkFloorDataExists(String floor) {
         if (!meters.containsKey(floor)) {
-            meters.put(floor, new RNGMeterHUD.RngMeterData(floor, "", 0, 0));
+            meters.put(floor, new RngMeterHUD.RngMeterData(floor, "", 0, 0));
         } else {
-            RNGMeterHUD.RngMeterData data = meters.get(floor);
+            RngMeterHUD.RngMeterData data = meters.get(floor);
             if (data.item != null && !data.item.isEmpty()
                     && data.needed <= 0
                     && rngMeterValues.containsKey(floor)
@@ -74,7 +74,7 @@ public class RngMeterManager {
 
     public void setItem(String floor, String item) {
         checkFloorDataExists(floor);
-        RNGMeterHUD.RngMeterData data = meters.get(floor);
+        RngMeterHUD.RngMeterData data = meters.get(floor);
         data.item = item;
         if (item == null || item.isEmpty()) {
             data.needed = 0;
@@ -111,7 +111,7 @@ public class RngMeterManager {
      * @param floor 楼层标识
      * @return 对应的RngMeterData
      */
-    public RNGMeterHUD.RngMeterData getMeterForFloor(String floor) {
+    public RngMeterHUD.RngMeterData getMeterForFloor(String floor) {
         checkFloorDataExists(floor);
         return meters.get(floor);
     }
@@ -120,7 +120,7 @@ public class RngMeterManager {
      * 获取当前楼层的meter数据（基于LocationUtils）
      * @return 当前楼层的RngMeterData
      */
-    public RNGMeterHUD.RngMeterData getCurrentFloorMeter() {
+    public RngMeterHUD.RngMeterData getCurrentFloorMeter() {
         if (LocationUtils.floor != null) {
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
             return getMeterForFloor(floor);
@@ -156,9 +156,9 @@ public class RngMeterManager {
     public void save() {
         try {
             RngMeterSaveData saveData = new RngMeterSaveData();
-            for (Map.Entry<String, RNGMeterHUD.RngMeterData> entry : meters.entrySet()) {
+            for (Map.Entry<String, RngMeterHUD.RngMeterData> entry : meters.entrySet()) {
                 String floor = entry.getKey();
-                RNGMeterHUD.RngMeterData meterData = entry.getValue();
+                RngMeterHUD.RngMeterData meterData = entry.getValue();
 
                 if (meterData.score > 0 || (meterData.item != null && !meterData.item.isEmpty())) {
                     saveData.data.put(floor, new RngMeterSaveData.RngMeterUserData(
@@ -218,7 +218,7 @@ public class RngMeterManager {
                         Map<String, Object> userData = entry.getValue();
 
                         checkFloorDataExists(floor);
-                        RNGMeterHUD.RngMeterData meterData = meters.get(floor);
+                        RngMeterHUD.RngMeterData meterData = meters.get(floor);
 
                         if (userData.containsKey("score")) {
                             Object scoreObj = userData.get("score");
@@ -262,7 +262,7 @@ public class RngMeterManager {
      */
     public double getMeterPercentage(String floor) {
         checkFloorDataExists(floor);
-        RNGMeterHUD.RngMeterData data = meters.get(floor);
+        RngMeterHUD.RngMeterData data = meters.get(floor);
         if (data == null || data.needed <= 0) return 0.0;
         double percentage = (double) data.score / data.needed * 100;
         return Math.min(percentage, 100.0);
@@ -275,7 +275,7 @@ public class RngMeterManager {
      */
     public String getMeterBar(String floor) {
         checkFloorDataExists(floor);
-        RNGMeterHUD.RngMeterData data = meters.get(floor);
+        RngMeterHUD.RngMeterData data = meters.get(floor);
         if (data == null) return "";
         return generateMeterBar(data.score, data.needed);
     }

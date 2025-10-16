@@ -7,7 +7,7 @@ import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.impl.*;
-import cn.boop.necron.module.impl.hud.RNGMeterHUD;
+import cn.boop.necron.module.impl.hud.RngMeterHUD;
 
 public class NCConfig extends Config {
     public NCConfig() {
@@ -43,8 +43,8 @@ public class NCConfig extends Config {
     public static RerollProtectOptionsImpl rerollProtectOptions = new RerollProtectOptionsImpl();
     @SubConfig
     public static RouterOptionsImpl routerOptions = new RouterOptionsImpl();
-//    @SubConfig
-//    public static SlayerOptionsImpl slayerOptions = new SlayerOptionsImpl();
+    @SubConfig
+    public static SlayerOptionsImpl slayerOptions = new SlayerOptionsImpl();
     @SubConfig
     public static TitleOptionsImpl titleOptions = new TitleOptionsImpl();
     @SubConfig
@@ -53,7 +53,7 @@ public class NCConfig extends Config {
     public static WaypointOptionsImpl waypointOptions = new WaypointOptionsImpl();
 
     @HUD(name = "RNG Meter")
-    public static RNGMeterHUD rngMeterHUD = new RNGMeterHUD();
+    public static RngMeterHUD rngMeterHUD = new RngMeterHUD();
 
     public static final NCConfig INSTANCE = new NCConfig();
 }

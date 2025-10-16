@@ -14,11 +14,6 @@ public class MixinOCFonts {
     @Redirect(method = "<clinit>", at = @At(value = "NEW", target = "(Ljava/lang/String;Ljava/lang/String;)Lcc/polyfrost/oneconfig/renderer/font/Font;"), remap = false)
     private static Font redirectFontConstructor(String name, String path) {
         String configFontPath = FontManager.getFontPath(new File(path).getName());
-
-        if (configFontPath != null) {
-            return new Font(name, configFontPath);
-        }
-
-        return new Font(name, path);
+        return configFontPath != null ? new Font(name, configFontPath) : new Font(name, path);
     }
 }

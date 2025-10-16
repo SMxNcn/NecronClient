@@ -40,12 +40,12 @@ public abstract class MixinGuiDisconnected extends GuiScreen {
     @Inject(method = "actionPerformed", at = @At("HEAD"))
     private void actionPerformed(GuiButton button, CallbackInfo ci) {
         if (button.id == 91) {
-            this.reconnectToServer();
+            this.necronClient$reconnectToServer();
         }
     }
 
     @Unique
-    private void reconnectToServer() {
+    private void necronClient$reconnectToServer() {
         ServerData serverData = ServerUtils.lastServerData;
         if (serverData != null) {
             ServerAddress serverAddress = ServerAddress.fromString(serverData.serverIP);

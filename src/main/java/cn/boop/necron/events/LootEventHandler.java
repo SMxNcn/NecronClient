@@ -3,7 +3,7 @@ package cn.boop.necron.events;
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.LootProtector;
 import cn.boop.necron.module.impl.ctjs.RngMeterManager;
-import cn.boop.necron.module.impl.hud.RNGMeterHUD;
+import cn.boop.necron.module.impl.hud.RngMeterHUD;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -97,6 +97,26 @@ public class LootEventHandler {
         }
     }
 
+    private void checkAllItems(GuiChest guiChest) {
+        ContainerChest container = (ContainerChest) guiChest.inventorySlots;
+        IInventory lowerChest = container.getLowerChestInventory();
+        String floor = LocationUtils.floor.name.replaceAll("[()]", "");
+
+        for (int i = 0; i < lowerChest.getSizeInventory(); i++) {
+            ItemStack stack = lowerChest.getStackInSlot(i);
+            if (stack != null) {
+                String itemName = Utils.removeFormatting(stack.getDisplayName());
+                if (checkRngMeter(itemName, floor)) {
+                    break;
+                }
+            }
+        }
+
+        if (inRewardChest) {
+            checkForRareItems(guiChest);
+        }
+    }
+
     private void sendRareItemNames(IInventory inventory) {
         for (int i = 9; i <= 17 && i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
@@ -120,28 +140,8 @@ public class LootEventHandler {
         }
     }
 
-    private void checkAllItems(GuiChest guiChest) {
-        ContainerChest container = (ContainerChest) guiChest.inventorySlots;
-        IInventory lowerChest = container.getLowerChestInventory();
-        String floor = LocationUtils.floor.name.replaceAll("[()]", "");
-
-        for (int i = 0; i < lowerChest.getSizeInventory(); i++) {
-            ItemStack stack = lowerChest.getStackInSlot(i);
-            if (stack != null) {
-                String itemName = Utils.removeFormatting(stack.getDisplayName());
-                if (checkRngMeter(itemName, floor)) {
-                    break;
-                }
-            }
-        }
-
-        if (inRewardChest) {
-            checkForRareItems(guiChest);
-        }
-    }
-
     private boolean checkRngMeter(String droppedItemName, String floor) {
-        RNGMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
+        RngMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
 
         if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
             String currentRngItem = Utils.removeFormatting(currentMeter.item);
@@ -153,7 +153,6 @@ public class LootEventHandler {
                 Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
                 if (sendToParty && LocationUtils.inDungeon) {
                     Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
-                    System.out.println("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
                 }
                 rngMsgSent = true;
                 return true;

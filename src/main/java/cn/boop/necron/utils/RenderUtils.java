@@ -14,6 +14,7 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 
 import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.chromaSpeed;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.colorOffset;
 
 public class RenderUtils {
     public static void glColor(int hex) {
@@ -314,9 +315,13 @@ public class RenderUtils {
 
     public static Color getChromaColor(Color start, Color end, int index, int speed, int offset) {
         double currentTime = System.nanoTime() / 1_000_000_000.0;
-        double cOffset = index * (offset / 100f);
+
+        double cOffset;
+        if (offset == 0) cOffset = index * (colorOffset / 100f);
+        else cOffset = index * (offset / 100f);
+
         double cSpeed;
-        if (speed == 0)  cSpeed = chromaSpeed / 10f;
+        if (speed == 0) cSpeed = chromaSpeed / 10f;
         else cSpeed = speed / 10f;
 
         double phase = (currentTime * cSpeed + cOffset) * 2 * Math.PI;

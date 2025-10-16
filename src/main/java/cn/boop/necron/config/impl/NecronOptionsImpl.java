@@ -2,11 +2,10 @@ package cn.boop.necron.config.impl;
 
 import cc.polyfrost.oneconfig.config.annotations.Button;
 import cc.polyfrost.oneconfig.config.annotations.Number;
-import cc.polyfrost.oneconfig.internal.assets.SVGs;
-import cc.polyfrost.oneconfig.renderer.asset.Icon;
-import cc.polyfrost.oneconfig.utils.Notifications;
 import cn.boop.necron.Necron;
+import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.ModConfig;
+import cn.boop.necron.config.NotificationType;
 
 import java.awt.*;
 import java.io.File;
@@ -26,7 +25,7 @@ public class NecronOptionsImpl extends ModConfig {
         try {
             Desktop.getDesktop().open(new File("./logs/roll_log.txt"));
         } catch (IOException e) {
-            Notifications.INSTANCE.send("Error", "Failed to open roll log file", new Icon(SVGs.X_CIRCLE_BOLD));
+            ClientNotification.sendNotification("Action", "Failed to open roll log file", NotificationType.WARN, 5000);
             Necron.LOGGER.error("Failed to open roll log file");
         }
     };
@@ -35,7 +34,7 @@ public class NecronOptionsImpl extends ModConfig {
         try {
             Desktop.getDesktop().browse(new java.net.URI("https://gitee.com/mixturedg/necron-client/blob/master/FEATURES.md"));
         } catch (Exception e) {
-            Notifications.INSTANCE.send("Error", "Failed to open guide", new Icon(SVGs.X_CIRCLE_BOLD));
+            ClientNotification.sendNotification("Action", "Failed to open guide", NotificationType.WARN, 5000);
             Necron.LOGGER.error("Failed to open guide");
         }
     };
@@ -49,7 +48,7 @@ public class NecronOptionsImpl extends ModConfig {
         try {
             Desktop.getDesktop().open(new File(Necron.BG_FILE_DIR));
         } catch (IOException e) {
-            Notifications.INSTANCE.send("Error", "Failed to open background folder", new Icon(SVGs.X_CIRCLE_BOLD));
+            ClientNotification.sendNotification("Action", "Failed to open background folder", NotificationType.WARN, 5000);
             Necron.LOGGER.error("Failed to open background folder");
         }
     };

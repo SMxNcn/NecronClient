@@ -189,7 +189,7 @@ public class GuiWaypointSettings extends OneUIScreen {
 
         if (editing) {
             RenderUtils.drawBorderedRoundedRect(x - 0.5f, y - 0.5f, width + 1f, height + 1f, 3.5f, 1f,
-                    RenderUtils.getChromaColor(new Color(217, 39, 236), new Color(0, 159, 255), 0, 1, 5).getRGB());
+                    RenderUtils.getChromaColor(new Color(217, 39, 236), new Color(0, 159, 255), 0, 2, 5).getRGB());
         }
 
         int bgColor = editing ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();

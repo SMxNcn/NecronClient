@@ -71,7 +71,6 @@ public class ModuleManager {
         if (RouterOptionsImpl.router) activeModules.add("EtherwarpRouter");
         if (HurtCameraOptionsImpl.hurtCam) activeModules.add("HurtCam");
         if (NametagsOptionsImpl.nametags) activeModules.add("Nametags");
-        if (SlayerOptionsImpl.voidgloom) activeModules.add("SlayerHelper");
         if (WaypointOptionsImpl.waypoints) activeModules.add("Waypoints");
 
         return activeModules;

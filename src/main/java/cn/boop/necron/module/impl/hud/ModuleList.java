@@ -56,7 +56,7 @@ public class ModuleList {
         for (int i = 0; i < modules.size(); i++) {
             String module = modules.get(i);
 
-            Color textChColor = RenderUtils.getChromaColor(startColor.toJavaColor(), endColor.toJavaColor(), i, 0, 5);
+            Color textChColor = RenderUtils.getChromaColor(startColor.toJavaColor(), endColor.toJavaColor(), i, 0, 0);
             int moduleNameWidth = fontRenderer.getStringWidth(module);
             int moduleX = x - maxModuleNameWidth + (maxModuleNameWidth - moduleNameWidth);
             int moduleY = y + i * (fontRenderer.FONT_HEIGHT + verticalSpacing + 1) + 1;
