@@ -44,16 +44,7 @@ public class RngMeterHUD extends BasicHud {
         RngMeterData meter = RngMeterManager.INSTANCE.getCurrentFloorMeter();
         if (Necron.mc.thePlayer == null || meter == null) return;
 
-        float currentY = (y / scale) + 4f;
-        String title;
-        String floorColor = meter.meterType.startsWith("M") ? "§c" : "§a";
-
-        if ("E".equals(meter.meterType)) {
-            title = "§dRNG Meter §8- §aE";
-        } else {
-            double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
-            title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
-        }
+        calculateDimensions(meter, scale);
 
         if (RngBackground) {
             RenderUtils.drawRoundedRect(
@@ -65,39 +56,80 @@ public class RngMeterHUD extends BasicHud {
                     new Color(0, 0, 0, 140).getRGB());
         }
 
+        drawContent(x, y, scale, meter);
+    }
+
+    private void drawContent(float x, float y, float scale, RngMeterData meter) {
+        float currentY = (y / scale) + 4f;
+        String title;
+        String floorColor = meter.meterType.startsWith("M") ? "§c" : "§a";
+
+        if ("E".equals(meter.meterType)) {
+            title = "§dRNG Meter §8- §aE";
+        } else {
+            double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
+            title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
+        }
+
         Necron.mc.fontRendererObj.drawString(title, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
-        updateDimensions(title, scale);
         currentY += 9.0f;
 
         if (meter.score > 0 && meter.needed <= 0) {
             String scoreLine = "§7Stored Score: §d" + String.format("%,d", meter.score);
             Necron.mc.fontRendererObj.drawString(scoreLine, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
-            updateDimensions(scoreLine, scale);
             currentY += 9.0f;
         } else if (meter.needed > 0) {
             String itemLine = "§7Item: " + meter.item;
             Necron.mc.fontRendererObj.drawString(itemLine, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
-            updateDimensions(itemLine, scale);
             currentY += 9.0f;
 
             String meterBar = RngMeterManager.INSTANCE.getCurrentFloorMeterBar();
             Necron.mc.fontRendererObj.drawString(meterBar, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
-            updateDimensions(meterBar, scale);
             currentY += 9.0f;
         } else {
             String errorText = "§cNo RNG Meter Data!";
             Necron.mc.fontRendererObj.drawString(errorText, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
-            updateDimensions(errorText, scale);
+            currentY += 9.0f;
         }
 
-        this.height = (currentY - (y / scale)) * scale;
+        this.height = currentY - (y / scale) * scale;
     }
 
-    private void updateDimensions(String text, float scale) {
-        float textWidth = Necron.mc.fontRendererObj.getStringWidth(text) * scale;
-        if (textWidth > this.width) {
-            this.width = textWidth;
+    private void calculateDimensions(RngMeterData meter, float scale) {
+        float calculatedWidth = 0f;
+        float calculatedHeight = 0f;
+
+        String title;
+        String floorColor = meter.meterType.startsWith("M") ? "§c" : "§a";
+        double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
+
+        if ("E".equals(meter.meterType)) {
+            title = "§dRNG Meter §8- §aE";
+        } else {
+            title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
         }
+
+        calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(title) * scale);
+        calculatedHeight += 9.0f;
+
+        if (meter.score > 0 && meter.needed <= 0) {
+            String scoreLine = "§7Stored Score: §d" + String.format("%,d", meter.score);
+            calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(scoreLine) * scale);
+            calculatedHeight += 9.0f;
+        } else if (meter.needed > 0) {
+            String itemLine = "§7Item: " + meter.item;
+            calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(itemLine) * scale);
+            String meterBar = RngMeterManager.INSTANCE.getCurrentFloorMeterBar();
+            calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(meterBar) * scale);
+            calculatedHeight += 18.0f;
+        } else {
+            String errorText = "§cNo RNG Meter Data!";
+            calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(errorText) * scale);
+            calculatedHeight += 9.0f;
+        }
+
+        this.width = calculatedWidth;
+        this.height = calculatedHeight + 4f;
     }
 
     @Override
