@@ -19,8 +19,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.daemonLevel;
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.hasDaemon;
+import static cn.boop.necron.config.impl.DungeonOptionsImpl.daemonLevel;
+import static cn.boop.necron.config.impl.DungeonOptionsImpl.hasDaemon;
 
 public class RngEventHandler {
     private static final Pattern SCORE_PATTERN = Pattern.compile("Team Score:\\s*(\\d+)\\s*\\((S\\+?)\\)$");
@@ -31,7 +31,6 @@ public class RngEventHandler {
     private static final Pattern INV_SCORE_PATTERN = Pattern.compile("^([\\w,]+)/([\\w.,]+)$");
     private static final Pattern STORED_SCORE_PATTERN = Pattern.compile("^Stored Dungeon Score: ([\\d,]+)$");
 
-    private int score;
     private boolean scanned = false;
 
     @SubscribeEvent
@@ -41,7 +40,7 @@ public class RngEventHandler {
 
         Matcher scoreMatcher = SCORE_PATTERN.matcher(msg);
         if (scoreMatcher.find()) {
-            score = Integer.parseInt(scoreMatcher.group(1));
+            int score = Integer.parseInt(scoreMatcher.group(1));
             String rank = scoreMatcher.group(2);
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
 
@@ -51,6 +50,7 @@ public class RngEventHandler {
             }
 
             RngMeterManager.INSTANCE.addScore(floor, score);
+            System.out.println("Added score " + score + " to " + floor);
         }
 
         Matcher resetMatcher = RESET_PATTERN.matcher(msg);

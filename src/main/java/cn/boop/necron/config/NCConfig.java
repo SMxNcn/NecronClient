@@ -28,6 +28,8 @@ public class NCConfig extends Config {
     @SubConfig
     public static ClientHUDOptionsImpl moduleGUIOptions = new ClientHUDOptionsImpl();
     @SubConfig
+    public static DungeonOptionsImpl dungeonOptions = new DungeonOptionsImpl();
+    @SubConfig
     public static EtherwarpOptionsImpl etherwarpOptions = new EtherwarpOptionsImpl();
     @SubConfig
     public static FakeWipeOptionsImpl fakeWipeOptions = new FakeWipeOptionsImpl();
@@ -39,8 +41,6 @@ public class NCConfig extends Config {
     public static NametagsOptionsImpl nametagsOptions = new NametagsOptionsImpl();
     @SubConfig
     public static NecronOptionsImpl necronOptions = new NecronOptionsImpl();
-    @SubConfig
-    public static RerollProtectOptionsImpl rerollProtectOptions = new RerollProtectOptionsImpl();
     @SubConfig
     public static RouterOptionsImpl routerOptions = new RouterOptionsImpl();
     @SubConfig
