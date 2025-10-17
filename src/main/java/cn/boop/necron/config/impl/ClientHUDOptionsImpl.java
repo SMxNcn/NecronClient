@@ -10,21 +10,10 @@ public class ClientHUDOptionsImpl extends ModConfig {
     public ClientHUDOptionsImpl() {
         super("GUI Options", "necron/guioptions.json");
         initialize();
-
-        addDependency("daemonLevel", "hasDaemon");
     }
 
     @Switch(name = "Enabled", description = "Display active modules on the screen", subcategory = "Module List")
     public static boolean moduleList = false;
-
-    @Switch(name = "Enabled", description = "Display RNG meter on the screen", subcategory = "RNG Meter")
-    public static boolean rngMeter = false;
-    @Switch(name = "Background", subcategory = "RNG Meter")
-    public static boolean RngBackground = false;
-    @Switch(name = "Has Daemon Shard", description = "If you have unlocked the Daemon Shards, enable this", subcategory = "RNG Meter")
-    public static boolean hasDaemon = false;
-    @Number(name = "Daemon shard level", min = 1, max = 10, subcategory = "RNG Meter")
-    public static int daemonLevel = 1;
 
     @Color(name = "Start color", description = "Chroma start color", subcategory = "Chroma Settings")
     public static OneColor startColor = new OneColor(200, 200, 200);
