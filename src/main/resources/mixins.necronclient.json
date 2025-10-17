@@ -9,6 +9,7 @@
     "MixinGuiDisconnected",
     "MixinGuiMainMenu",
     "MixinModList",
+    "MixinNetHandlerPlayClient",
     "MixinOCFonts"
   ]
 }
