@@ -333,9 +333,4 @@ public class RenderUtils {
 
         return new Color(r, g, b);
     }
-
-    public static boolean isValidSHiColorPattern(String colorSection) {
-        String cleanColor = colorSection.replace("§", "");
-        return cleanColor.matches("[0-9a-fA-F]{6}([0-9a-fA-F]{2})?");
-    }
 }
