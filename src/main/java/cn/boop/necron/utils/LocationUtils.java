@@ -16,6 +16,7 @@ public class LocationUtils {
     public static boolean inHypixel = false;
     public static boolean inSkyBlock = false;
     public static boolean inDungeon = false;
+    public static boolean inBossRoom = false;
     private int ticks = 0;
 
     public enum Island {
@@ -49,7 +50,7 @@ public class LocationUtils {
     }
 
     public enum Floor {
-        ENTERANCE("(E)"),
+        ENTRANCE("(E)"),
         FLOOR_1("(F1)"),
         FLOOR_2("(F2)"),
         FLOOR_3("(F3)"),
@@ -72,13 +73,20 @@ public class LocationUtils {
         }
     }
 
+    public enum M7Phases {
+        Unknown, P1, P2, P3, P4, P5
+    }
+
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         if (event.world.isRemote) {
             ticks = 19;
             updateWorldStates();
-            updateCurrentIsland();
-            updateFloor();
+            if (inSkyBlock) {
+                updateCurrentIsland();
+                updateFloor();
+                getBoss();
+            }
         }
     }
 
@@ -86,8 +94,11 @@ public class LocationUtils {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (ticks % 20 == 0) {
             updateWorldStates();
-            updateCurrentIsland();
-            updateFloor();
+            if (inSkyBlock) {
+                updateCurrentIsland();
+                updateFloor();
+                getBoss();
+            }
             ticks = 0;
         }
         ticks++;
@@ -137,6 +148,40 @@ public class LocationUtils {
                     floor = floorOption;
                 }
             }
+        }
+    }
+
+    public static void getBoss() {
+        if (floor == null) return;
+        if (Necron.mc.thePlayer == null) return;
+
+        double posX = Necron.mc.thePlayer.posX;
+        double posZ = Necron.mc.thePlayer.posZ;
+
+        if (inDungeon) {
+            String floorName = floor.name.replaceAll("[()]", "");
+            if (floorName.contains("F7") || floorName.contains("M7")) {
+                inBossRoom = posX > -7 && posZ > -7;
+            } else {
+                inBossRoom = false;
+            }
+        }
+    }
+
+    public static M7Phases getM7Phase() {
+        if (!inBossRoom) return M7Phases.Unknown;
+        double posY = Necron.mc.thePlayer.posY;
+
+        if (posY > 210) {
+            return M7Phases.P1;
+        } else if (posY > 155) {
+            return M7Phases.P2;
+        } else if (posY > 100) {
+            return M7Phases.P3;
+        } else if (posY > 45) {
+            return M7Phases.P4;
+        } else {
+            return M7Phases.P5;
         }
     }
 }

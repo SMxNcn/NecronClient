@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
 
-import static cn.boop.necron.config.impl.RerollProtectOptionsImpl.*;
+import static cn.boop.necron.config.impl.DungeonOptionsImpl.*;
 
 public class LootEventHandler {
     private boolean inRewardChest = false;

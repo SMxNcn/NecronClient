@@ -44,7 +44,7 @@ public class ChatCommands {
         switch (cmd) {
             case "help":
                 if (!help) return;
-                Utils.chatMessage("/pc 命令列表 -> help, loc, meow, nuke, roll, sb, tips, zako");
+                Utils.chatMessage("/pc 命令列表 -> help, loc, meow, nuke, rng, roll, sb, tips, zako");
                 break;
             case "loc":
                 if (!location) return;
@@ -72,8 +72,8 @@ public class ChatCommands {
                 Random random = new Random(SEED + player.hashCode());
                 int luck = random.nextInt(101);
 
-                if (luck == 0) Utils.chatMessage("/pc " + player + " 今天是0！");
-                else if (luck == 91) Utils.chatMessage("/pc " + player + " You got 91!  (O.o?)");
+                if (luck == 0) Utils.chatMessage("/pc " + player + " 今 天 是 0 ！");
+                else if (luck == 91) Utils.chatMessage("/pc " + player + " You got 91!  91? (O.o?)");
                 else if (luck == 100) Utils.chatMessage("/pc " + player + " You got 100!  \\o/");
                 else Utils.chatMessage("/pc " + player + " You got " + luck + " !");
                 break;

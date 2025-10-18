@@ -61,7 +61,7 @@ public class PathfinderUtils {
             {1, -1, 0}, {-1, -1, 0}, {0, -1, 1}, {0, -1, -1},
             {1, 0, 1}, {1, 0, -1}, {-1, 0, 1}, {-1, 0, -1}, // 对角线方向
             {1, 1, 1}, {1, 1, -1}, {-1, 1, 1}, {-1, 1, -1},
-            {1, -1, 1}, {1, -1, -1}, {-1, -1, 1}, {-1, -0, -1},
+            {1, -1, 1}, {1, -1, -1}, {-1, -1, 1}, {-1, -1, -1},
             {0, 1, 0}, {0, -1, 0}  // 垂直方向
     };
 
@@ -253,9 +253,7 @@ public class PathfinderUtils {
 
         // 检查下方是否可以站立
         if (!isSolidBlock(toBelowBlock)) {
-            if (!canStandOnBlock(toBelowBlock)) {
-                return false;
-            }
+            return canStandOnBlock(toBelowBlock);
         }
 
         return true;
@@ -531,7 +529,7 @@ public class PathfinderUtils {
 
     // 判断是否为上半砖
     private static boolean isTopSlab(Block block) {
-        return block instanceof BlockSlab && !((BlockSlab) block).isFullBlock();
+        return block instanceof BlockSlab && !block.isFullBlock();
         // 注意：Minecraft中很难通过API直接判断是上半砖还是下半砖，这里简化处理
     }
 

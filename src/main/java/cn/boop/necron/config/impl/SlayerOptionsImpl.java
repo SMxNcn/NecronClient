@@ -13,8 +13,8 @@ public class SlayerOptionsImpl extends ModConfig {
 //    public static boolean slayer = false;
     @Switch(name = "Kill Time", description = "Display the time to kill the slayer boss")
     public static boolean killTime = false;
-    @Switch(name = "Soulcry", description = "Auto use Soulcry ability", subcategory = "Enderman Slayer")
-    public static boolean voidgloom = false;
-    @Switch(name = "Auto Heal", description = "Auto use Healing Wands", subcategory = "Enderman Slayer")
-    public static boolean heal = false;
+//    @Switch(name = "Soulcry", description = "Auto use Soulcry ability", subcategory = "Enderman Slayer")
+//    public static boolean voidgloom = false;
+//    @Switch(name = "Auto Heal", description = "Auto use Healing Wands", subcategory = "Enderman Slayer")
+//    public static boolean heal = false;
 }

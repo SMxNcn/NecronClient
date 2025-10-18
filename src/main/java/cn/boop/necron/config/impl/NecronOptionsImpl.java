@@ -24,7 +24,7 @@ public class NecronOptionsImpl extends ModConfig {
     Runnable rollResult = () -> {
         try {
             Desktop.getDesktop().open(new File("./logs/roll_log.txt"));
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             ClientNotification.sendNotification("Action", "Failed to open roll log file", NotificationType.WARN, 5000);
             Necron.LOGGER.error("Failed to open roll log file");
         }
@@ -47,7 +47,7 @@ public class NecronOptionsImpl extends ModConfig {
     Runnable openBgPath = () -> {
         try {
             Desktop.getDesktop().open(new File(Necron.BG_FILE_DIR));
-        } catch (IOException e) {
+        } catch (IllegalArgumentException | IOException e) {
             ClientNotification.sendNotification("Action", "Failed to open background folder", NotificationType.WARN, 5000);
             Necron.LOGGER.error("Failed to open background folder");
         }

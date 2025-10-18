@@ -47,7 +47,7 @@ public class RotationUtils {
     public static void smoothRotateTo(float yaw, float pitch, float speed) {
         targetYaw.set(normalizeAngle(yaw));
         targetPitch.set(pitch);
-        rotationSpeed.set(Math.max(speed, 10.0f));
+        rotationSpeed.set(Math.max(speed, 8.0f));
         isRotating = true;
     }
 

@@ -12,9 +12,6 @@ public class DungeonOptionsImpl extends ModConfig {
         addDependency("daemonLevel", "hasDaemon");
     }
 
-    @Switch(name = "Auto potion bag", description = "Auto open potion bag before dungeon starts", subcategory = "Misc")
-    public static boolean autoPotionBag = false;
-
     @Switch(name = "Enable", description = "Enable Reroll Protector", subcategory = "Reroll Protector")
     public static boolean reroll = true;
     @Switch(name = "Protect Reroll", description = "Prevent clicking Reroll button on RNG items", subcategory = "Reroll Protector")

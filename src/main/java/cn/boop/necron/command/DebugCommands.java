@@ -2,6 +2,7 @@ package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.ModuleManager;
+import cn.boop.necron.module.impl.ctjs.RngMeterManager;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
@@ -60,7 +61,7 @@ public class DebugCommands extends CommandBase {
                     new Thread(() -> ModuleManager.getAutoPath().setTarget(new BlockPos(x, y, z)));
 
                     } catch (NumberFormatException e) {
-                        Utils.modMessage("§cInvalid position format");
+                        Utils.modMessage("§cInvalid position format.");
                     }
                     break;
                 case "stats":
@@ -81,7 +82,9 @@ public class DebugCommands extends CommandBase {
                             "\n§7" +
                             "\n§7§l | §r§7inDungeon: " + (LocationUtils.inDungeon ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7Floor: " + LocationUtils.floor +
-                            "\n§7§l | §r§7Instance player(s): " + DungeonUtils.dungeonPlayers.size());
+                            "\n§7§l | §r§7Instance player(s): " + DungeonUtils.dungeonPlayers.size() +
+                            "\n§7§l | §r§7Current M7 Phase: " + LocationUtils.getM7Phase()
+                            );
                     break;
                 case "test":
                     break;
