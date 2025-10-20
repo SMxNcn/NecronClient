@@ -43,6 +43,7 @@ public class EtherwarpRouter {
 
     public static void loadWaypoints(String filename) {
         waypointCache = JsonUtils.loadWaypoints(Necron.WP_FILE_DIR + filename + ".json");
+        routeCompleted = routerNotified = false;
 
         if (lastFilename != null && lastFilename.equals(filename)) {
             currentWaypointIndex = lastWaypointIndex;
