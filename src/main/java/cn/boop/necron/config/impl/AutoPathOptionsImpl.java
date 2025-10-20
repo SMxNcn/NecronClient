@@ -11,10 +11,6 @@ public class AutoPathOptionsImpl extends ModConfig {
 
     @Switch(name = "Enabled", description = "A* path finder")
     public static boolean autoPath = false;
-    @Switch(name = "Follow", description = "Follow the path", subcategory = "Path")
-    public static boolean follow = false;
-    @Switch(name = "Sprint", description = "Sprint when following", subcategory = "Path")
-    public static boolean sprint = false;
     @Switch(name = "Render path", description = "Render the result path", subcategory = "Path")
     public static boolean renderPath = true;
     @Switch(name = "Render nodes", description = "Render nodes number on the path", subcategory = "Path")
