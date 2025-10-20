@@ -3,6 +3,7 @@ package cn.boop.necron.module.impl;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.impl.FarmingOptionsImpl;
 import cn.boop.necron.utils.JsonUtils;
+import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.RenderUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.Minecraft;
@@ -23,6 +24,10 @@ public class Waypoint {
     private int z;
     private String direction = "forward";
     private float rotation = 0.0f;
+    private String name = null;
+    private static LocationUtils.Island requiredIsland = null;
+    private static TYPE currentType = TYPE.Router;
+
     private static int waypointCounter = 1;
 
     public Waypoint(int id, int x, int y, int z) {
@@ -57,9 +62,22 @@ public class Waypoint {
     public float getRotation() { return rotation; }
     public void setRotation(float rotation) { this.rotation = rotation; }
 
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public static LocationUtils.Island getRequiredIsland() { return requiredIsland; }
+    public static void setRequiredIsland(LocationUtils.Island island) { requiredIsland = island; }
+
+    public static TYPE getCurrentType() { return currentType; }
+    public static void setCurrentType(TYPE type) { currentType = type; }
+
 
     private static List<Waypoint> waypoints = new ArrayList<>();
     private static String currentFile = null;
+
+    public enum TYPE {
+        Router, Normal, Farming
+    }
 
     public static void loadWaypoints(String filename, boolean reload) {
         if (filename == null || filename.isEmpty()) return;
@@ -86,6 +104,20 @@ public class Waypoint {
         } else {
             waypointCounter = 1;
         }
+    }
+
+    public static void unloadWaypoints() {
+        waypoints.clear();
+        currentFile = null;
+        waypointCounter = 1;
+
+        CropNuker.reset(FailSafe.ResetReason.UNLOAD);
+        EtherwarpRouter.routeCompleted = true;
+        EtherwarpRouter.routerNotified = true;
+        EtherwarpRouter.waypointCache.clear();
+        EtherwarpRouter.currentWaypointIndex = -1;
+
+        Utils.modMessage("Waypoints unloaded.");
     }
 
     public static void addWaypoint(BlockPos pos) {
@@ -136,6 +168,8 @@ public class Waypoint {
         Entity viewer = mc.getRenderViewEntity();
         if (viewer == null) return;
 
+        if (requiredIsland != null && LocationUtils.currentIsland != requiredIsland) return;
+
         GlStateManager.pushMatrix();
         GlStateManager.enableBlend();
         GlStateManager.disableTexture2D();
@@ -143,23 +177,41 @@ public class Waypoint {
         GL11.glEnable(GL11.GL_LINE_SMOOTH);
         GL11.glLineWidth(2F);
 
-        for (int i = 0; i < waypoints.size() - 1; i++) {
-            Waypoint wp1 = waypoints.get(i);
-            Waypoint wp2 = waypoints.get(i + 1);
+        TYPE currentType = getCurrentType();
 
-            double x1 = wp1.x + 0.5;
-            double y1 = wp1.y + 0.5;
-            double z1 = wp1.z + 0.5;
-            double x2 = wp2.x + 0.5;
-            double y2 = wp2.y + 0.5;
-            double z2 = wp2.z + 0.5;
+        if ((currentType == TYPE.Router || currentType == TYPE.Farming) && waypoints.size() > 1) {
+            for (int i = 0; i < waypoints.size() - 1; i++) {
+                Waypoint wp1 = waypoints.get(i);
+                Waypoint wp2 = waypoints.get(i + 1);
 
-            RenderUtils.draw3DLine(x1, y1, z1, x2, y2, z2, lineColor.toJavaColor(), 1.5f);
+                double x1 = wp1.x + 0.5;
+                double y1 = wp1.y + (currentType == TYPE.Router ? 1.0 : 0.5);
+                double z1 = wp1.z + 0.5;
+                double x2 = wp2.x + 0.5;
+                double y2 = wp2.y + (currentType == TYPE.Router ? 1.0 : 0.5);
+                double z2 = wp2.z + 0.5;
+
+                RenderUtils.draw3DLine(x1, y1, z1, x2, y2, z2, lineColor.toJavaColor(), 1.5f);
+            }
         }
 
         for (Waypoint wp : waypoints) {
-            RenderUtils.drawOutlinedBlockESP(wp.x, wp.y, wp.z, boxColor.toJavaColor(), 2f, partialTicks);
-            RenderUtils.draw3DText("#" + wp.id, wp.x + 0.5, wp.y + 0.5, wp.z + 0.5, textColor.toJavaColor(), partialTicks);
+            switch (currentType) {
+                case Router:
+                    RenderUtils.drawCircleOnBlock(wp.x, wp.y, wp.z, boxColor.toJavaColor(), 2f, partialTicks);
+                    RenderUtils.draw3DText("#" + wp.id, wp.x + 0.5, wp.y + 1.2, wp.z + 0.5, textColor.toJavaColor(), partialTicks);
+                    break;
+                case Normal:
+                    RenderUtils.drawOutlinedBlockESP(wp.x, wp.y, wp.z, boxColor.toJavaColor(), 2f, partialTicks);
+                    String displayText = (wp.name != null && !wp.name.isEmpty()) ? wp.name : "";
+                    RenderUtils.draw3DText(displayText, wp.x + 0.5, wp.y + 1.2, wp.z + 0.5, textColor.toJavaColor(), partialTicks);
+                    break;
+                case Farming:
+                default:
+                    RenderUtils.drawOutlinedBlockESP(wp.x, wp.y, wp.z, boxColor.toJavaColor(), 2f, partialTicks);
+                    RenderUtils.draw3DText("#" + wp.id, wp.x + 0.5, wp.y + 0.5, wp.z + 0.5, textColor.toJavaColor(), partialTicks);
+                    break;
+            }
         }
 
         GlStateManager.disableBlend();

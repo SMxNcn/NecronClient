@@ -44,7 +44,51 @@ public class JsonUtils {
     public static List<Waypoint> loadWaypoints(String filePath) {
         try {
             String content = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
-            return GSON.fromJson(content, new TypeToken<List<Waypoint>>(){}.getType());
+            JsonElement jsonElement = new JsonParser().parse(content);
+
+            List<Waypoint> waypoints = new ArrayList<>();
+            String islandName = null;
+            String typeName = "Router";
+
+            if (jsonElement.isJsonObject()) {
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+
+                if (jsonObject.has("type")) {
+                    typeName = jsonObject.get("type").getAsString();
+                }
+
+                if (jsonObject.has("island")) {
+                    islandName = jsonObject.get("island").getAsString();
+                }
+
+                if (jsonObject.has("waypoints")) {
+                    waypoints = GSON.fromJson(jsonObject.get("waypoints"), new TypeToken<List<Waypoint>>(){}.getType());
+                }
+            } else if (jsonElement.isJsonArray()) {
+                waypoints = GSON.fromJson(jsonElement, new TypeToken<List<Waypoint>>(){}.getType());
+                Necron.LOGGER.info("Loaded waypoints from old format (no metadata)");
+            }
+
+            try {
+                Waypoint.TYPE requiredType = Waypoint.TYPE.valueOf(typeName);
+                Waypoint.setCurrentType(requiredType);
+            } catch (IllegalArgumentException e) {
+                Necron.LOGGER.warn("Unknown type name in waypoint file: {}, using default: [Router]", typeName);
+                Waypoint.setCurrentType(Waypoint.TYPE.Router);
+            }
+
+            if (islandName != null) {
+                try {
+                    LocationUtils.Island requiredIsland = LocationUtils.Island.valueOf(islandName);
+                    Waypoint.setRequiredIsland(requiredIsland);
+                } catch (IllegalArgumentException e) {
+                    Necron.LOGGER.warn("Unknown island name in waypoint file: {}", islandName);
+                }
+            } else {
+                Waypoint.setRequiredIsland(null);
+            }
+
+            return waypoints;
         } catch (Exception e) {
             Necron.LOGGER.error("Error loading waypoints: {}", e.getMessage());
             return new ArrayList<>();
@@ -55,11 +99,19 @@ public class JsonUtils {
         try {
             Path path = Paths.get(filePath);
             Files.createDirectories(path.getParent());
-            if (!Files.exists(path)) {
-                Files.createFile(path);
+
+            JsonObject jsonObject = new JsonObject();
+
+            jsonObject.addProperty("type", Waypoint.getCurrentType().name());
+
+            if (Waypoint.getRequiredIsland() != null) {
+                jsonObject.addProperty("island", Waypoint.getRequiredIsland().name());
             }
+
+            jsonObject.add("waypoints", GSON.toJsonTree(waypoints));
+
             try (Writer writer = new OutputStreamWriter(Files.newOutputStream(path), StandardCharsets.UTF_8)) {
-                GSON.toJson(waypoints, writer);
+                GSON.toJson(jsonObject, writer);
             }
             return true;
         } catch (Exception e) {
@@ -108,6 +160,10 @@ public class JsonUtils {
             obj.addProperty("direction", waypoint.getDirection());
             obj.addProperty("rotation", waypoint.getRotation());
 
+            if (waypoint.getName() != null) {
+                obj.addProperty("name", waypoint.getName());
+            }
+
             return obj;
         }
     }
@@ -123,6 +179,7 @@ public class JsonUtils {
 
             String direction = "forward";
             float rotation = 0.0f;
+            String name = null;
 
             if (obj.has("direction")) {
                 direction = obj.get("direction").getAsString();
@@ -132,7 +189,17 @@ public class JsonUtils {
                 rotation = obj.get("rotation").getAsFloat();
             }
 
-            return new Waypoint(id, x, y, z, direction, rotation);
+            if (obj.has("name")) {
+                name = obj.get("name").getAsString();
+            }
+
+            Waypoint waypoint = new Waypoint(id, x, y, z, direction, rotation);
+            if (name != null) {
+                waypoint.setName(name);
+            }
+
+
+            return waypoint;
         }
     }
 }

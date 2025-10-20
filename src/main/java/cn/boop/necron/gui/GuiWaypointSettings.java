@@ -8,8 +8,11 @@ import cc.polyfrost.oneconfig.utils.InputHandler;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import cc.polyfrost.oneconfig.utils.gui.OneUIScreen;
 import cn.boop.necron.Necron;
+import cn.boop.necron.config.ClientNotification;
+import cn.boop.necron.config.NotificationType;
 import cn.boop.necron.module.impl.Waypoint;
 import cn.boop.necron.utils.JsonUtils;
+import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.RenderUtils;
 import org.lwjgl.input.Keyboard;
 
@@ -27,14 +30,20 @@ public class GuiWaypointSettings extends OneUIScreen {
     private String yInput = "";
     private String zInput = "";
     private String rotationInput = "";
+    private String nameInput = "";
+    private String islandInput = "";
     private boolean editingX = false;
     private boolean editingY = false;
     private boolean editingZ = false;
     private boolean editingRotation = false;
+    private boolean editingName = false;
+    private boolean editingIsland = false;
 
     private boolean directionDropdownOpen = false;
+    private boolean typeDropdownOpen = false;
     private final String[] directions = {"forward", "back", "left", "right"};
     private final String[] directionLabels = {"Forward", "Back", "Left", "Right"};
+    private final String[] typeLabels = {"Router", "Normal", "Farming"};
 
     public GuiWaypointSettings(String wpFileName) {
         super(true, true);
@@ -51,7 +60,10 @@ public class GuiWaypointSettings extends OneUIScreen {
             yInput = String.valueOf(currentWaypoint.getY());
             zInput = String.valueOf(currentWaypoint.getZ());
             rotationInput = String.format("%.1f", currentWaypoint.getRotation());
+            nameInput = currentWaypoint.getName() != null ? currentWaypoint.getName() : "";
         }
+        LocationUtils.Island requiredIsland = Waypoint.getRequiredIsland();
+        islandInput = requiredIsland != null ? requiredIsland.name() : "";
     }
 
     @Override
@@ -64,7 +76,7 @@ public class GuiWaypointSettings extends OneUIScreen {
         NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
         int screenWidth = Objects.requireNonNull(getCurrentScreen()).width;
         int screenHeight = Objects.requireNonNull(getCurrentScreen()).height;
-        int uiWidth = 400;
+        int uiWidth = 300;
         int uiHeight = 250;
 
         float x = (screenWidth - uiWidth) / 2f;
@@ -73,27 +85,30 @@ public class GuiWaypointSettings extends OneUIScreen {
         nanoVGHelper.drawRoundedRect(vg, x, y, uiWidth, uiHeight, new Color(20, 20, 20, 100).getRGB(), 7.6f);
         nanoVGHelper.drawHollowRoundRect(
                 vg,
-                x - 1,
-                y - 1,
+                x - 1f,
+                y - 1f,
                 uiWidth + 1f,
                 uiHeight + 0.5f,
                 RenderUtils.getChromaColor(new Color(217, 39, 236), new Color(0, 159, 255), 0, 2, 5).getRGB(),
                 8,
                 0.6f
         );
-        nanoVGHelper.drawText(vg, "Waypoint Settings - " + fileName, x + 30, y + 20, -1, 16, Fonts.REGULAR);
-
-        drawWaypointNavigation(vg, inputHandler, x, y);
-        drawBackButton(vg, inputHandler, x, y);
+        nanoVGHelper.drawText(vg, "Waypoint Settings", x + 30, y + 20, -1, 16, Fonts.REGULAR);
 
         float contentStartY = y + 70;
         float contentX = x + 20;
 
+        drawTypeSpecificProperties(vg, inputHandler, x, y);
+        drawBackButton(vg, inputHandler, x, y);
+        drawWaypointNavigation(vg, inputHandler, x, y);
+        drawRotationInput(vg, inputHandler, contentX + 110, contentStartY + 50);
         drawCoordinateInput(vg, inputHandler, contentX, contentStartY);
-        drawRotationInput(vg, inputHandler, contentX, contentStartY + 130);
-        drawDirectionSelection(vg, inputHandler, contentX, contentStartY + 95);
-        handleNumberInput();
+        drawDirectionSelection(vg, inputHandler, contentX, contentStartY + 50);
+        drawTypeSelection(vg, inputHandler, x, y, uiWidth);
+
+        handleDataInput();
         nanoVGHelper.drawText(vg, "Necron Client v" + Necron.VERSION, x + 4, y + uiHeight - 8, new Color(175, 175, 175, 255).getRGB(), 8, Fonts.REGULAR);
+        nanoVGHelper.drawText(vg, fileName, x + uiWidth - 4 - nanoVGHelper.getTextWidth(vg, fileName, 8, Fonts.REGULAR), y + uiHeight - 8, new Color(175, 175, 175, 255).getRGB(), 8, Fonts.REGULAR);
     }
 
     private void drawBackButton(long vg, InputHandler inputHandler, float containerX, float containerY) {
@@ -120,36 +135,109 @@ public class GuiWaypointSettings extends OneUIScreen {
         if (totalWaypoints <= 1) return;
 
         float navY = containerY + 40;
-        float navX = containerX + 40;
+        float prevX = containerX + 20;
+        float arrowSize = 12f;
+        float spacing = 5f;
 
         String waypointText = "Waypoint " + (currentWaypointIndex + 1) + "/" + totalWaypoints;
-        nanoVGHelper.drawText(vg, waypointText, navX, navY + 8, -1, 10, Fonts.REGULAR);
 
-        if (currentWaypointIndex > 0) {
-            float prevX = navX - 15;
-            boolean prevHovered = inputHandler.isAreaHovered(prevX, navY, 12, 12);
-            nanoVGHelper.setAlpha(vg, prevHovered ? 1.0f : 0.7f);
-            nanoVGHelper.drawSvg(vg, new SVG("/assets/oneconfig/old-icons/ChevronLeft.svg"), prevX, navY, 12, 12, -1, 10f);
-            nanoVGHelper.setAlpha(vg, 1.0f);
+        boolean prevHovered = inputHandler.isAreaHovered(prevX, navY, arrowSize, arrowSize);
+        nanoVGHelper.setAlpha(vg, prevHovered ? 1.0f : 0.7f);
+        nanoVGHelper.drawSvg(vg, new SVG("/assets/oneconfig/old-icons/ChevronLeft.svg"), prevX, navY + 2, arrowSize, arrowSize, -1, 10f);
+        nanoVGHelper.setAlpha(vg, 1.0f);
 
-            if (prevHovered && inputHandler.isClicked()) {
+        if (prevHovered && inputHandler.isClicked()) {
+            if (currentWaypointIndex > 0) {
                 currentWaypointIndex--;
-                loadWaypointData();
-                directionDropdownOpen = false;
+            } else {
+                currentWaypointIndex = totalWaypoints - 1;
             }
+            loadWaypointData();
+            directionDropdownOpen = false;
         }
 
-        if (currentWaypointIndex < totalWaypoints - 1) {
-            float nextX = navX + 65;
-            boolean nextHovered = inputHandler.isAreaHovered(nextX, navY, 12, 12);
-            nanoVGHelper.setAlpha(vg, nextHovered ? 1.0f : 0.7f);
-            nanoVGHelper.drawSvg(vg, new SVG("/assets/oneconfig/old-icons/ChevronRight.svg"), nextX, navY, 12, 12, -1, 10f);
-            nanoVGHelper.setAlpha(vg, 1.0f);
+        float textX = prevX + arrowSize + spacing;
+        nanoVGHelper.drawText(vg, waypointText, textX, navY + 9, -1, 10, Fonts.REGULAR);
 
-            if (nextHovered && inputHandler.isClicked()) {
+        float textWidth = nanoVGHelper.getTextWidth(vg, waypointText, 10, Fonts.REGULAR);
+        float nextX = textX + textWidth + spacing;
+        boolean nextHovered = inputHandler.isAreaHovered(nextX, navY, arrowSize, arrowSize);
+        nanoVGHelper.setAlpha(vg, nextHovered ? 1.0f : 0.7f);
+        nanoVGHelper.drawSvg(vg, new SVG("/assets/oneconfig/old-icons/ChevronRight.svg"), nextX, navY + 2, arrowSize, arrowSize, -1, 10f);
+        nanoVGHelper.setAlpha(vg, 1.0f);
+
+        if (nextHovered && inputHandler.isClicked()) {
+            if (currentWaypointIndex < totalWaypoints - 1) {
                 currentWaypointIndex++;
-                loadWaypointData();
-                directionDropdownOpen = false;
+            } else {
+                currentWaypointIndex = 0;
+            }
+            loadWaypointData();
+            directionDropdownOpen = false;
+        }
+    }
+
+    private void drawTypeSelection(long vg, InputHandler inputHandler, float containerX, float containerY, int uiWidth) {
+        NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
+
+        float inputHeight = 20f;
+        float dropdownWidth = 50f;
+        float arrowSize = 10f;
+
+        float labelX = containerX + uiWidth - dropdownWidth - 60;
+        float labelY = containerY + 10 + inputHeight / 2 + 1;
+        nanoVGHelper.drawText(vg, "Type:", labelX, labelY, -1, 10, Fonts.REGULAR);
+
+        float dropdownX = containerX + uiWidth - dropdownWidth - 30;
+        float dropdownY = containerY + 10;
+
+        String currentTypeLabel = Waypoint.getCurrentType().name();
+
+        boolean isMainHovered = inputHandler.isAreaHovered(dropdownX, dropdownY, dropdownWidth, inputHeight);
+        int mainBgColor = isMainHovered ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();
+        nanoVGHelper.drawRoundedRect(vg, dropdownX, dropdownY, dropdownWidth, inputHeight, mainBgColor, 3);
+        nanoVGHelper.drawCenteredText(vg, currentTypeLabel, dropdownX + dropdownWidth / 2, dropdownY + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
+
+        float arrowX = dropdownX + dropdownWidth + 2;
+        float arrowY = dropdownY + (inputHeight - arrowSize) / 2;
+        boolean isArrowHovered = inputHandler.isAreaHovered(arrowX, arrowY, arrowSize, arrowSize);
+        nanoVGHelper.setAlpha(vg, isArrowHovered ? 1.0f : 0.7f);
+        nanoVGHelper.drawSvg(vg, typeDropdownOpen ? SVGs.CHEVRON_UP : SVGs.CHEVRON_DOWN,
+                arrowX, arrowY, arrowSize, arrowSize, -1, 10f);
+        nanoVGHelper.setAlpha(vg, 1.0f);
+
+        if ((isMainHovered || isArrowHovered) && inputHandler.isClicked()) {
+            typeDropdownOpen = !typeDropdownOpen;
+        }
+
+        if (typeDropdownOpen) {
+            float dropdownHeight = typeLabels.length * 20f;
+
+            nanoVGHelper.drawRoundedRect(vg, dropdownX, dropdownY + inputHeight + 2, dropdownWidth, dropdownHeight, new Color(30, 30, 30, 220).getRGB(), 3);
+
+            for (int i = 0; i < typeLabels.length; i++) {
+                float optionY = dropdownY + inputHeight + 2 + i * 20f;
+                boolean isOptionHovered = inputHandler.isAreaHovered(dropdownX, optionY, dropdownWidth, 20f);
+                boolean isSelected = Waypoint.getCurrentType().name().equals(typeLabels[i]);
+
+                int optionBgColor;
+                if (isSelected) {
+                    optionBgColor = new Color(58, 136, 239, 153).getRGB();
+                } else if (isOptionHovered) {
+                    optionBgColor = new Color(60, 60, 60, 200).getRGB();
+                } else {
+                    optionBgColor = new Color(40, 40, 40, 150).getRGB();
+                }
+
+                nanoVGHelper.drawRoundedRect(vg, dropdownX, optionY, dropdownWidth, 20f, optionBgColor, 3);
+                nanoVGHelper.drawCenteredText(vg, typeLabels[i], dropdownX + dropdownWidth / 2, optionY + 10f, -1, 9, Fonts.REGULAR);
+
+                if (isOptionHovered && inputHandler.isClicked()) {
+                    Waypoint.TYPE selectedType = Waypoint.TYPE.valueOf(typeLabels[i]);
+                    Waypoint.setCurrentType(selectedType);
+                    typeDropdownOpen = false;
+                    triggerAutoSave();
+                }
             }
         }
     }
@@ -158,49 +246,26 @@ public class GuiWaypointSettings extends OneUIScreen {
         NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
 
         float inputHeight = 25f;
-        float inputWidth = 140f;
-        float spacing = 5f;
+        float inputWidth = 50f;
+        float spacing = 15f;
 
-        nanoVGHelper.drawText(vg, "X:", x + 8, y + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
-        drawSingleCoordInput(vg, inputHandler, x + 30, y + 2, inputWidth - 80, inputHeight - 4, xInput, editingX, () -> {
+        nanoVGHelper.drawText(vg, "X:", x, y, -1, 10, Fonts.REGULAR); // 标签在输入框上方
+        drawSingleCoordInput(vg, inputHandler, x, y + 6, inputWidth, inputHeight - 4, xInput, editingX, () -> {
             editingX = true;
-            editingY = editingZ = editingRotation = false;
+            editingY = editingZ = editingRotation = editingIsland = editingName = false;
         });
-        nanoVGHelper.drawText(vg, "请输入文本1", x + inputWidth + 15, y + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
 
-        nanoVGHelper.drawText(vg, "Y:", x + 8, y + inputHeight + spacing + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
-        drawSingleCoordInput(vg, inputHandler, x + 30, y + inputHeight + spacing + 2, inputWidth - 80, inputHeight - 4, yInput, editingY, () -> {
+        nanoVGHelper.drawText(vg, "Y:", x + inputWidth + spacing, y, -1, 10, Fonts.REGULAR); // 标签在输入框上方
+        drawSingleCoordInput(vg, inputHandler, x + inputWidth + spacing, y + 6, inputWidth, inputHeight - 4, yInput, editingY, () -> {
             editingY = true;
-            editingX = editingZ = editingRotation = false;
+            editingX = editingZ = editingRotation = editingIsland = editingName = false;
         });
-        nanoVGHelper.drawText(vg, "请输入文本2", x + inputWidth + 15, y + inputHeight + spacing + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
 
-        nanoVGHelper.drawText(vg, "Z:", x + 8, y + 2 * (inputHeight + spacing) + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
-        drawSingleCoordInput(vg, inputHandler, x + 30, y + 2 * (inputHeight + spacing) + 2, inputWidth - 80, inputHeight - 4, zInput, editingZ, () -> {
+        nanoVGHelper.drawText(vg, "Z:", x + 2 * (inputWidth + spacing), y, -1, 10, Fonts.REGULAR); // 标签在输入框上方
+        drawSingleCoordInput(vg, inputHandler, x + 2 * (inputWidth + spacing), y + 6, inputWidth, inputHeight - 4, zInput, editingZ, () -> {
             editingZ = true;
-            editingX = editingY = editingRotation = false;
+            editingX = editingY = editingRotation = editingIsland = editingName = false;
         });
-        nanoVGHelper.drawText(vg, "请输入文本3", x + inputWidth + 15, y + 2 * (inputHeight + spacing) + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
-    }
-
-    private void drawSingleCoordInput(long vg, InputHandler inputHandler, float x, float y, float width, float height,
-                                      String value, boolean editing, Runnable onClick) {
-        NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
-
-        if (editing) {
-            RenderUtils.drawBorderedRoundedRect(x - 0.5f, y - 0.5f, width + 1f, height + 1f, 3.5f, 1f,
-                    RenderUtils.getChromaColor(new Color(217, 39, 236), new Color(0, 159, 255), 0, 2, 5).getRGB());
-        }
-
-        int bgColor = editing ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();
-        nanoVGHelper.drawRoundedRect(vg, x, y, width, height, bgColor, 3);
-
-        String displayText = value.isEmpty() ? "0" : value;
-        nanoVGHelper.drawCenteredText(vg, displayText, x + width / 2, y + height / 2 + 1, -1, 10, Fonts.REGULAR);
-
-        if (inputHandler.isAreaHovered(x, y, width, height) && inputHandler.isClicked()) {
-            onClick.run();
-        }
     }
 
     private void drawDirectionSelection(long vg, InputHandler inputHandler, float x, float y) {
@@ -210,18 +275,17 @@ public class GuiWaypointSettings extends OneUIScreen {
         float dropdownWidth = 70f;
         float arrowSize = 12f;
 
-        nanoVGHelper.drawText(vg, "Direction:", x + 8, y + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
+        nanoVGHelper.drawText(vg, "Direction:", x, y, -1, 10, Fonts.REGULAR);
 
-        float dropdownX = x + 60;
         String currentDirectionLabel = getDirectionLabel(currentWaypoint.getDirection());
 
-        boolean isMainHovered = inputHandler.isAreaHovered(dropdownX, y + 2, dropdownWidth, inputHeight - 4);
+        boolean isMainHovered = inputHandler.isAreaHovered(x, y + 6, dropdownWidth, inputHeight - 4);
         int mainBgColor = isMainHovered ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();
-        nanoVGHelper.drawRoundedRect(vg, dropdownX, y + 2, dropdownWidth, inputHeight - 4, mainBgColor, 3);
-        nanoVGHelper.drawCenteredText(vg, currentDirectionLabel, dropdownX + dropdownWidth / 2, y + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
+        nanoVGHelper.drawRoundedRect(vg, x, y + 6, dropdownWidth, inputHeight - 4, mainBgColor, 3);
+        nanoVGHelper.drawCenteredText(vg, currentDirectionLabel, x + dropdownWidth / 2, y + 6 + (inputHeight - 4) / 2 + 1, -1, 10, Fonts.REGULAR);
 
-        float arrowX = dropdownX + dropdownWidth + 2;
-        float arrowY = y + (inputHeight - arrowSize) / 2;
+        float arrowX = x + dropdownWidth + 2;
+        float arrowY = y + 6 + (inputHeight - 4 - arrowSize) / 2;
         boolean isArrowHovered = inputHandler.isAreaHovered(arrowX, arrowY, arrowSize, arrowSize);
         nanoVGHelper.setAlpha(vg, isArrowHovered ? 1.0f : 0.7f);
         nanoVGHelper.drawSvg(vg, directionDropdownOpen ? SVGs.CHEVRON_UP : SVGs.CHEVRON_DOWN,
@@ -236,18 +300,24 @@ public class GuiWaypointSettings extends OneUIScreen {
             float dropdownHeight = directions.length * 20f;
             float dropdownY = y + inputHeight + 2;
 
-            nanoVGHelper.drawRoundedRect(vg, dropdownX, dropdownY, dropdownWidth, dropdownHeight, new Color(30, 30, 30, 220).getRGB(), 3);
+            nanoVGHelper.drawRoundedRect(vg, x, dropdownY, dropdownWidth, dropdownHeight, new Color(30, 30, 30, 220).getRGB(), 3);
 
             for (int i = 0; i < directions.length; i++) {
                 float optionY = dropdownY + i * 20f;
-                boolean isOptionHovered = inputHandler.isAreaHovered(dropdownX, optionY, dropdownWidth, 20f);
+                boolean isOptionHovered = inputHandler.isAreaHovered(x, optionY, dropdownWidth, 20f);
                 boolean isSelected = currentWaypoint.getDirection().equals(directions[i]);
 
-                int optionBgColor = isOptionHovered ? new Color(60, 60, 60, 200).getRGB() :
-                        (isSelected ? new Color(58, 136, 239, 153).getRGB() : new Color(40, 40, 40, 150).getRGB());
+                int optionBgColor;
+                if (isSelected) {
+                    optionBgColor = new Color(58, 136, 239, 153).getRGB();
+                } else if (isOptionHovered) {
+                    optionBgColor = new Color(60, 60, 60, 200).getRGB();
+                } else {
+                    optionBgColor = new Color(40, 40, 40, 150).getRGB();
+                }
 
-                nanoVGHelper.drawRoundedRect(vg, dropdownX, optionY, dropdownWidth, 20f, optionBgColor, 3);
-                nanoVGHelper.drawCenteredText(vg, directionLabels[i], dropdownX + dropdownWidth / 2, optionY + 10f, -1, 9, Fonts.REGULAR);
+                nanoVGHelper.drawRoundedRect(vg, x, optionY, dropdownWidth, 20f, optionBgColor, 3);
+                nanoVGHelper.drawCenteredText(vg, directionLabels[i], x + dropdownWidth / 2, optionY + 10f, -1, 9, Fonts.REGULAR);
 
                 if (isOptionHovered && inputHandler.isClicked()) {
                     currentWaypoint.setDirection(directions[i]);
@@ -261,15 +331,96 @@ public class GuiWaypointSettings extends OneUIScreen {
     private void drawRotationInput(long vg, InputHandler inputHandler, float x, float y) {
         NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
 
-        float inputHeight = 25f;
-        float inputWidth = 140f;
+        float inputHeight = 21f;
+        float inputWidth = 70f;
 
-        nanoVGHelper.drawText(vg, "Rotation:", x + 8, y + inputHeight / 2 + 1, -1, 10, Fonts.REGULAR);
+        nanoVGHelper.drawText(vg, "Rotation:", x, y, -1, 10, Fonts.REGULAR);
 
-        drawSingleCoordInput(vg, inputHandler, x + 60, y + 2, inputWidth - 70, inputHeight - 4, rotationInput, editingRotation, () -> {
+        drawSingleCoordInput(vg, inputHandler, x, y + 6, inputWidth, inputHeight, rotationInput, editingRotation, () -> {
             editingRotation = true;
-            editingX = editingY = editingZ = false;
+            editingX = editingY = editingZ = editingIsland = editingName =false;
         });
+    }
+
+    private void drawTypeSpecificProperties(long vg, InputHandler inputHandler, float containerX, float containerY) {
+        Waypoint.TYPE currentType = Waypoint.getCurrentType();
+
+        float startY = containerY + 170;
+
+        if (currentType == Waypoint.TYPE.Normal) {
+            drawIslandInput(vg, inputHandler, containerX + 20, startY);
+            drawNameInput(vg, inputHandler, containerX + 130, startY);
+        }
+    }
+
+    private void drawIslandInput(long vg, InputHandler inputHandler, float x, float y) {
+        NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
+
+        float inputHeight = 21f;
+        float inputWidth = 100f;
+
+        nanoVGHelper.drawText(vg, "Island:", x, y, -1, 10, Fonts.REGULAR);
+
+        if (editingIsland) {
+            nanoVGHelper.drawHollowRoundRect(vg, x - 0.8f, y + 6 - 0.8f, inputWidth + 1.3f, inputHeight + 1.3f,
+                    new Color(0, 159, 255).getRGB(), 3.2f, 0.25f);
+        }
+
+        int bgColor = editingIsland ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();
+        nanoVGHelper.drawRoundedRect(vg, x, y + 6, inputWidth, inputHeight, bgColor, 3);
+
+        String displayText = islandInput.isEmpty() ? "Island" : islandInput;
+        nanoVGHelper.drawCenteredText(vg, displayText, x + inputWidth / 2, y + 6 + inputHeight / 2 + 1.5f, -1, 10, Fonts.REGULAR);
+
+        if (inputHandler.isAreaHovered(x, y + 6, inputWidth, inputHeight) && inputHandler.isClicked()) {
+            editingIsland = true;
+            editingX = editingY = editingZ = editingRotation = editingName = false;
+        }
+    }
+
+    private void drawSingleCoordInput(long vg, InputHandler inputHandler, float x, float y, float width, float height,
+                                      String value, boolean editing, Runnable onClick) {
+        NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
+
+        if (editing) {
+            nanoVGHelper.drawHollowRoundRect(vg,x - 0.8f, y - 0.8f, width + 1.3f, height + 1.3f,
+                    new Color(0, 159, 255).getRGB(), 3.2f, 0.25f);
+        }
+
+        int bgColor = editing ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();
+        nanoVGHelper.drawRoundedRect(vg, x, y, width, height, bgColor, 3);
+
+        String displayText = value.isEmpty() ? "0" : value;
+        nanoVGHelper.drawCenteredText(vg, displayText, x + width / 2, y + height / 2 + 1, -1, 10, Fonts.REGULAR);
+
+        if (inputHandler.isAreaHovered(x, y, width, height) && inputHandler.isClicked()) {
+            onClick.run();
+        }
+    }
+
+    private void drawNameInput(long vg, InputHandler inputHandler, float x, float y) {
+        NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
+
+        float inputHeight = 21f;
+        float inputWidth = 100f;
+
+        nanoVGHelper.drawText(vg, "Name:", x, y, -1, 10, Fonts.REGULAR);
+
+        if (editingName) {
+            nanoVGHelper.drawHollowRoundRect(vg, x - 0.8f, y + 6 - 0.8f, inputWidth + 1.3f, inputHeight + 1.3f,
+                    new Color(0, 159, 255).getRGB(), 3.2f, 0.25f);
+        }
+
+        int bgColor = editingName ? new Color(60, 60, 60, 200).getRGB() : new Color(50, 50, 50, 150).getRGB();
+        nanoVGHelper.drawRoundedRect(vg, x, y + 6, inputWidth, inputHeight, bgColor, 3);
+
+        String displayText = nameInput.isEmpty() ? "Name" : nameInput;
+        nanoVGHelper.drawCenteredText(vg, displayText, x + inputWidth / 2, y + 6 + inputHeight / 2 + 1.5f, -1, 10, Fonts.REGULAR);
+
+        if (inputHandler.isAreaHovered(x, y + 6, inputWidth, inputHeight) && inputHandler.isClicked()) {
+            editingName = true;
+            editingX = editingY = editingZ = editingRotation = editingIsland = false;
+        }
     }
 
     private void triggerAutoSave() {
@@ -285,10 +436,11 @@ public class GuiWaypointSettings extends OneUIScreen {
         return directionLabels[0];
     }
 
-    private void handleNumberInput() {
-        if (!(editingX || editingY || editingZ || editingRotation)) return;
+    private void handleDataInput() {
+        if (!(editingX || editingY || editingZ || editingRotation || editingName || editingIsland)) return;
+
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastKeyPressTime < 200) {
+        if (currentTime - lastKeyPressTime < 150) {
             return;
         }
 
@@ -296,36 +448,73 @@ public class GuiWaypointSettings extends OneUIScreen {
             char keyChar = Keyboard.getEventCharacter();
             int keyCode = Keyboard.getEventKey();
 
-            if (keyChar >= '0' && keyChar <= '9') {
-                appendToCurrentInput(String.valueOf(keyChar));
-                lastKeyPressTime = currentTime;
+            if (editingIsland || editingName) {
+                if (keyCode == Keyboard.KEY_BACK) {
+                    if (editingIsland && !islandInput.isEmpty()) {
+                        islandInput = islandInput.substring(0, islandInput.length() - 1);
+                        lastKeyPressTime = currentTime;
+                    } else if (editingName && !nameInput.isEmpty()) {
+                        nameInput = nameInput.substring(0, nameInput.length() - 1);
+                        lastKeyPressTime = currentTime;
+                    }
+                } else if (keyCode == Keyboard.KEY_RETURN) {
+                    if (editingIsland) {
+                        editingIsland = false;
+                        try {
+                            if (islandInput.isEmpty()) {
+                                Waypoint.setRequiredIsland(null);
+                            } else {
+                                LocationUtils.Island island = LocationUtils.Island.valueOf(islandInput);
+                                Waypoint.setRequiredIsland(island);
+                            }
+                        } catch (IllegalArgumentException e) {
+                            ClientNotification.sendNotification("Invalid Input", "Please Check your input.", NotificationType.WARN, 4000);
+                            Waypoint.setRequiredIsland(null);
+                        }
+                    } else {
+                        editingName = false;
+                    }
+                    triggerAutoSave();
+                } else if (keyChar != 0) {
+                    if (editingIsland) {
+                        islandInput += keyChar;
+                        lastKeyPressTime = currentTime;
+                    } else {
+                        nameInput += keyChar;
+                        lastKeyPressTime = currentTime;
+                    }
+                }
             }
-            else if (keyCode == Keyboard.KEY_BACK) {
-                String current = getCurrentInput();
-                if (!current.isEmpty()) {
-                    setCurrentInput(current.substring(0, current.length() - 1));
+            // 处理数字输入（坐标和旋转）
+            else if (editingX || editingY || editingZ || editingRotation) {
+                if (keyChar >= '0' && keyChar <= '9') {
+                    appendToCurrentInput(String.valueOf(keyChar));
                     lastKeyPressTime = currentTime;
+                } else if (keyCode == Keyboard.KEY_BACK) {
+                    String current = getCurrentInput();
+                    if (!current.isEmpty()) {
+                        setCurrentInput(current.substring(0, current.length() - 1));
+                        lastKeyPressTime = currentTime;
+                    }
+                } else if (keyCode == Keyboard.KEY_MINUS && (editingX || editingY || editingZ)) {
+                    String current = getCurrentInput();
+                    if (current.isEmpty() || current.charAt(0) != '-') {
+                        setCurrentInput("-" + current);
+                    } else {
+                        setCurrentInput(current.substring(1));
+                    }
+                    lastKeyPressTime = currentTime;
+                } else if ((keyCode == Keyboard.KEY_PERIOD || keyChar == '.') && editingRotation) {
+                    String current = getCurrentInput();
+                    if (!current.contains(".")) {
+                        setCurrentInput(current + ".");
+                    }
+                    lastKeyPressTime = currentTime;
+                } else if (keyCode == Keyboard.KEY_RETURN) {
+                    // 重置所有数字编辑状态
+                    editingX = editingY = editingZ = editingRotation = false;
+                    triggerAutoSave();
                 }
-            }
-            else if (keyCode == Keyboard.KEY_MINUS && (editingX || editingY || editingZ)) {
-                String current = getCurrentInput();
-                if (current.isEmpty() || current.charAt(0) != '-') {
-                    setCurrentInput("-" + current);
-                } else {
-                    setCurrentInput(current.substring(1));
-                }
-                lastKeyPressTime = currentTime;
-            }
-            else if ((keyCode == Keyboard.KEY_PERIOD || keyChar == '.') && editingRotation) {
-                String current = getCurrentInput();
-                if (!current.contains(".")) {
-                    setCurrentInput(current + ".");
-                }
-                lastKeyPressTime = currentTime;
-            }
-            else if (keyCode == Keyboard.KEY_RETURN) {
-                editingX = editingY = editingZ = editingRotation = false;
-                triggerAutoSave();
             }
         }
     }
@@ -371,6 +560,7 @@ public class GuiWaypointSettings extends OneUIScreen {
 
             float newRotation = rotationInput.isEmpty() ? 0.0f : Float.parseFloat(rotationInput);
             currentWaypoint.setRotation(newRotation);
+            currentWaypoint.setName(nameInput.isEmpty() ? null : nameInput);
 
             JsonUtils.saveWaypoints(Waypoint.getWaypoints(), Necron.WP_FILE_DIR + fileName);
 
@@ -380,5 +570,6 @@ public class GuiWaypointSettings extends OneUIScreen {
 
     @Override
     public void onScreenClose() {
+        triggerAutoSave();
     }
 }

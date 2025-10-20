@@ -47,7 +47,7 @@ public class GuiWaypointList extends OneUIScreen {
         NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
         int screenWidth = Objects.requireNonNull(getCurrentScreen()).width;
         int screenHeight = Objects.requireNonNull(getCurrentScreen()).height;
-        int uiWidth = 400;
+        int uiWidth = 300;
         int uiHeight = 250;
 
         float x = (screenWidth - uiWidth) / 2f;
@@ -56,8 +56,8 @@ public class GuiWaypointList extends OneUIScreen {
         nanoVGHelper.drawRoundedRect(vg, x, y, uiWidth, uiHeight, new Color(20, 20, 20, 100).getRGB(), 7.6f);
         nanoVGHelper.drawHollowRoundRect(
                 vg,
-                x - 1,
-                y - 1,
+                x - 1f,
+                y - 1f,
                 uiWidth + 1f,
                 uiHeight + 0.5f,
                 RenderUtils.getChromaColor(new Color(217, 39, 236), new Color(0, 159, 255), 0, 2, 5).getRGB(),
@@ -66,8 +66,46 @@ public class GuiWaypointList extends OneUIScreen {
         );
         nanoVGHelper.drawText(vg, "Waypoint List", x + 30, y + 20, -1, 16, Fonts.REGULAR);
 
+        drawTitleButtons(vg, inputHandler, x, y);
         drawWaypointFileList(vg, inputHandler, x, y, uiWidth, uiHeight);
         nanoVGHelper.drawText(vg, "Necron Client v" + Necron.VERSION, x + 4, y + uiHeight - 8, new Color(175, 175, 175, 255).getRGB(), 8, Fonts.REGULAR);
+    }
+
+    private void drawTitleButtons(long vg, InputHandler inputHandler, float containerX, float containerY) {
+        NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
+
+        float folderButtonX = containerX + 140;
+        float folderButtonY = containerY + 12;
+        boolean isFolderHovered = inputHandler.isAreaHovered(folderButtonX, folderButtonY, 16, 16);
+        nanoVGHelper.setAlpha(vg, isFolderHovered ? 1.0f : 0.7f);
+        nanoVGHelper.drawSvg(vg, new SVG("/assets/oneconfig/old-icons/Folder.svg"), folderButtonX, folderButtonY, 16, 16, -1, 10f);
+
+        if (isFolderHovered && inputHandler.isClicked()) {
+            try {
+                File waypointDir = new File(Necron.WP_FILE_DIR);
+                if (!waypointDir.exists()) {
+                    waypointDir.mkdirs();
+                }
+                Desktop.getDesktop().open(waypointDir);
+            } catch (Exception e) {
+                Necron.LOGGER.error("Failed to open waypoint folder", e);
+            }
+        }
+
+        if (Waypoint.getCurrentFile() != null) {
+            float unloadButtonX = folderButtonX + 20;
+            float unloadButtonY = containerY + 12;
+            boolean isUnloadHovered = inputHandler.isAreaHovered(unloadButtonX, unloadButtonY, 16, 16);
+            nanoVGHelper.setAlpha(vg, isUnloadHovered ? 1.0f : 0.7f);
+            nanoVGHelper.drawSvg(vg, new SVG("/assets/oneconfig/old-icons/Backspace.svg"), unloadButtonX, unloadButtonY, 16, 16, -1, 10f);
+
+            if (isUnloadHovered && inputHandler.isClicked()) {
+                Waypoint.unloadWaypoints();
+                currentLoadedFile = null;
+            }
+        }
+
+        nanoVGHelper.setAlpha(vg, 1.0f);
     }
 
     private void drawWaypointFileList(long vg, InputHandler inputHandler, float containerX, float containerY, int width, int height) {
@@ -143,7 +181,7 @@ public class GuiWaypointList extends OneUIScreen {
         NanoVGHelper nanoVGHelper = NanoVGHelper.INSTANCE;
 
         float controlsY = containerY + height - 30;
-        float centerX = containerX + width / 2f;
+        float centerX = containerX + width / 2f - 1;
 
         if (currentPage > 0) {
             float prevButtonX = centerX - 35;
