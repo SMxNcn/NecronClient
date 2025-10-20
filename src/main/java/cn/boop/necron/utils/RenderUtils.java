@@ -313,6 +313,50 @@ public class RenderUtils {
         GlStateManager.popMatrix();
     }
 
+    public static void drawCircleOnBlock(double x, double y, double z, Color color, float lineWidth, float partialTicks) {
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        if (viewer == null) return;
+
+        double viewerX = viewer.prevPosX + (viewer.posX - viewer.prevPosX) * partialTicks;
+        double viewerY = viewer.prevPosY + (viewer.posY - viewer.prevPosY) * partialTicks;
+        double viewerZ = viewer.prevPosZ + (viewer.posZ - viewer.prevPosZ) * partialTicks;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableDepth();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableCull();
+        GL11.glLineWidth(lineWidth);
+
+        float r = (float) color.getRed() / 255;
+        float g = (float) color.getGreen() / 255;
+        float b = (float) color.getBlue() / 255;
+        float a = (float) color.getAlpha() / 255;
+
+        GL11.glColor4f(r, g, b, a);
+
+        GL11.glBegin(GL11.GL_LINE_LOOP);
+        double centerX = x + 0.5 - viewerX;
+        double centerY = y + 1.0 - viewerY;
+        double centerZ = z + 0.5 - viewerZ;
+        int segments = 32;
+
+        for (int i = 0; i < segments; i++) {
+            double angle = 2 * Math.PI * i / segments;
+            double circleX = centerX + 0.55 * Math.cos(angle); // 半径为0.6
+            double circleZ = centerZ + 0.55 * Math.sin(angle);
+            GL11.glVertex3d(circleX, centerY, circleZ);
+        }
+        GL11.glEnd();
+
+        GlStateManager.enableCull();
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
     public static Color getChromaColor(Color start, Color end, int index, int speed, int offset) {
         double currentTime = System.nanoTime() / 1_000_000_000.0;
 

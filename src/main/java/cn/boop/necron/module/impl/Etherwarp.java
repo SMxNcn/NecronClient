@@ -39,19 +39,26 @@ public class Etherwarp {
         if (Necron.mc.thePlayer.inventory.getCurrentItem() == null || !isEtherwarpItem(Necron.mc.thePlayer.inventory.getCurrentItem())) return;
 
         if (EtherwarpRouter.waypointCache.isEmpty() || EtherwarpRouter.currentWaypointIndex == -1 || !RouterOptionsImpl.router) {
-            if (!lastLeftClick && currentLeftClick) useEtherwarp();
+            if (!lastLeftClick && currentLeftClick) useEtherwarp(false);
         }
         lastLeftClick = currentLeftClick;
     }
 
-    public static void useEtherwarp() {
+    public static void useEtherwarp(boolean sneak) {
         executor.submit(() -> {
             try {
-                PlayerUtils.setSneak(true);
-                Thread.sleep(100);
-                PlayerUtils.rightClick();
-                Thread.sleep(50);
-                PlayerUtils.setSneak(false);
+                if (sneak) {
+                    PlayerUtils.setSneak(true);
+                    Thread.sleep(100);
+                    PlayerUtils.rightClick();
+                    Thread.sleep(50);
+                } else {
+                    PlayerUtils.setSneak(true);
+                    Thread.sleep(100);
+                    PlayerUtils.rightClick();
+                    Thread.sleep(50);
+                    PlayerUtils.setSneak(false);
+                }
             } catch (InterruptedException e) {
                 Necron.LOGGER.error(e);
             }
