@@ -7,7 +7,8 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
  调试命令: `/ncdebug`，命令别名: `/ncd`
 
 ## Auto Path
-使用A*算法的寻路系统 **(WIP)**
+- 使用A*算法的寻路系统 **(WIP)**
+- 使用 AOTV/AOTE 的**普通**传送技能进行寻路
 
 ## Auto Wardrobe
 - 切换装备后自动关闭Wardrobe界面
@@ -25,7 +26,7 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ## Etherwarp Router
 - 左键点击时，自动瞄准并etherwarp至下一个路径点（从#1开始）。
 - 循环模式可用于宝石挖掘等重复性任务。
-- 带有错误检测和断点续传。
+- 带有预瞄准功能，可提高Router的速度。
 
 ## Fake Wipe
 开启后，每次进入Hypixel服务器会显示SkyBlock Wipe Book。（别真被擦了.jpg）
@@ -47,14 +48,11 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ## RNG Meter HUD
 - 该功能来自[BloomModule](https://github.com/UnclaimedBloom6/BloomModule)
 - HUD使用OneConfig实现
-- 目前实现尚不完善，无法重置非稀有物品的RNG。（LootProtector.java & LootEventHandler.java）
+- 无法重置非稀有物品的RNG的问题已修复（2025.10.13 待验证）
 
 ## Title Manager
-- 可在"Title Text"中输入你想要的文字，并开启"Use your title text"选项以显示自定义标题。
-- 自定义图标选项默认开启。如果不想使用自定义图标，需关闭Icon选项并重启游戏。
-
-## Voidgloom
-- 尚未完成
+- Default Title Type: 显示为 Spongepowered v0.x.x 或自定义标题
+- Custom Title Type: 可选择显示玩家名，当前位置，神秘提示以及自定义前缀
 
 ## Waypoint
 
