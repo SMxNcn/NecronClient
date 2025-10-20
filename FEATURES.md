@@ -58,18 +58,4 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
 ## Waypoint
 
-> Waypoint文件存放路径: `./config/necron/waypoints/` （也可在配置界面中快捷打开）
-> 
-> 按住左Alt键时，右键单击一个方块则会在该方块处添加路径点，左键单击路径点所在方块可删除该路径点。
-
-### 相关命令：
-
-/nc create \<fileName>
-- 在目录下新建一个路径点文件。
-
-/nc wp
-- 打开路径点GUI。  **(WIP)**
-
-### 路径点GUI相关：
-- 初步实现了路径点加载，快速编辑功能
-- TODO: 添加对更多属性的编辑功能
+详见[Waypoints使用说明](WAYPOINT.md)
