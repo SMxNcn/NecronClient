@@ -17,24 +17,24 @@ import java.util.List;
 
 public class ModuleManager {
     private static final ArrayList<Object> modules = new ArrayList<>();
-    private static final AutoPath autoPath = new AutoPath();
     
     public static void initModules() {
         // Modules
         modules.add(new AutoClicker());
         modules.add(new AutoGG());
         modules.add(new AutoPath());
-        modules.add(new AutoPotionBag());
         modules.add(new AutoWardrobe());
         modules.add(new ChatBlocker());
         modules.add(new ChatCommands());
         modules.add(new CropNuker());
+        modules.add(new DungeonESP());
         modules.add(new Etherwarp());
         modules.add(new EtherwarpRouter());
         modules.add(new FailSafe());
         modules.add(new FakeWipe());
         modules.add(new HurtCam());
         modules.add(new ModuleList());
+        modules.add(new M7Waypoints());
         modules.add(new Nametags());
         modules.add(new PlayerStats());
         modules.add(new TitleManager());
@@ -51,10 +51,6 @@ public class ModuleManager {
         for (Object module : modules) {
             MinecraftForge.EVENT_BUS.register(module);
         }
-    }
-
-    public static AutoPath getAutoPath() {
-        return autoPath;
     }
 
     public static List<String> getActiveModules() {

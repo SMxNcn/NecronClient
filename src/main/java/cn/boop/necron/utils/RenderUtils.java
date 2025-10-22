@@ -1,6 +1,5 @@
 package cn.boop.necron.utils;
 
-import cn.boop.necron.Necron;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -230,10 +229,47 @@ public class RenderUtils {
         tessellator.draw();
     }
 
+    public static void drawOutlinedBoundingBox(AxisAlignedBB bb, Color color, float lineWidth, float partialTicks) {
+        Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
+        if (viewer == null) return;
+
+        double viewerX = viewer.prevPosX + (viewer.posX - viewer.prevPosX) * partialTicks;
+        double viewerY = viewer.prevPosY + (viewer.posY - viewer.prevPosY) * partialTicks;
+        double viewerZ = viewer.prevPosZ + (viewer.posZ - viewer.prevPosZ) * partialTicks;
+
+        GlStateManager.pushMatrix();
+        GlStateManager.enableBlend();
+        GlStateManager.disableDepth();
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.disableTexture2D();
+        GlStateManager.depthMask(false);
+        GL11.glLineWidth(lineWidth);
+
+        float r = (float) color.getRed() / 255;
+        float g = (float) color.getGreen() / 255;
+        float b = (float) color.getBlue() / 255;
+        float a = (float) color.getAlpha() / 255;
+
+        GL11.glColor4f(r, g, b, a);
+
+        AxisAlignedBB adjustedBB = new AxisAlignedBB(
+                bb.minX - viewerX, bb.minY - viewerY, bb.minZ - viewerZ,
+                bb.maxX - viewerX, bb.maxY - viewerY, bb.maxZ - viewerZ
+        );
+
+        drawOutlinedBoundingBox(adjustedBB);
+
+        GlStateManager.depthMask(true);
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
+    }
+
     public static void draw3DLine(double x, double y, double z, double x1, double y1, double z1, Color color, float lineWidth) {
-        double viewerX = Necron.mc.getRenderManager().viewerPosX;
-        double viewerY = Necron.mc.getRenderManager().viewerPosY;
-        double viewerZ = Necron.mc.getRenderManager().viewerPosZ;
+        double viewerX = Minecraft.getMinecraft().getRenderManager().viewerPosX;
+        double viewerY = Minecraft.getMinecraft().getRenderManager().viewerPosY;
+        double viewerZ = Minecraft.getMinecraft().getRenderManager().viewerPosZ;
         x -= viewerX;
         x1 -= viewerX;
         y -= viewerY;
@@ -279,7 +315,7 @@ public class RenderUtils {
         float width = mc.fontRendererObj.getStringWidth(text) / 2.0f;
         float height = mc.fontRendererObj.FONT_HEIGHT / 2.0f;
 
-        float size = (float)Necron.mc.thePlayer.getDistance(x, y, z) / 10.0f;
+        float size = (float) Minecraft.getMinecraft().thePlayer.getDistance(x, y, z) / 10.0f;
         if (size < 1.1f) size = 1.1f;
         float scale = (size * 2f) / 100.0f;
 
