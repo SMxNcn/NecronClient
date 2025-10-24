@@ -129,7 +129,7 @@ public class RotationUtils {
 
         float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         float dynamicSpeed = baseSpeed * (float) Math.atan(distance * 0.1);
-        dynamicSpeed = Math.max(dynamicSpeed, 0.25f);
+        dynamicSpeed = Math.max(dynamicSpeed, 0.1f);
         setRotation(currentYaw + deltaYaw * dynamicSpeed, currentPitch + deltaPitch * dynamicSpeed);
     }
 
@@ -236,7 +236,7 @@ public class RotationUtils {
         float deltaPitch = MathHelper.wrapAngleTo180_float(targetRotation[1] - currentPitch);
         float distance = Necron.mc.thePlayer.getDistanceToEntity(entity);
         float dynamicSpeed = baseSpeed * (distance / 5);
-        dynamicSpeed = Math.max(dynamicSpeed, 0.07f); // 设置最小速度限制
+        dynamicSpeed = Math.max(dynamicSpeed, 0.07f);
 
         setYaw(currentYaw + deltaYaw * dynamicSpeed);
         setPitch(currentPitch + deltaPitch * dynamicSpeed);

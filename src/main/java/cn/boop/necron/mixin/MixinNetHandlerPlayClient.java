@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinNetHandlerPlayClient {
     @Inject(method = "handlePlayerPosLook", at = @At("HEAD"))
     public void handlePlayerPosLook(CallbackInfo ci) {
-        FailSafe.onPlayerTeleport();
+        FailSafe.onPlayerTeleport("Crop Nuker");
     }
 }

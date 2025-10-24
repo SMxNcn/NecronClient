@@ -1,6 +1,7 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.config.ResetReason;
 import cn.boop.necron.config.impl.FarmingOptionsImpl;
 import cn.boop.necron.utils.JsonUtils;
 import cn.boop.necron.utils.LocationUtils;
@@ -111,7 +112,7 @@ public class Waypoint {
         currentFile = null;
         waypointCounter = 1;
 
-        CropNuker.reset(FailSafe.ResetReason.UNLOAD);
+        CropNuker.reset(ResetReason.UNLOAD);
         EtherwarpRouter.routeCompleted = true;
         EtherwarpRouter.routerNotified = true;
         EtherwarpRouter.waypointCache.clear();

@@ -60,7 +60,7 @@ public class MixinFontRenderer {
         long currentTime = System.currentTimeMillis();
         if (currentTime - necronClient$lastWarningTime >= necronClient$WARNING_COOLDOWN) {
             necronClient$lastWarningTime = currentTime;
-            Necron.LOGGER.warn("§cInvalid SkyHanni color format! Text: {}", invalidText);
+            Necron.LOGGER.warn("Invalid SkyHanni color format! Text: {}", invalidText);
         }
     }
 }

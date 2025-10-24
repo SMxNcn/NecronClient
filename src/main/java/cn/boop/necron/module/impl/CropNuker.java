@@ -1,6 +1,7 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.config.ResetReason;
 import cn.boop.necron.utils.RenderUtils;
 import cn.boop.necron.utils.RotationUtils;
 import net.minecraft.client.settings.KeyBinding;
@@ -178,7 +179,7 @@ public class CropNuker {
         }
     }
 
-    public static void reset(FailSafe.ResetReason reason) {
+    public static void reset(ResetReason reason) {
         stopNuker();
         cropNuker = false;
         pressed = false;

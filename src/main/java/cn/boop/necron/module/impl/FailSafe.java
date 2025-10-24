@@ -2,6 +2,7 @@ package cn.boop.necron.module.impl;
 
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.NotificationType;
+import cn.boop.necron.config.ResetReason;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -63,30 +64,14 @@ public class FailSafe {
 //        }
 //    }
 
-    public static void onPlayerTeleport() {
+    public static void onPlayerTeleport(String calledModule) {
         if (cropNuker && !voidFalling) {
             CropNuker.reset(ResetReason.TELEPORT);
-            ClientNotification.sendNotification("Crop Nuker", ResetReason.TELEPORT.getMessage(), NotificationType.WARN, 5000);
+            ClientNotification.sendNotification(calledModule, ResetReason.TELEPORT.getMessage(), NotificationType.WARN, 5000);
         }
     }
 
     public static void resetPositionTracking() {
         voidFalling = false;
-    }
-
-    public enum ResetReason {
-        WORLD_CHANGE("Detection server changed"),
-        TELEPORT("Detection position changed");
-        //MOTION("Detection incorrect movement");
-
-        private final String message;
-
-        ResetReason(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
     }
 }

@@ -13,7 +13,7 @@ import static cn.boop.necron.config.impl.ChatBlockerOptionsImpl.chatBlocker;
 import static cn.boop.necron.config.impl.ChatBlockerOptionsImpl.whitelistEnabled;
 
 public class ChatBlocker {
-    private static final List<String> whitelist = JsonUtils.loadWhitelist();
+    public static final List<String> whitelist = JsonUtils.loadWhitelist();
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
@@ -64,13 +64,7 @@ public class ChatBlocker {
         }
         return false;
     }
-    
-    /**
-     * 检查消息发送者是否在白名单中
-     * 支持多种消息格式：
-     * 1. 公屏聊天带有等级前缀：[114] 或带有Rank前缀：[MVP++]，[VIP]，[YOUTUBE]等
-     * 2. 频道聊天：Party >，Guild >，CO-OP > From 等开头的消息
-     */
+
     private boolean isWhitelisted(String message) {
         for (String player : whitelist) {
             if (Pattern.matches("(?i)\\[\\d+]\\s*" + Pattern.quote(player) + ".*", message)) {
@@ -89,8 +83,6 @@ public class ChatBlocker {
                 return true;
             }
 
-            // 格式: "Party > [MVP++] PlayerName: ntmsb?"
-            // 格式: "From [VIP] PlayerName: ntmsb?"
             if (Pattern.matches("(?i)(Party|Guild|Co-op) > \\[?[\\w+]*]?\\s*" + Pattern.quote(player) + ":.*", message) ||
                 Pattern.matches("(?i)From \\[?[\\w+]*]?\\s*" + Pattern.quote(player) + ":.*", message)) {
                 return true;

@@ -123,7 +123,7 @@ public class EtherwarpRouter {
                 if (devMsg) Utils.modMessage("Etherwarp.");
 
                 try {
-                    Thread.sleep(400);
+                    Thread.sleep(500);
                     handlePreAiming();
                 } catch (Exception e) {
                     Necron.LOGGER.error("EtherwarpRouter", e);
