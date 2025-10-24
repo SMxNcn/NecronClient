@@ -313,16 +313,52 @@
         "§aEnchanted Book (§d§lWisdom II§a)": 8337,
         "§aEnchanted Book (§d§lUltimate Jerry III§a)": 6948
     },
-  "ZS": {
+  "Zombie Slayer": {
+        "§9Foul Flesh": 3093,
+        "§9Revenant Shard": 41456,
+        "§2◆ Pestilence Rune I": 75505,
+        "§9Undead Catalyst": 24750,
+        "§fEnchanted Book (Smite VI§f)": 124370,
+        "§5Beheaded Horror": 310925,
+        "§5Revenant Catalyst": 49500,
+        "§a◆ Snake Rune I": 332250,
+        "§5Festering Maggot": 621850,
+        "§9RevenantViscera": 3674,
+        "§6Scythe Blade": 888357,
+        "§6Severed Hand": 1048785,
+        "§6Shard of the Shredded": 918562,
+        "§6Warden Heart": 3674250,
         "§2Matcha Dye": 75000000
     },
-  "WS": {
-        "§bCeleste Dye": 75000000
-    },
-  "SS": {
+  "Spider Slayer": {
+        "§aToxic Arrow Poison": 3277,
+        "§a◆ Bite Rune I": 7657,
+        "§8◆ Darkness Within Rune I": 129099,
+        "§9Spider Catalyst": 24250,
+        "§9Tarantula Silk": 3513,
+        "§fEnchanted Book (Bane of Arthropods VI§f)": 242500,
+        "§5Tarantula Catalyst": 202083,
+        "§5Fly Swatter": 606250,
+        "§5Vial of Venom": 610350,
+        "§5Tarantula Tailsman": 606250,
+        "§6Digested Mosquito": 859071,
+        "§6Shriveled Wasp": 351325,
+        "§6Ensnared Snail": 1171083,
+        "§6Primordial Eye": 3513250,
         "§cBrick Red Dye": 75000000
     },
-  "ES": {
+  "Wolf Slayer": {
+        "§9Hamster Wheel": 3000,
+        "§b2◆ Spirit Rune I": 7917,
+        "§fEnchanted Book (Critical VI§f)": 61634,
+        "§9Furball": 30637,
+        "§5Red Claw Egg": 410900,
+        "§6◆ Couture Rune I": 219833,
+        "§5Overfluc Capacitor": 1232700,
+        "§9Grizzly Salmon": 880500,
+        "§bCeleste Dye": 75000000
+    },
+  "Enderman Slayer": {
         "§aTwilight Arrow Poison": 3300,
         "§5Summoning Eye": 74250,
         "§fEnchanted Book (Mana Steal Iv§f)": 11183,
@@ -342,10 +378,10 @@
         "§6End Stone Idol": 3542250,
         "§5Byzantium Dye": 75000000
     },
-  "VS": {
+  "Vampire Slayer": {
         "§4Sangira Dye": 100000
     },
-  "BS": {
+  "Blaze Slayer": {
         "§a5Enchanted Blaze Powder": 2351,
         "§c◆ Lavatears Rune I": 21660,
         "§fWisp's Ice-Flavored Water I Splash Potion": 14270,

@@ -1,7 +1,7 @@
 package cn.boop.necron.events;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.ctjs.RngMeterManager;
+import cn.boop.necron.module.impl.rng.DungeonRngManager;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -19,10 +19,10 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.daemonLevel;
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.hasDaemon;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.daemonLevel;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.hasDaemon;
 
-public class RngEventHandler {
+public class DungeonRngEventHandler {
     private static final Pattern SCORE_PATTERN = Pattern.compile("Team Score:\\s*(\\d+)\\s*\\((S\\+?)\\)$");
     private static final Pattern RESET_PATTERN = Pattern.compile("You reset your selected drop for your Catacombs \\((\\w{1,2})\\) RNG Meter!");
     private static final Pattern SET_PATTERN = Pattern.compile("§r§aYou set your §r§dCatacombs \\((\\w{1,2})\\) RNG Meter §r§ato drop §r(.+)§r§a!§r");
@@ -49,14 +49,14 @@ public class RngEventHandler {
                 score *= (int) (1 + daemonLevel / 100.0);
             }
 
-            RngMeterManager.INSTANCE.addScore(floor, score);
+            DungeonRngManager.INSTANCE.addScore(floor, score);
             System.out.println("Added score " + score + " to " + floor);
         }
 
         Matcher resetMatcher = RESET_PATTERN.matcher(msg);
         if (resetMatcher.find()) {
             String floor = resetMatcher.group(1);
-            RngMeterManager.INSTANCE.setItem(floor, null);
+            DungeonRngManager.INSTANCE.setItem(floor, null);
             Utils.modMessage("Reset item on " + floor);
         }
 
@@ -66,7 +66,7 @@ public class RngEventHandler {
             String floor = setMatcher.group(1);
             String item = setMatcher.group(2);
             String formattedItem = item.replace("&", "§");
-            RngMeterManager.INSTANCE.setItem(floor, formattedItem);
+            DungeonRngManager.INSTANCE.setItem(floor, formattedItem);
             Utils.modMessage("Set RNG item " + formattedItem + " §7on " + floor);
         }
     }
@@ -153,12 +153,12 @@ public class RngEventHandler {
             }
         }
 
-        RngMeterManager.INSTANCE.setScore(floor, current);
+        DungeonRngManager.INSTANCE.setScore(floor, current);
         if (drop != null) {
             String formattedDrop = drop.replace("&", "§");
-            RngMeterManager.INSTANCE.setItem(floor, formattedDrop);
+            DungeonRngManager.INSTANCE.setItem(floor, formattedDrop);
         } else {
-            RngMeterManager.INSTANCE.setItem(floor, null);
+            DungeonRngManager.INSTANCE.setItem(floor, null);
         }
     }
 

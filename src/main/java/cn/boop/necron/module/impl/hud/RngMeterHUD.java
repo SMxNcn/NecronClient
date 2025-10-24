@@ -5,14 +5,17 @@ import cc.polyfrost.oneconfig.events.EventManager;
 import cc.polyfrost.oneconfig.hud.BasicHud;
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack;
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.ctjs.RngMeterManager;
+import cn.boop.necron.events.SlayerEventHandler;
+import cn.boop.necron.module.impl.rng.DungeonRngManager;
+import cn.boop.necron.module.impl.rng.SlayerRngManager;
+import cn.boop.necron.module.impl.slayer.Slayer;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.RenderUtils;
 
 import java.awt.*;
 
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.RngBackground;
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.rngMeter;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.RngBackground;
+import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.rngMeter;
 
 public class RngMeterHUD extends BasicHud {
     public RngMeterHUD() {
@@ -40,8 +43,18 @@ public class RngMeterHUD extends BasicHud {
 
     @Override
     public void draw(UMatrixStack matrices, float x, float y, float scale, boolean example) {
-        if (!(LocationUtils.inDungeon && rngMeter)) return;
-        RngMeterData meter = RngMeterManager.INSTANCE.getCurrentFloorMeter();
+        if (!rngMeter) return;
+
+        RngMeterData meter = null;
+        if (LocationUtils.inDungeon) {
+            meter = DungeonRngManager.INSTANCE.getCurrentFloorMeter();
+        } else if (LocationUtils.inSkyBlock) {
+            Slayer currentSlayer = SlayerEventHandler.getCurrentSlayer();
+            if (currentSlayer != null && currentSlayer != Slayer.Unknown) {
+                meter = SlayerRngManager.INSTANCE.getCurrentSlayerMeter();
+            }
+        }
+
         if (Necron.mc.thePlayer == null || meter == null) return;
 
         calculateDimensions(meter, scale);
@@ -67,8 +80,13 @@ public class RngMeterHUD extends BasicHud {
         if ("E".equals(meter.meterType)) {
             title = "§dRNG Meter §8- §aE";
         } else {
-            double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
-            title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
+            double percentage;
+            if (LocationUtils.inDungeon) {
+                percentage = DungeonRngManager.INSTANCE.getCurrentFloorMeterPercentage();
+            } else {
+                percentage = SlayerRngManager.INSTANCE.getCurrentSlayerMeterPercentage();
+            }
+            title = "§dRNG Meter §8- " + floorColor + meter.meterType.replace(" Slayer", "") + " §8- §d" + String.format("%.2f", percentage) + "%";
         }
 
         Necron.mc.fontRendererObj.drawString(title, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
@@ -83,7 +101,12 @@ public class RngMeterHUD extends BasicHud {
             Necron.mc.fontRendererObj.drawString(itemLine, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
             currentY += 9.0f;
 
-            String meterBar = RngMeterManager.INSTANCE.getCurrentFloorMeterBar();
+            String meterBar;
+            if (LocationUtils.inDungeon) {
+                meterBar = DungeonRngManager.INSTANCE.getCurrentFloorMeterBar();
+            } else {
+                meterBar = SlayerRngManager.INSTANCE.getCurrentSlayerMeterBar();
+            }
             Necron.mc.fontRendererObj.drawString(meterBar, (int)(x / scale), (int)currentY, Color.WHITE.getRGB());
             currentY += 9.0f;
         } else {
@@ -101,12 +124,16 @@ public class RngMeterHUD extends BasicHud {
 
         String title;
         String floorColor = meter.meterType.startsWith("M") ? "§c" : "§a";
-        double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
-
+        double percentage;
+        if (LocationUtils.inDungeon) {
+            percentage = DungeonRngManager.INSTANCE.getCurrentFloorMeterPercentage();
+        } else {
+            percentage = SlayerRngManager.INSTANCE.getCurrentSlayerMeterPercentage();
+        }
         if ("E".equals(meter.meterType)) {
             title = "§dRNG Meter §8- §aE";
         } else {
-            title = "§dRNG Meter §8- " + floorColor + meter.meterType + " §8- §d" + String.format("%.2f", percentage) + "%";
+            title = "§dRNG Meter §8- " + floorColor + meter.meterType.replace(" Slayer", "") + " §8- §d" + String.format("%.2f", percentage) + "%";
         }
 
         calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(title) * scale);
@@ -119,7 +146,12 @@ public class RngMeterHUD extends BasicHud {
         } else if (meter.needed > 0) {
             String itemLine = "§7Item: " + meter.item;
             calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(itemLine) * scale);
-            String meterBar = RngMeterManager.INSTANCE.getCurrentFloorMeterBar();
+            String meterBar;
+            if (LocationUtils.inDungeon) {
+                meterBar = DungeonRngManager.INSTANCE.getCurrentFloorMeterBar();
+            } else {
+                meterBar = SlayerRngManager.INSTANCE.getCurrentSlayerMeterBar();
+            }
             calculatedWidth = Math.max(calculatedWidth, Necron.mc.fontRendererObj.getStringWidth(meterBar) * scale);
             calculatedHeight += 18.0f;
         } else {

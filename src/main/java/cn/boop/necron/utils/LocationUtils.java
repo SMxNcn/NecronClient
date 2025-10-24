@@ -8,10 +8,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class LocationUtils {
     private static final HashMap<String, Island> ISLAND_MAPPING = createIslandMapping();
     public static Island currentIsland = null;
+    public static String currentZone = null;
     public static Floor floor = null;
     public static boolean inHypixel = false;
     public static boolean inSkyBlock = false;
@@ -85,6 +87,7 @@ public class LocationUtils {
             if (inSkyBlock) {
                 updateCurrentIsland();
                 updateFloor();
+                updateZone();
                 getBoss();
             }
         }
@@ -97,6 +100,7 @@ public class LocationUtils {
             if (inSkyBlock) {
                 updateCurrentIsland();
                 updateFloor();
+                updateZone();
                 getBoss();
             }
             ticks = 0;
@@ -136,6 +140,17 @@ public class LocationUtils {
                 String areaName = cleaned.substring(6).replaceAll("\\s+", " ");
                 currentIsland = ISLAND_MAPPING.get(areaName);
                 if (currentIsland != null) break;
+            }
+        }
+    }
+
+    private void updateZone() {
+        List<String> scoreboard = ScoreboardUtils.getScoreboard();
+        for(String line : scoreboard) {
+            String cleanLine = ScoreboardUtils.cleanSB(line);
+            if(cleanLine.matches("^ ⏣.*")) {
+                currentZone = cleanLine.substring(3);
+                break;
             }
         }
     }

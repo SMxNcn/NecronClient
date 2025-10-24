@@ -2,8 +2,8 @@ package cn.boop.necron.events;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.LootProtector;
-import cn.boop.necron.module.impl.ctjs.RngMeterManager;
 import cn.boop.necron.module.impl.hud.RngMeterHUD;
+import cn.boop.necron.module.impl.rng.DungeonRngManager;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -141,15 +141,15 @@ public class LootEventHandler {
     }
 
     private boolean checkRngMeter(String droppedItemName, String floor) {
-        RngMeterHUD.RngMeterData currentMeter = RngMeterManager.INSTANCE.getMeterForFloor(floor);
+        RngMeterHUD.RngMeterData currentMeter = DungeonRngManager.INSTANCE.getMeterForFloor(floor);
 
         if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
             String currentRngItem = Utils.removeFormatting(currentMeter.item);
 
             if (droppedItemName.contains(currentRngItem) && !rngMsgSent) {
                 int score = currentMeter.score;
-                double percentage = RngMeterManager.INSTANCE.getCurrentFloorMeterPercentage();
-                RngMeterManager.INSTANCE.setScore(floor, 0);
+                double percentage = DungeonRngManager.INSTANCE.getCurrentFloorMeterPercentage();
+                DungeonRngManager.INSTANCE.setScore(floor, 0);
                 Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
                 if (sendToParty && LocationUtils.inDungeon) {
                     Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");

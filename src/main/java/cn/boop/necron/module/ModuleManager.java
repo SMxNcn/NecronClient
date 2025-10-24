@@ -1,10 +1,7 @@
 package cn.boop.necron.module;
 
 import cn.boop.necron.config.impl.*;
-import cn.boop.necron.events.B64ChatEventHandler;
-import cn.boop.necron.events.LootEventHandler;
-import cn.boop.necron.events.RngEventHandler;
-import cn.boop.necron.events.WaypointEventHandler;
+import cn.boop.necron.events.*;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
 import cn.boop.necron.module.impl.hud.ModuleList;
@@ -36,7 +33,6 @@ public class ModuleManager {
         modules.add(new ModuleList());
         modules.add(new M7Waypoints());
         modules.add(new Nametags());
-        modules.add(new PlayerStats());
         modules.add(new TitleManager());
 
         // Other utils/events
@@ -44,8 +40,10 @@ public class ModuleManager {
         modules.add(new LocationUtils());
         modules.add(new MainMenu());
         modules.add(new B64ChatEventHandler());
+        modules.add(new DungeonRngEventHandler());
         modules.add(new LootEventHandler());
-        modules.add(new RngEventHandler());
+        modules.add(new SlayerEventHandler());
+        modules.add(new SlayerRngEventHandler());
         modules.add(new WaypointEventHandler());
 
         for (Object module : modules) {

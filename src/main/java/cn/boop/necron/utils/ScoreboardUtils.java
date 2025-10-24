@@ -1,11 +1,17 @@
 package cn.boop.necron.utils;
 
-import com.google.common.collect.*;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.scoreboard.*;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ScoreboardUtils {
@@ -14,8 +20,13 @@ public class ScoreboardUtils {
         StringBuilder cleaned = new StringBuilder();
 
         for(char c : nvString) {
-            if (c <= '\u0014' || c >= '\u007f') continue;
-            cleaned.append(c);
+            // 保留可打印的ASCII字符和常见符号
+            if ((c >= 32 && c <= 126) || (c >= 48 && c <= 57) ||
+                    (c >= 65 && c <= 90) || (c >= 97 && c <= 122) ||
+                    c == ' ' || c == '/' || c == ':' || c == '.' ||
+                    c == '-' || c == '_' || c == '(' || c == ')' || c == '⏣') {
+                cleaned.append(c);
+            }
         }
 
         return cleaned.toString();
