@@ -20,15 +20,13 @@ public abstract class RngManager {
     protected final Gson gson = new Gson();
 
     public static class RngMeterSaveData {
-        public Map<String, RngMeterUserData> data = new HashMap<>();
+        public Map<String, RngMeterUserData> dungeonData = new HashMap<>();
         public Map<String, RngMeterUserData> slayerData = new HashMap<>();
 
         public static class RngMeterUserData {
             public int score;
             public String item;
             Integer needed;
-
-            public RngMeterUserData() {} // 用于反序列化
 
             public RngMeterUserData(int score, String item, Integer needed) {
                 this.score = score;
@@ -136,13 +134,13 @@ public abstract class RngManager {
         double percentage = needed <= 0 ? 0 : Math.min((double) score / needed, 1.0);
         int progress = (int) Math.floor(bars * percentage);
 
-        return "§d" + String.format("%,d", score) + " §a§m§l" + repeat(" ", progress)
-                + "§7§m§l" + repeat(" ", bars - progress) + "§r §d" + String.format("%,d", needed);
+        return "§d" + String.format("%,d", score) + " §a§m§l" + repeat(progress)
+                + "§7§m§l" + repeat(bars - progress) + "§r §d" + String.format("%,d", needed);
     }
 
-    private String repeat(String s, int times) {
+    private String repeat(int times) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < times; i++) sb.append(s);
+        for (int i = 0; i < times; i++) sb.append(" ");
         return sb.toString();
     }
 
@@ -150,12 +148,10 @@ public abstract class RngManager {
         this.dataFile = file;
     }
 
-    // 统一的保存逻辑
     protected void onSave() {
         save();
     }
 
-    // 统一的保存实现
     protected void save() {
         try {
             RngMeterSaveData saveData = new RngMeterSaveData();
@@ -165,7 +161,7 @@ public abstract class RngManager {
                 RngMeterHUD.RngMeterData meterData = entry.getValue();
 
                 if (meterData.score > 0 || (meterData.item != null && !meterData.item.isEmpty())) {
-                    saveData.data.put(floor, new RngMeterSaveData.RngMeterUserData(
+                    saveData.dungeonData.put(floor, new RngMeterSaveData.RngMeterUserData(
                             meterData.score,
                             meterData.item,
                             meterData.needed > 0 ? meterData.needed : null
@@ -193,7 +189,7 @@ public abstract class RngManager {
                     Map<String, Object> fullData = gson.fromJson(reader, Map.class);
                     if (fullData != null) {
                         Map<String, Object> rngMeterMap = new HashMap<>();
-                        rngMeterMap.put("data", saveData.data);
+                        rngMeterMap.put("dungeonData", saveData.dungeonData);
                         rngMeterMap.put("slayerData", saveData.slayerData);
                         fullData.put("rngMeter", rngMeterMap);
 
@@ -210,7 +206,7 @@ public abstract class RngManager {
 
             Map<String, Object> newData = new HashMap<>();
             Map<String, Object> rngMeterMap = new HashMap<>();
-            rngMeterMap.put("data", saveData.data);
+            rngMeterMap.put("dungeonData", saveData.dungeonData);
             rngMeterMap.put("slayerData", saveData.slayerData);
             newData.put("rngMeter", rngMeterMap);
 
@@ -222,7 +218,6 @@ public abstract class RngManager {
         }
     }
 
-    // 统一的加载逻辑
     public void load() {
         if (!dataFile.exists()) return;
         try (Reader reader = new InputStreamReader(Files.newInputStream(dataFile.toPath()), StandardCharsets.UTF_8)) {
