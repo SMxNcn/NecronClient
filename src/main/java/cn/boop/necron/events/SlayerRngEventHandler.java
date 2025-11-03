@@ -19,8 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlayerRngEventHandler {
-    private static final Pattern SLAYER_DROP_PATTERN = Pattern.compile("^[A-Z ]+DROP!? \\(([^)]+)\\) \\(\\+\\d{1,3}% Magic Find\\)$");
-    private static final Pattern RNG_RESET_PATTERN = Pattern.compile("§d§lRNG METER! §r§aReselected the (.+?) §afor (.+?)§c! §e§lCLICK HERE §r§ato select a new drop!§r");
+    private static final Pattern RNG_RESET_PATTERN = Pattern.compile("§d§lRNG METER! §r§aReselected the (.+?) §afor §c(.+?)§a! §e§lCLICK HERE §r§ato select a new drop!§r");
     private static final Pattern SET_PATTERN = Pattern.compile("§r§aYou set your §r§d(.+) RNG Meter §r§ato drop (.+)§r§a!§r");
     private static final Pattern INV_SCORE_PATTERN = Pattern.compile("^([\\w,]+)/([\\w.,]+)$");
 
@@ -35,17 +34,19 @@ public class SlayerRngEventHandler {
         Matcher resetMatcher = RNG_RESET_PATTERN.matcher(message);
 
         if (setMatcher.find()) {
-            System.out.println("Set Pattern matched!");
             String slayerType = setMatcher.group(1);
             String setItem = setMatcher.group(2).substring(2);
-            System.out.println("Set Item: " + setItem);
             guiNameToType(slayerType, setItem);
         }
 
         if (resetMatcher.find()) {
-            System.out.println("Reset Pattern matched!");
+            String currentItem = resetMatcher.group(1);
             String currentSlayer = resetMatcher.group(2);
-            SlayerRngManager.INSTANCE.setScore(currentSlayer, 0);
+            String selectedDrop = SlayerRngManager.INSTANCE.getItem(currentSlayer);
+
+            if (selectedDrop != null && selectedDrop.equals(currentItem)) {
+                SlayerRngManager.INSTANCE.setScore(currentSlayer, 0);
+            }
         }
     }
 
@@ -75,8 +76,6 @@ public class SlayerRngEventHandler {
 
             String itemName = item.getDisplayName();
             if (itemName == null || !itemName.replaceAll("§.", "").equals("RNG Meter")) continue;
-
-            System.out.println("Item Name: " + itemName);
             processSlayerRngMeterItem(item);
         }
     }
@@ -101,7 +100,6 @@ public class SlayerRngEventHandler {
             String cleanLine = line.replaceAll("§.", "");
             if (isValidSlayerType(cleanLine)) {
                 slayerType = getSlayerByGuiName(cleanLine);
-                System.out.println("Slayer Type: " + slayerType);
                 break;
             }
         }
@@ -121,17 +119,13 @@ public class SlayerRngEventHandler {
                 String currStr = scoreMatcher.group(1);
 
                 current = Integer.parseInt(currStr.replaceAll(",", ""));
-                System.out.println("Current: " + current);
                 break;
             }
         }
 
         if (slayerType == null) return;
 
-        System.out.println("Setting item: " + slayerType + " = " + drop);
         guiNameToType(slayerType, drop);
-
-        System.out.println("Setting score: " + slayerType + " = " + current);
         SlayerRngManager.INSTANCE.setScore(slayerType, current);
     }
 
