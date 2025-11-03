@@ -21,8 +21,10 @@ import static cn.boop.necron.config.impl.EtherwarpOptionsImpl.etherwarp;
 
 public class Etherwarp {
     private boolean lastLeftClick = false;
+    private boolean wasInGui = false;
+    private int guiCloseDelay = 0;
     private static final ExecutorService executor = Executors.newFixedThreadPool(2, new ThreadFactory() {
-        private final AtomicInteger counter = new AtomicInteger(0);
+    private final AtomicInteger counter = new AtomicInteger(0);
 
         @Override
         public Thread newThread(@NotNull Runnable r) {
@@ -34,8 +36,22 @@ public class Etherwarp {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
+        if (!etherwarp || !LocationUtils.inSkyBlock) return;
+
         boolean currentLeftClick = Mouse.isButtonDown(0);
-        if (!etherwarp || !LocationUtils.inSkyBlock || Necron.mc.currentScreen != null) return;
+        boolean currentlyInGui = Necron.mc.currentScreen != null;
+
+        if (wasInGui && !currentlyInGui) guiCloseDelay = 10;
+        wasInGui = currentlyInGui;
+
+        if (currentlyInGui) {
+            if (guiCloseDelay > 0) {
+                guiCloseDelay--;
+            }
+            lastLeftClick = currentLeftClick;
+            return;
+        }
+
         if (Necron.mc.thePlayer.inventory.getCurrentItem() == null || !isEtherwarpItem(Necron.mc.thePlayer.inventory.getCurrentItem())) return;
 
         if (EtherwarpRouter.waypointCache.isEmpty() || EtherwarpRouter.currentWaypointIndex == -1 || !RouterOptionsImpl.router) {
