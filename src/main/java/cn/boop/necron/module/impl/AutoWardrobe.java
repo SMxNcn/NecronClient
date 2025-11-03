@@ -41,14 +41,16 @@ public class AutoWardrobe {
 
             if (slot != null && slot.slotNumber >= 36 && slot.slotNumber <= 44) {
                 ItemStack stack = slot.getStack();
-                EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getMetadata());
+                if (stack != null && stack.getItem() instanceof ItemDye) {
+                    EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getMetadata());
 
-                if (stack.getItem() instanceof ItemDye && dyeColor == EnumDyeColor.LIME) {
-                    if (unEquip || (LocationUtils.inDungeon && blockInDungeon)) {
-                        event.setCanceled(true);
+                    if (dyeColor == EnumDyeColor.LIME) {
+                        if (unEquip || (LocationUtils.inDungeon && blockInDungeon)) {
+                            event.setCanceled(true);
+                        }
+                    } else {
+                        closeWardrobe();
                     }
-                } else {
-                    closeWardrobe();
                 }
             }
         }
@@ -59,9 +61,38 @@ public class AutoWardrobe {
         if (isInWardrobe && event.gui instanceof GuiChest) {
             if (Keyboard.getEventKeyState()) {
                 int key = Keyboard.getEventKey();
-                if (key >= 2 && key <= 10) closeWardrobe();
+
+                if (shouldCancelKeyPress(key)) {
+                    event.setCanceled(true);
+                } else if (key >= 2 && key <= 10) {
+                    closeWardrobe();
+                }
             }
         }
+    }
+
+    private boolean shouldCancelKeyPress(int key) {
+        if (!unEquip) return false;
+        if (blockInDungeon && !LocationUtils.inDungeon) return false;
+
+        int slotNumber = 35 + (key - 1);
+
+        if (Necron.mc.currentScreen instanceof GuiChest) {
+            GuiChest gui = (GuiChest) Necron.mc.currentScreen;
+            if (gui.inventorySlots instanceof ContainerChest) {
+                if (slotNumber >= 0 && slotNumber < gui.inventorySlots.inventorySlots.size()) {
+                    Slot slot = gui.inventorySlots.getSlot(slotNumber);
+                    if (slot != null && slot.getHasStack()) {
+                        ItemStack stack = slot.getStack();
+                        if (stack != null && stack.getItem() instanceof ItemDye) {
+                            EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getMetadata());
+                            return dyeColor == EnumDyeColor.LIME;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private static void closeWardrobe() {

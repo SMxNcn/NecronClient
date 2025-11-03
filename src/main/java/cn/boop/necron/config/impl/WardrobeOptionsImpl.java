@@ -7,6 +7,8 @@ public class WardrobeOptionsImpl extends ModConfig {
     public WardrobeOptionsImpl() {
         super("Wardrobe", "necron/wardrobe.json");
         initialize();
+
+        addDependency("blockInDungeon", "unEquip");
     }
 
     @Switch(name = "Enabled", description = "Wardrobe QoL")
