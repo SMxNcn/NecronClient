@@ -100,6 +100,8 @@ public class LootEventHandler {
     private void checkAllItems(GuiChest guiChest) {
         ContainerChest container = (ContainerChest) guiChest.inventorySlots;
         IInventory lowerChest = container.getLowerChestInventory();
+        if (!LocationUtils.inDungeon) return;
+
         String floor = LocationUtils.floor.name.replaceAll("[()]", "");
 
         for (int i = 0; i < lowerChest.getSizeInventory(); i++) {
@@ -118,6 +120,7 @@ public class LootEventHandler {
     }
 
     private void sendRareItemNames(IInventory inventory) {
+        if (!LocationUtils.inDungeon) return;
         for (int i = 9; i <= 17 && i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack == null) return;
@@ -151,6 +154,8 @@ public class LootEventHandler {
                 double percentage = DungeonRngManager.INSTANCE.getCurrentFloorMeterPercentage();
                 DungeonRngManager.INSTANCE.setScore(floor, 0);
                 Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
+                DungeonRngManager.INSTANCE.addScore(floor, DungeonRngEventHandler.getLastScore());
+                DungeonRngEventHandler.setLastScore(0);
                 if (sendToParty && LocationUtils.inDungeon) {
                     Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
                 }
