@@ -158,14 +158,14 @@ public class SlayerEventHandler {
 
         if (baseXP > 0) {
             double multiplier = AatroxBuffChecker.getSlayerXPMultiplier();
-            int actualXP = (int) Math.ceil(baseXP * multiplier);
+            int actualXP = (int) Math.round(baseXP * multiplier);
 
             String slayerName = slayer.getDisplayName();
             SlayerRngManager.INSTANCE.addScore(slayerName, actualXP);
 
             int currentScore = SlayerRngManager.INSTANCE.getScore(slayerName);
             Utils.modMessage("§dRNG Meter §7gained §6" + actualXP + " §7XP! (§6" +
-                    (currentScore + actualXP) + " §bScore§7)");
+                    currentScore + " §bScore§7)");
         }
     }
 

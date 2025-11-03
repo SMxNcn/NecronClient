@@ -125,7 +125,7 @@ public class SlayerRngEventHandler {
 
         if (slayerType == null) return;
 
-        guiNameToType(slayerType, drop);
+        SlayerRngManager.INSTANCE.setItem(slayerType, drop);
         SlayerRngManager.INSTANCE.setScore(slayerType, current);
     }
 
