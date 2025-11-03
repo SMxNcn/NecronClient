@@ -148,7 +148,7 @@ public class LocationUtils {
         List<String> scoreboard = ScoreboardUtils.getScoreboard();
         for(String line : scoreboard) {
             String cleanLine = ScoreboardUtils.cleanSB(line);
-            if(cleanLine.matches("^ ⏣.*")) {
+            if(cleanLine.matches("^ ⏣.*") || cleanLine.matches("^ ф.*")) {
                 currentZone = cleanLine.substring(3);
                 break;
             }
