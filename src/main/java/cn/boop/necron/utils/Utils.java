@@ -1,12 +1,15 @@
 package cn.boop.necron.utils;
 
 import cn.boop.necron.Necron;
+import kotlin.Pair;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
-import kotlin.Pair;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class Utils {
     public static final Random random = new Random();
@@ -93,5 +96,9 @@ public class Utils {
         }
 
         return cleanName;
+    }
+
+    public static String addNumSeparator(int number) {
+        return String.format("%,d", number);
     }
 }

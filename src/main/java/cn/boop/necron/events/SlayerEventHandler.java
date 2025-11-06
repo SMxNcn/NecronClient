@@ -60,7 +60,7 @@ public class SlayerEventHandler {
                 if (selectedItem != null && selectedItem.equals(droppedItem)) {
                     int score = SlayerRngManager.INSTANCE.getScore(slayer.getDisplayName());
                     double percentage = SlayerRngManager.INSTANCE.getMeterPercentage(slayer.getDisplayName());
-                    Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
+                    Utils.modMessage("§dRng Item §7reset! (§6" + Utils.addNumSeparator(score) + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
                 }
 
                 if (storedXpMatcher.find()) {
@@ -164,8 +164,8 @@ public class SlayerEventHandler {
             SlayerRngManager.INSTANCE.addScore(slayerName, actualXP);
 
             int currentScore = SlayerRngManager.INSTANCE.getScore(slayerName);
-            Utils.modMessage("§dRNG Meter §7gained §6" + actualXP + " §7XP! (§6" +
-                    currentScore + " §bScore§7)");
+            Utils.modMessage("§dRNG Meter §7gained §6" + Utils.addNumSeparator(actualXP) + " §7XP! (§6" +
+                    Utils.addNumSeparator(currentScore) + " §bScore§7)");
         }
     }
 

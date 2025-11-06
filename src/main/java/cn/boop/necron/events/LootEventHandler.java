@@ -153,7 +153,7 @@ public class LootEventHandler {
                 int score = currentMeter.score;
                 double percentage = DungeonRngManager.INSTANCE.getCurrentFloorMeterPercentage();
                 DungeonRngManager.INSTANCE.setScore(floor, 0);
-                Utils.modMessage("§dRng Item §7reset! (§6" + score + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
+                Utils.modMessage("§dRng Item §7reset! (§6" + Utils.addNumSeparator(score) + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
                 DungeonRngManager.INSTANCE.addScore(floor, DungeonRngEventHandler.getLastScore());
                 DungeonRngEventHandler.setLastScore(0);
                 if (sendToParty && LocationUtils.inDungeon) {
