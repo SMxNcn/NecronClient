@@ -20,16 +20,12 @@ public class ScoreboardUtils {
         StringBuilder cleaned = new StringBuilder();
 
         for(char c : nvString) {
-            // 保留可打印的ASCII字符和常见符号
-            if ((c >= 32 && c <= 126) || (c >= 48 && c <= 57) ||
-                    (c >= 65 && c <= 90) || (c >= 97 && c <= 122) ||
-                    c == ' ' || c == '/' || c == ':' || c == '.' ||
-                    c == '-' || c == '_' || c == '(' || c == ')' || c == '⏣') {
+            if (c >= 32 && c <= 126 || c >= 0x00C0 && c <= 0x017F || c >= 0x2000 && c <= 0x2BFF || c >= 0x4E00 && c <= 0x9FFF || c >= 0x0400 && c <= 0x04FF) {
                 cleaned.append(c);
             }
         }
 
-        return cleaned.toString();
+        return cleaned.toString().replace("\u26BD", "");
     }
 
     @SuppressWarnings({"ExecutionException", "IllegalArgumentException"})
