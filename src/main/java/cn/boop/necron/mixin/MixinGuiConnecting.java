@@ -16,13 +16,7 @@ public class MixinGuiConnecting {
     private void onInit(GuiScreen parentScreen, Minecraft mcIn, ServerData serverDataIn, CallbackInfo ci) {
         if (serverDataIn != null) {
             ServerUtils.lastServerData = serverDataIn;
-        }
-    }
-
-    @Inject(method = "<init>(Lnet/minecraft/client/gui/GuiScreen;Lnet/minecraft/client/Minecraft;Ljava/lang/String;I)V", at = @At("RETURN"))
-    private void onInit(GuiScreen parentScreen, Minecraft mcIn, String host, int port, CallbackInfo ci) {
-        if (host != null && !host.isEmpty()) {
-            ServerUtils.lastServerData = new ServerData("Direct Connect", host + ":" + port, false);
+            ServerUtils.parentScreen = parentScreen;
         }
     }
 }
