@@ -7,7 +7,6 @@ import cn.boop.necron.module.impl.slayer.SlayerState;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.ScoreboardUtils;
 import cn.boop.necron.utils.Utils;
-import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -21,9 +20,7 @@ import static cn.boop.necron.config.impl.SlayerOptionsImpl.killTime;
 
 public class SlayerEventHandler {
     private static final Map<LocationUtils.Island, Map<String, Slayer>> SLAYER_MAPPING = createSlayerMapping();
-    private static final Pattern SLAYER_DROP_PATTERN = Pattern.compile("^§r§.§l[A-Z ]+DROP!? §r§7\\(§r§f§r(.*?)§r§7\\)");
     public static final Pattern STATUS_PATTERN = Pattern.compile("\\(\\d{1,3}(?:,\\d{3})*/\\d{1,3}(?:,\\d{3})*k?\\) (?:Combat|Kills)");
-    private static final Pattern STORED_XP_PATTERN = Pattern.compile("§dRNG Meter §f- §d(\\d+) Stored XP§r");
 
     private static long startTime = 0L;
     private static boolean inCombat = false;
@@ -40,35 +37,6 @@ public class SlayerEventHandler {
             ticks = 0;
         }
         ticks++;
-    }
-
-    @SubscribeEvent
-    public void onChat(ClientChatReceivedEvent event) {
-        if (event.type != 0 || !LocationUtils.inSkyBlock) return;
-        String message = event.message.getFormattedText();
-
-        Matcher dropMatcher = SLAYER_DROP_PATTERN.matcher(message);
-        Matcher storedXpMatcher = STORED_XP_PATTERN.matcher(message);
-
-        if (dropMatcher.find()) {
-            String droppedItem = dropMatcher.group(1);
-
-            Slayer slayer = SlayerEventHandler.getCurrentSlayer();
-            if (slayer != Slayer.Unknown) {
-                String selectedItem = SlayerRngManager.INSTANCE.getItem(slayer.getDisplayName());
-
-                if (selectedItem != null && selectedItem.equals(droppedItem)) {
-                    int score = SlayerRngManager.INSTANCE.getScore(slayer.getDisplayName());
-                    double percentage = SlayerRngManager.INSTANCE.getMeterPercentage(slayer.getDisplayName());
-                    Utils.modMessage("§dRng Item §7reset! (§6" + Utils.addNumSeparator(score) + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
-                }
-
-                if (storedXpMatcher.find()) {
-                    int storedXp = Integer.parseInt(storedXpMatcher.group(1));
-                    SlayerRngManager.INSTANCE.setScore(slayer.getDisplayName(), storedXp);
-                }
-            }
-        }
     }
 
     private static Map<LocationUtils.Island, Map<String, Slayer>> createSlayerMapping() {
