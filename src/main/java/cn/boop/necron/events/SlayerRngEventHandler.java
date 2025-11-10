@@ -4,6 +4,7 @@ import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.rng.SlayerRngManager;
 import cn.boop.necron.module.impl.slayer.Slayer;
 import cn.boop.necron.utils.LocationUtils;
+import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -19,11 +20,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SlayerRngEventHandler {
+    private static final Pattern SLAYER_DROP_PATTERN = Pattern.compile("^§r§.§l[A-Z ]+DROP!? §r§7\\(§r§f§r(.*?)§r§7\\)");
     private static final Pattern RNG_RESET_PATTERN = Pattern.compile("§d§lRNG METER! §r§aReselected the (.+?) §afor §c(.+?)§a! §e§lCLICK HERE §r§ato select a new drop!§r");
     private static final Pattern SET_PATTERN = Pattern.compile("§r§aYou set your §r§d(.+) RNG Meter §r§ato drop (.+)§r§a!§r");
     private static final Pattern INV_SCORE_PATTERN = Pattern.compile("^([\\w,]+)/([\\w.,]+)$");
+    private static final Pattern STORED_XP_PATTERN = Pattern.compile("§dRNG Meter §f- §d(\\d+) Stored XP§r");
 
     private boolean scanned = false;
+    private static int resetScore = 0;
+    private static double percentage = 0;
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
@@ -31,22 +36,49 @@ public class SlayerRngEventHandler {
         String message = event.message.getFormattedText();
 
         Matcher setMatcher = SET_PATTERN.matcher(message);
+        Matcher dropMatcher = SLAYER_DROP_PATTERN.matcher(message);
         Matcher resetMatcher = RNG_RESET_PATTERN.matcher(message);
-
-        if (setMatcher.find()) {
-            String slayerType = setMatcher.group(1);
-            String setItem = setMatcher.group(2).substring(2);
-            guiNameToType(slayerType, setItem);
-        }
+        Matcher storedXpMatcher = STORED_XP_PATTERN.matcher(message);
 
         if (resetMatcher.find()) {
             String currentItem = resetMatcher.group(1);
             String currentSlayer = resetMatcher.group(2);
             String selectedDrop = SlayerRngManager.INSTANCE.getItem(currentSlayer);
+            resetScore = SlayerRngManager.INSTANCE.getScore(currentSlayer);
+            percentage = SlayerRngManager.INSTANCE.getMeterPercentage(SlayerEventHandler.getCurrentSlayer().getDisplayName());
 
             if (selectedDrop != null && selectedDrop.equals(currentItem)) {
                 SlayerRngManager.INSTANCE.setScore(currentSlayer, 0);
             }
+            return;
+        }
+
+        if (dropMatcher.find()) {
+            String droppedItem = dropMatcher.group(1);
+
+            Slayer slayer = SlayerEventHandler.getCurrentSlayer();
+            if (slayer != Slayer.Unknown) {
+                String selectedItem = SlayerRngManager.INSTANCE.getItem(slayer.getDisplayName());
+
+                if (selectedItem != null && selectedItem.equals(droppedItem)) {
+                    int score = SlayerRngEventHandler.getResetScore();
+                    Utils.modMessage("§dRng Item §7reset! (§6" + Utils.addNumSeparator(score) + " §bScore, §6" + String.format("%.2f", percentage) + "§b%§7)");
+                }
+            }
+            return;
+        }
+
+        if (storedXpMatcher.find()) {
+            int storedXp = Integer.parseInt(storedXpMatcher.group(1));
+            SlayerRngManager.INSTANCE.setScore(SlayerEventHandler.getCurrentSlayer().getDisplayName(), storedXp);
+            return;
+        }
+
+
+        if (setMatcher.find()) {
+            String slayerType = setMatcher.group(1);
+            String setItem = setMatcher.group(2).substring(2);
+            guiNameToType(slayerType, setItem);
         }
     }
 
@@ -167,5 +199,9 @@ public class SlayerRngEventHandler {
         if (event.gui == null) {
             scanned = false;
         }
+    }
+
+    public static int getResetScore() {
+        return resetScore;
     }
 }

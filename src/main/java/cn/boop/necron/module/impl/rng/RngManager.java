@@ -224,7 +224,7 @@ public abstract class RngManager {
             Map<String, Object> fullData = gson.fromJson(reader, Map.class);
             if (fullData != null && fullData.containsKey("rngMeter")) {
                 Map<String, Object> rngMeterObj = (Map<String, Object>) fullData.get("rngMeter");
-                loadMeterData(rngMeterObj, "data", DungeonRngManager.INSTANCE.meters);
+                loadMeterData(rngMeterObj, "dungeonData", DungeonRngManager.INSTANCE.meters);
                 loadMeterData(rngMeterObj, "slayerData", SlayerRngManager.INSTANCE.meters);
             }
         } catch (Exception e) {

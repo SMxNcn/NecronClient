@@ -354,7 +354,7 @@
         "§9Furball": 30637,
         "§5Red Claw Egg": 410900,
         "§6◆ Couture Rune I": 219833,
-        "§5Overfluc Capacitor": 1232700,
+        "§5Overflux Capacitor": 1232700,
         "§9Grizzly Salmon": 880500,
         "§bCeleste Dye": 75000000
     },
@@ -379,7 +379,15 @@
         "§5Byzantium Dye": 75000000
     },
   "Vampire Slayer": {
-        "§4Sangira Dye": 100000
+        "§4Sangira Dye": 100000,
+        "§aEnchanted Book Bundle": 1687,
+        "§5◆ Soultwist Rune I": 1912,
+        "§6Bubba Blister": 2250,
+        "§6Fang-tastic Chocolate Chip": 2250,
+        "§6Guardian Lucky Block": 3600,
+        "§5McGrubber's Burger": 18450,
+        "§6Unfanged Vampire Part": 18450,
+        "§6Enchanted Book Bundle": 12525
     },
   "Blaze Slayer": {
         "§a5Enchanted Blaze Powder": 2351,

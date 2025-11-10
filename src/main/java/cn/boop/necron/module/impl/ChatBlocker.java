@@ -91,6 +91,10 @@ public class ChatBlocker {
         return false;
     }
 
+    public static boolean isPlayerWhitelisted(String playerName) {
+        return whitelist.stream().anyMatch(name -> name.equalsIgnoreCase(playerName));
+    }
+
     private static boolean containsIgnoreCase(String str) {
         for (String item : ChatBlocker.whitelist) {
             if (item.equalsIgnoreCase(str)) {

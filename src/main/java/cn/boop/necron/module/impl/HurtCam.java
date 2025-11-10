@@ -2,7 +2,6 @@ package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.utils.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -31,15 +30,10 @@ public final class HurtCam {
     @SubscribeEvent
     public void onRenderScreen(RenderGameOverlayEvent.Post event) {
         if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
-            if (HurtCam.isHurt() && hurtCam && Minecraft.getMinecraft().currentScreen == null) {
-                ScaledResolution sc = new ScaledResolution(Minecraft.getMinecraft());
-                RenderUtils.drawBorderedRect(0.0f, 0.0f, sc.getScaledWidth(), sc.getScaledHeight(), 10.0f, new Color(255, 0, 0, 25 * Necron.mc.thePlayer.hurtTime).getRGB()
-                );
+            if (isHurt && hurtCam) {
+                ScaledResolution sc = new ScaledResolution(Necron.mc);
+                RenderUtils.drawBorderedRect(0.0f, 0.0f, sc.getScaledWidth(), sc.getScaledHeight(), 10.0f, new Color(255, 0, 0, 25 * Necron.mc.thePlayer.hurtTime).getRGB());
             }
         }
-    }
-
-    private static boolean isHurt() {
-        return isHurt;
     }
 }

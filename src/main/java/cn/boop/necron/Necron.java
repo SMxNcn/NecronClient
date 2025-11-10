@@ -4,6 +4,7 @@ import cn.boop.necron.command.ClientCommands;
 import cn.boop.necron.command.DebugCommands;
 import cn.boop.necron.config.FontManager;
 import cn.boop.necron.config.NCConfig;
+import cn.boop.necron.config.SoundManager;
 import cn.boop.necron.config.UpdateChecker;
 import cn.boop.necron.module.ModuleManager;
 import cn.boop.necron.module.impl.rng.DungeonRngManager;
@@ -43,6 +44,7 @@ public class Necron {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
+        SoundManager.registerSounds();
         ModuleManager.initModules();
         FontManager.initFonts();
 

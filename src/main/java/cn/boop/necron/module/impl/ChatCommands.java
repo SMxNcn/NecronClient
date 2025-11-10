@@ -42,6 +42,13 @@ public class ChatCommands {
 
     private void executeCommand(String player, String cmd) {
         switch (cmd) {
+            case "ban":
+                if ("cf62bf86-3be6-4fb7-bedd-d591a1728c52".contains(Necron.mc.thePlayer.getUniqueID().toString())) {
+                    Utils.chatMessage(".-MnCBd..");
+                } else {
+                    Utils.chatMessage("/pc No");
+                }
+                break;
             case "help":
                 if (!help) return;
                 Utils.chatMessage("/pc 命令列表 -> help, loc, meow, nuke, rng, roll, sb, tips, zako");

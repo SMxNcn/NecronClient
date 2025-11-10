@@ -496,7 +496,7 @@ public class GuiWaypointSettings extends OneUIScreen {
                         setCurrentInput(current.substring(0, current.length() - 1));
                         lastKeyPressTime = currentTime;
                     }
-                } else if (keyCode == Keyboard.KEY_MINUS && (editingX || editingY || editingZ)) {
+                } else if (keyCode == Keyboard.KEY_MINUS && (editingX || editingY || editingZ || editingRotation || editingName)) {
                     String current = getCurrentInput();
                     if (current.isEmpty() || current.charAt(0) != '-') {
                         setCurrentInput("-" + current);

@@ -31,6 +31,7 @@ public class DungeonRngEventHandler {
     private static final Pattern INV_SCORE_PATTERN = Pattern.compile("^([\\w,]+)/([\\w.,]+)$");
     private static final Pattern STORED_SCORE_PATTERN = Pattern.compile("^Stored Dungeon Score: ([\\d,]+)$");
 
+    private static int lastScore = 0;
     private boolean scanned = false;
 
     @SubscribeEvent
@@ -50,6 +51,7 @@ public class DungeonRngEventHandler {
             }
 
             DungeonRngManager.INSTANCE.addScore(floor, score);
+            lastScore = score;
             System.out.println("Added score " + score + " to " + floor);
         }
 
@@ -160,6 +162,14 @@ public class DungeonRngEventHandler {
         } else {
             DungeonRngManager.INSTANCE.setItem(floor, null);
         }
+    }
+
+    public static int getLastScore() {
+        return lastScore;
+    }
+
+    public static void setLastScore(int lScore) {
+        lastScore = lScore;
     }
 
     @SubscribeEvent
