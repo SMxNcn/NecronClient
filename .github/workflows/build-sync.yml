@@ -26,23 +26,12 @@ jobs:
           chmod +x gradlew
           ./gradlew build
 
-      - name: Debug build outputs
-        run: |
-          echo "=== 构建产物调试信息 ==="
-          echo "JAR文件列表:"
-          find build -name "*.jar" -type f | while read file; do
-            echo "  - $file ($(basename "$file"))"
-          done
-          echo "ZIP文件列表:"
-          ls -la build/distributions/*.zip 2>/dev/null || echo "无ZIP文件"
-
       - name: Upload build artifacts (Always)
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ github.sha }}
           path: |
             build/libs/*.jar
-            build/distributions/*.zip
           retention-days: 30
 
       - name: Check for sync trigger
@@ -85,41 +74,57 @@ jobs:
           FULL_DATE=$(date +"%Y-%m-%d %H:%M:%S")
           COMMIT_HASH=${GITHUB_SHA:0:8}
           
+          echo "构建时间: $BUILD_DATE"
+          
           # 创建目录结构
           mkdir -p "gitee-assets/latest"
           mkdir -p "gitee-assets/releases"
           
-          # 处理构建文件
-          for zipfile in build/distributions/*.zip; do
-            if [ -f "$zipfile" ]; then
-              echo "处理ZIP文件: $zipfile"
-              mkdir -p "temp-unzip"
-              unzip -q "$zipfile" -d "temp-unzip"
+          # 处理 JAR 文件（只有 JAR，没有 ZIP）
+          echo "=== 处理JAR文件 ==="
+          for jarfile in build/libs/*.jar; do
+            if [ -f "$jarfile" ]; then
+              JAR_BASENAME=$(basename "$jarfile" .jar)
+              echo "找到JAR文件: $jarfile (基础名: $JAR_BASENAME)"
               
-              for jarfile in "temp-unzip"/*.jar; do
-                if [ -f "$jarfile" ] && [[ "$jarfile" != *"-dev.jar" ]]; then
-                  JAR_BASENAME=$(basename "$jarfile" .jar)
-                  NEW_JAR_NAME="${JAR_BASENAME}-${BUILD_DATE}.jar"
-                  
-                  echo "处理JAR文件: $JAR_BASENAME -> $NEW_JAR_NAME"
-                  cp "$jarfile" "gitee-assets/releases/${NEW_JAR_NAME}"
-                  cp "$jarfile" "gitee-assets/latest/${JAR_BASENAME}.jar"
-                fi
-              done
-              rm -rf "temp-unzip"
+              # 跳过开发版，只处理正式版
+              if [[ "$jarfile" != *"-dev.jar" ]]; then
+                NEW_JAR_NAME="${JAR_BASENAME}-${BUILD_DATE}.jar"
+                
+                echo "处理正式版JAR: $JAR_BASENAME -> $NEW_JAR_NAME"
+                cp "$jarfile" "gitee-assets/releases/${NEW_JAR_NAME}"
+                cp "$jarfile" "gitee-assets/latest/${JAR_BASENAME}.jar"
+                echo "✅ 已复制: releases/${NEW_JAR_NAME}"
+                echo "✅ 已复制: latest/${JAR_BASENAME}.jar"
+              else
+                echo "跳过开发版JAR: $jarfile"
+              fi
             fi
           done
+          
+          # 检查是否复制了文件
+          echo "=== 检查复制的文件 ==="
+          echo "releases目录内容:"
+          ls -la "gitee-assets/releases/" 2>/dev/null || echo "releases目录为空"
+          echo "latest目录内容:"
+          ls -la "gitee-assets/latest/" 2>/dev/null || echo "latest目录为空"
           
           # 提交到 Gitee
           cd gitee-assets
           
-          # 切换到 master 分支
-          git checkout master || git checkout -b master
+          echo "Gitee仓库变更状态:"
+          git status
+          git diff --name-only --cached
           
+          # 提交变更
+          git checkout master || git checkout -b master
           git add .
-          git commit -m "Auto-sync: $BUILD_DATE"
+          git commit -m "Auto-sync: $BUILD_DATE - NecronClient v0.1.6"
           
           # 使用 SSH 推送
           git push origin master
           
           echo "✅ 成功通过 SSH 同步到 Gitee!"
+          echo "📁 同步的文件:"
+          find releases -name "*.jar" -exec basename {} \; 2>/dev/null
+          find latest -name "*.jar" -exec basename {} \; 2>/dev/null
