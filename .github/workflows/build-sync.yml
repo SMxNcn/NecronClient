@@ -26,6 +26,36 @@ jobs:
           chmod +x gradlew
           ./gradlew build
 
+      - name: Extract Version from JAR
+        id: version_extract
+        run: |
+          echo "=== 提取版本信息 ==="
+          # 查找第一个非dev的JAR文件来提取版本号
+          for jarfile in build/libs/*.jar; do
+            if [ -f "$jarfile" ] && [[ "$jarfile" != *"-dev.jar" ]]; then
+              JAR_BASENAME=$(basename "$jarfile" .jar)
+              echo "找到正式版JAR: $JAR_BASENAME"
+              
+              # 从 NecronClient-0.1.6 提取 0.1.6
+              if [[ "$JAR_BASENAME" =~ ^[^-]+-(.+)$ ]]; then
+                VERSION="${BASH_REMATCH[1]}"
+                echo "版本号: $VERSION"
+                echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+                echo "JAR_BASENAME=$JAR_BASENAME" >> $GITHUB_OUTPUT
+                break
+              else
+                echo "无法从 $JAR_BASENAME 提取版本号"
+              fi
+            fi
+          done
+          
+          # 如果没有找到版本号，使用默认值
+          if [ -z "$VERSION" ]; then
+            echo "未找到版本号，使用默认值"
+            echo "VERSION=unknown" >> $GITHUB_OUTPUT
+            echo "JAR_BASENAME=NecronClient-unknown" >> $GITHUB_OUTPUT
+          fi
+
       - name: Upload build artifacts (Always)
         uses: actions/upload-artifact@v4
         with:
@@ -73,19 +103,24 @@ jobs:
           BUILD_DATE=$(date +"%y%m%d.%H%M")
           FULL_DATE=$(date +"%Y-%m-%d %H:%M:%S")
           COMMIT_HASH=${GITHUB_SHA:0:8}
+          MOD_VERSION="${{ steps.version_extract.outputs.VERSION }}"
+          MOD_BASENAME="${{ steps.version_extract.outputs.JAR_BASENAME }}"
           
           echo "构建时间: $BUILD_DATE"
+          echo "Mod版本: v$MOD_VERSION"
+          echo "Mod名称: $MOD_BASENAME"
           
           # 创建目录结构
           mkdir -p "gitee-assets/latest"
           mkdir -p "gitee-assets/releases"
           
-          # 处理 JAR 文件（只有 JAR，没有 ZIP）
+          # 处理 JAR 文件
           echo "=== 处理JAR文件 ==="
+          SYNCED_FILES=()
           for jarfile in build/libs/*.jar; do
             if [ -f "$jarfile" ]; then
               JAR_BASENAME=$(basename "$jarfile" .jar)
-              echo "找到JAR文件: $jarfile (基础名: $JAR_BASENAME)"
+              echo "找到JAR文件: $jarfile (名称: $JAR_BASENAME)"
               
               # 跳过开发版，只处理正式版
               if [[ "$jarfile" != *"-dev.jar" ]]; then
@@ -95,36 +130,58 @@ jobs:
                 cp "$jarfile" "gitee-assets/releases/${NEW_JAR_NAME}"
                 cp "$jarfile" "gitee-assets/latest/${JAR_BASENAME}.jar"
                 echo "✅ 已复制: releases/${NEW_JAR_NAME}"
-                echo "✅ 已复制: latest/${JAR_BASENAME}.jar"
+                echo "✅ 已更新: latest/${JAR_BASENAME}.jar"
+                
+                # 记录同步的文件
+                SYNCED_FILES+=("$NEW_JAR_NAME")
               else
                 echo "跳过开发版JAR: $jarfile"
               fi
             fi
           done
           
-          # 检查是否复制了文件
-          echo "=== 检查复制的文件 ==="
-          echo "releases目录内容:"
-          ls -la "gitee-assets/releases/" 2>/dev/null || echo "releases目录为空"
-          echo "latest目录内容:"
-          ls -la "gitee-assets/latest/" 2>/dev/null || echo "latest目录为空"
+          # 生成/更新 build-info.txt
+          echo "=== 生成构建信息 ==="
+          INFO_FILE="gitee-assets/build-info.txt"
+          TEMP_INFO="temp-build-info.txt"
+          
+          # 创建新的构建信息块（添加到文件开头）
+          {
+            echo "=== Build $BUILD_DATE ==="
+            echo "构建时间: $FULL_DATE"
+            echo "Mod版本: v$MOD_VERSION"
+            echo "提交哈希: $COMMIT_HASH"
+            echo "触发提交: ${{ github.event.head_commit.message }}"
+            echo "GitHub运行ID: $GITHUB_RUN_ID"
+            echo "同步文件:"
+            for file in "${SYNCED_FILES[@]}"; do
+              if [ -f "gitee-assets/releases/$file" ]; then
+                FILESIZE=$(stat -c%s "gitee-assets/releases/$file")
+                echo "  - $file ($((FILESIZE / 1024)) KB)"
+              fi
+            done
+            echo ""
+          } > "$TEMP_INFO"
+          
+          # 将新内容添加到原有内容前面
+          if [ -f "$INFO_FILE" ]; then
+            cat "$INFO_FILE" >> "$TEMP_INFO"
+          fi
+          
+          mv "$TEMP_INFO" "$INFO_FILE"
+          echo "✅ 已更新 build-info.txt"
           
           # 提交到 Gitee
           cd gitee-assets
-          
-          echo "Gitee仓库变更状态:"
-          git status
-          git diff --name-only --cached
-          
-          # 提交变更
           git checkout master || git checkout -b master
           git add .
-          git commit -m "Auto-sync: $BUILD_DATE - NecronClient v0.1.6"
+          git commit -m "Auto-sync: $BUILD_DATE - NecronClient v$MOD_VERSION"
           
           # 使用 SSH 推送
           git push origin master
           
           echo "✅ 成功通过 SSH 同步到 Gitee!"
-          echo "📁 同步的文件:"
-          find releases -name "*.jar" -exec basename {} \; 2>/dev/null
-          find latest -name "*.jar" -exec basename {} \; 2>/dev/null
+          echo "📁 同步的构建文件:"
+          printf '  - %s\n' "${SYNCED_FILES[@]}"
+          echo "📝 Mod版本: v$MOD_VERSION"
+          echo "📝 构建信息已更新: build-info.txt"
