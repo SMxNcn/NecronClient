@@ -2,7 +2,6 @@ package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.ModuleManager;
-import cn.boop.necron.module.impl.ctjs.RngMeterManager;
 import cn.boop.necron.module.impl.AutoPath;
 import cn.boop.necron.module.impl.CropNuker;
 import cn.boop.necron.module.impl.rng.SlayerRngManager;
