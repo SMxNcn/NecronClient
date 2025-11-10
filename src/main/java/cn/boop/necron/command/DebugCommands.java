@@ -3,12 +3,16 @@ package cn.boop.necron.command;
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.ModuleManager;
 import cn.boop.necron.module.impl.ctjs.RngMeterManager;
+import cn.boop.necron.module.impl.AutoPath;
+import cn.boop.necron.module.impl.CropNuker;
+import cn.boop.necron.module.impl.rng.SlayerRngManager;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +62,10 @@ public class DebugCommands extends CommandBase {
                         int x = Integer.parseInt(args[1]);
                         int y = Integer.parseInt(args[2]);
                         int z = Integer.parseInt(args[3]);
-                    new Thread(() -> ModuleManager.getAutoPath().setTarget(new BlockPos(x, y, z)));
+                    new Thread(() -> {
+                        AutoPath.startNavigation(new BlockPos(x, y, z));
+                        Utils.modMessage("Teleport pathfinder start.");
+                    }).start();
 
                     } catch (NumberFormatException e) {
                         Utils.modMessage("§cInvalid position format.");
@@ -76,6 +83,7 @@ public class DebugCommands extends CommandBase {
                     Utils.modMessage("Player Stats:\n§7§l | §r§7inHypixel: " + (LocationUtils.inHypixel ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7inSkyBlock: " + (LocationUtils.inSkyBlock ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7Island: " + LocationUtils.getCurrentIslandName() +
+                            "\n§7§l | §r§7Zone: " + LocationUtils.currentZone +
                             "\n§7§l | §r§7Held item ID: " + itemID +
                             "\n§7§l | §r§7Held item Name:§r " + itemName +
                             "\n§7§l | §r§7Player health: §c" + Necron.mc.thePlayer.getHealth() +
@@ -85,6 +93,10 @@ public class DebugCommands extends CommandBase {
                             "\n§7§l | §r§7Instance player(s): " + DungeonUtils.dungeonPlayers.size() +
                             "\n§7§l | §r§7Current M7 Phase: " + LocationUtils.getM7Phase()
                             );
+                    break;
+                case "stoppath":
+                    AutoPath.stopNavigation();
+                    Utils.modMessage("Teleport pathfinder stop.");
                     break;
                 case "test":
                     break;
