@@ -166,7 +166,7 @@ jobs:
           Releases: $(find releases -name "*-${BUILD_DATE}.jar" -exec basename {} \; | tr '\n' ' ')
           "
           
-          git push origin main
+          git push origin master
           
           echo "✅ 成功同步到 Gitee 资源仓库!"
           echo "📁 Latest目录内容:"
