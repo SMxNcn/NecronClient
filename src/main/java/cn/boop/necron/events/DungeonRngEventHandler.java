@@ -16,6 +16,8 @@ import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +33,7 @@ public class DungeonRngEventHandler {
     private static final Pattern INV_SCORE_PATTERN = Pattern.compile("^([\\w,]+)/([\\w.,]+)$");
     private static final Pattern STORED_SCORE_PATTERN = Pattern.compile("^Stored Dungeon Score: ([\\d,]+)$");
 
+    private static final Map<String, Long> lastProcessedTimes = new HashMap<>();
     private static int lastScore = 0;
     private boolean scanned = false;
 
@@ -41,11 +44,16 @@ public class DungeonRngEventHandler {
 
         Matcher scoreMatcher = SCORE_PATTERN.matcher(msg);
         if (scoreMatcher.find()) {
-            int score = Integer.parseInt(scoreMatcher.group(1));
             String rank = scoreMatcher.group(2);
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
+            long currentTime = System.currentTimeMillis();
+            Long lastTime = lastProcessedTimes.get(floor);
 
-            if (rank.equals("S")) score = (int) Math.floor(score * 0.7);
+            if (lastTime != null && currentTime - lastTime < 60_000) return;
+            lastProcessedTimes.put(floor, currentTime);
+            int score = Integer.parseInt(scoreMatcher.group(1));
+
+            if (rank.equals("S")) score = (int) Math.round(score * 0.7);
             if (hasDaemon) {
                 score *= (int) (1 + daemonLevel / 100.0);
             }

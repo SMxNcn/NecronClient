@@ -30,7 +30,7 @@ public class LootProtector {
     }
 
     public static boolean hasRareLoot(IInventory inventory) {
-        for (int i = 9; i <= 17 && i < inventory.getSizeInventory(); i++) {
+        for (int i = 9; i <= 26 && i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null) {
                 String itemName = Utils.removeFormatting(stack.getDisplayName());
