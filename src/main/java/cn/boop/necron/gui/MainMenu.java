@@ -144,7 +144,7 @@ public final class MainMenu extends GuiScreen {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (keyCode == 1 && this.mc.currentScreen instanceof MainMenu) return;
+        if (keyCode == 1 && this.mc.currentScreen == this) return;
         super.keyTyped(typedChar, keyCode);
     }
 
