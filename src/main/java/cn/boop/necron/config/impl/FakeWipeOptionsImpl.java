@@ -11,4 +11,6 @@ public class FakeWipeOptionsImpl extends ModConfig {
 
     @Switch(name = "Enabled", description = "Fake wipe")
     public static boolean fakeWipe = false;
+    @Switch(name = "Can trigger ban gui", description = "Trigger ban gui")
+    public static boolean triggerBan = false;
 }

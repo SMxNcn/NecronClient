@@ -9,12 +9,16 @@ import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class DebugCommands extends CommandBase {
+    private static int banCount = 0;
+    private static final String[] DENY_MESSAGES = {"No.", "STOP pls❤", "Alert!"};
+
     @Override
     public String getCommandName() {
         return "ncdebug";
@@ -39,6 +43,17 @@ public class DebugCommands extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length > 0) {
             switch (args[0]) {
+                case "ban":
+                    banCount++;
+                    if (banCount >= 4) {
+                        FakeWipe.triggerBanGui();
+                        banCount = 0;
+                    } else if (banCount == 3) {
+                        Necron.mc.thePlayer.addChatComponentMessage(new ChatComponentText("§dFrom §c[§6ዞ§c] §cHypixel§7: You want a ban? Well, well."));
+                    } else {
+                        Necron.mc.thePlayer.addChatComponentMessage(new ChatComponentText("§c" + DENY_MESSAGES[Utils.random.nextInt(DENY_MESSAGES.length)]));
+                    }
+                    break;
                 case "dungeonInfo":
                     if (!DungeonUtils.dungeonPlayers.isEmpty()) {
                         for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
