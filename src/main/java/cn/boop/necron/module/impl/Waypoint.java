@@ -1,7 +1,6 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.config.ResetReason;
 import cn.boop.necron.config.impl.FarmingOptionsImpl;
 import cn.boop.necron.utils.JsonUtils;
 import cn.boop.necron.utils.LocationUtils;
@@ -112,7 +111,7 @@ public class Waypoint {
         currentFile = null;
         waypointCounter = 1;
 
-        CropNuker.reset(ResetReason.UNLOAD);
+        CropNuker.reset();
         EtherwarpRouter.routeCompleted = true;
         EtherwarpRouter.routerNotified = true;
         EtherwarpRouter.waypointCache.clear();
@@ -199,7 +198,7 @@ public class Waypoint {
         for (Waypoint wp : waypoints) {
             switch (currentType) {
                 case Router:
-                    RenderUtils.drawCircleOnBlock(wp.x, wp.y, wp.z, boxColor.toJavaColor(), 2f, partialTicks);
+                    RenderUtils.drawCircleOnBlock(wp.x, wp.y, wp.z, boxColor.toJavaColor(), 2f, 0.55f, partialTicks);
                     RenderUtils.draw3DText("#" + wp.id, wp.x + 0.5, wp.y + 1.2, wp.z + 0.5, textColor.toJavaColor(), partialTicks);
                     break;
                 case Normal:

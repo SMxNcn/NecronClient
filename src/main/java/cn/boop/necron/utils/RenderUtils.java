@@ -349,7 +349,7 @@ public class RenderUtils {
         GlStateManager.popMatrix();
     }
 
-    public static void drawCircleOnBlock(double x, double y, double z, Color color, float lineWidth, float partialTicks) {
+    public static void drawCircleOnBlock(double x, double y, double z, Color color, float lineWidth, float radius, float partialTicks) {
         Entity viewer = Minecraft.getMinecraft().getRenderViewEntity();
         if (viewer == null) return;
 
@@ -380,8 +380,8 @@ public class RenderUtils {
 
         for (int i = 0; i < segments; i++) {
             double angle = 2 * Math.PI * i / segments;
-            double circleX = centerX + 0.55 * Math.cos(angle); // 半径为0.6
-            double circleZ = centerZ + 0.55 * Math.sin(angle);
+            double circleX = centerX + radius * Math.cos(angle); // 半径为0.6
+            double circleZ = centerZ + radius * Math.sin(angle);
             GL11.glVertex3d(circleX, centerY, circleZ);
         }
         GL11.glEnd();

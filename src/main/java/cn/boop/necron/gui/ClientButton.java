@@ -40,7 +40,7 @@ public class ClientButton extends GuiButton {
         float smoothFactor = isHovered ? HOVER_IN_SPEED * 10f : HOVER_OUT_SPEED * 10f;
         float blendFactor = 1.0f - (float)Math.exp(-smoothFactor * deltaTime);
         hoverAlpha = hoverAlpha + (targetAlpha - hoverAlpha) * blendFactor;
-        if (Math.abs(targetAlpha - hoverAlpha) < 0.005f) hoverAlpha = targetAlpha;
+        if (Math.abs(targetAlpha - hoverAlpha) < 0.001f) hoverAlpha = targetAlpha;
 
         hoverAlpha = MathHelper.clamp_float(hoverAlpha, 0.0F, 0.55F);
 
@@ -58,7 +58,7 @@ public class ClientButton extends GuiButton {
                 isHovered ? hoverColor : borderColor
         );
 
-        if (hoverAlpha > 0.01f) {
+        if (hoverAlpha > 0.001f) {
             int alpha = (int)(hoverAlpha * 0.6f * 255);
             int overlayColor = (alpha << 24) | 0x00FFFFFF;
             RenderUtils.drawRoundedRect(xPosition, yPosition,
@@ -66,7 +66,7 @@ public class ClientButton extends GuiButton {
                     CORNER_RADIUS, overlayColor);
         }
 
-        int textAlpha = (int)((0.7f + hoverAlpha * 0.3f) * 255);
+        int textAlpha = (int)((0.75f + hoverAlpha * 0.3f) * 255);
         this.drawCenteredString(mc.fontRendererObj, this.displayString,
             this.xPosition + this.width / 2,
             this.yPosition + (this.height - 8) / 2,

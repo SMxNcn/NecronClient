@@ -19,6 +19,8 @@ public class DungeonESP {
             if (entityObj instanceof EntityWither && witherESP) {
                 if (!(LocationUtils.floor == LocationUtils.Floor.MASTER_7 || LocationUtils.floor == LocationUtils.Floor.FLOOR_7)) return;
                 EntityWither wither = (EntityWither) entityObj;
+                if (wither.isInvisible()) continue;
+
                 double interpPosX = wither.lastTickPosX + (wither.posX - wither.lastTickPosX) * event.partialTicks;
                 double interpPosY = wither.lastTickPosY + (wither.posY - wither.lastTickPosY) * event.partialTicks;
                 double interpPosZ = wither.lastTickPosZ + (wither.posZ - wither.lastTickPosZ) * event.partialTicks;
@@ -27,12 +29,14 @@ public class DungeonESP {
                         .offset(interpPosX - wither.posX, interpPosY - wither.posY, interpPosZ - wither.posZ);
 
                 RenderUtils.drawOutlinedBoundingBox(
-                        smoothESP ? interpolatedBB : wither.getEntityBoundingBox(),
+                        interpolatedBB,
                         espColor.toJavaColor(),
                         2.5f, event.partialTicks
                 );
             } else if (entityObj instanceof EntityBat && batESP) {
                 EntityBat bat = (EntityBat) entityObj;
+                if (bat.isInvisible()) continue;
+
                 double interpPosX = bat.lastTickPosX + (bat.posX - bat.lastTickPosX) * event.partialTicks;
                 double interpPosY = bat.lastTickPosY + (bat.posY - bat.lastTickPosY) * event.partialTicks;
                 double interpPosZ = bat.lastTickPosZ + (bat.posZ - bat.lastTickPosZ) * event.partialTicks;
@@ -41,7 +45,7 @@ public class DungeonESP {
                         .offset(interpPosX - bat.posX, interpPosY - bat.posY, interpPosZ - bat.posZ);
 
                 RenderUtils.drawOutlinedBoundingBox(
-                        smoothESP ? interpolatedBB : bat.getEntityBoundingBox(),
+                        interpolatedBB,
                         espColor.toJavaColor(),
                         2.5f, event.partialTicks
                 );
