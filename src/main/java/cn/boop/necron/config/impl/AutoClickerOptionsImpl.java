@@ -10,17 +10,23 @@ public class AutoClickerOptionsImpl extends ModConfig {
         initialize();
     }
 
-    @Switch(name = "Enabled", description = "Auto click your mouse")
+    @Switch(name = "Enabled", description = "Enable the auto clicker module")
     public static boolean autoClicker = false;
 
-    @Switch(name = "Left Click", description = "Auto left click", subcategory = "Auto Clicker")
+    @Switch(name = "Left Click", description = "Automatically perform left clicks", subcategory = "Auto Clicker")
     public static boolean leftClick = true;
-    @Number(name = "Left Click CPS", description = "CPS of left click", min = 0, max = 20, subcategory = "Auto Clicker")
-    public static int lCPS = 10;
-    @Switch(name = "Right Click", description = "Auto right click", subcategory = "Auto Clicker")
+    @Switch(name = "Right Click", description = "Automatically perform right clicks", subcategory = "Auto Clicker")
     public static boolean rightClick = true;
-    @Number(name = "Right Click CPS", description = "CPS of right click", min = 0, max = 20, subcategory = "Auto Clicker")
-    public static int rCPS = 10;
+    @Switch(name = "Weapon Only", description = "Only allow auto clicking when holding a sword", subcategory = "Auto Clicker")
+    public static boolean weaponsOnly = true;
 
+    @Number(name = "Min CPS", min = 1, max = 20, subcategory = "Left Click")
+    public static int minLCPS = 10;
+    @Number(name = "Max CPS", min = 2, max = 20, subcategory = "Left Click")
+    public static int maxLCPS = 10;
 
+    @Number(name = "Min CPS", min = 1, max = 20, subcategory = "Right Click")
+    public static int minRCPS = 10;
+    @Number(name = "Max CPS", min = 2, max = 20, subcategory = "Right Click")
+    public static int maxRCPS = 10;
 }
