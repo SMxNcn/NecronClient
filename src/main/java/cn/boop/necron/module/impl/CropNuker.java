@@ -1,9 +1,9 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.config.ResetReason;
 import cn.boop.necron.utils.RenderUtils;
 import cn.boop.necron.utils.RotationUtils;
+import cn.boop.necron.utils.Utils;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.MovingObjectPosition;
@@ -119,13 +119,13 @@ public class CropNuker {
         List<Waypoint> waypoints = Waypoint.getWaypoints();
         if (waypoints.isEmpty()) return;
 
-        if (currentWaypointIndex >= waypoints.size()) { // 确保索引在有效范围内
-            currentWaypointIndex = 0; // 重新开始
+        if (currentWaypointIndex >= waypoints.size()) {
+            currentWaypointIndex = 0;
             FailSafe.resetPositionTracking();
         }
 
         Waypoint currentWaypoint = waypoints.get(currentWaypointIndex);
-        double distanceToWaypoint = Necron.mc.thePlayer.getDistance( // 检查是否到达路径点
+        double distanceToWaypoint = Necron.mc.thePlayer.getDistance(
                 currentWaypoint.getX() + 0.5,
                 currentWaypoint.getY() + 0.5,
                 currentWaypoint.getZ() + 0.5
@@ -133,14 +133,14 @@ public class CropNuker {
 
         if (continueMovingAfterWaypoint) {
             long time = System.currentTimeMillis() - waypointReachedTime;
-            if (time > delayTime) { // 继续移动阶段结束，恢复正常路径点处理
+            if (time > delayTime) {
                 continueMovingAfterWaypoint = false;
                 atWaypoint = true;
                 stopNuker();
                 handleWaypointActions(currentWaypoint);
                 actionStartTime = System.currentTimeMillis();
             }
-        } else if (distanceToWaypoint < 0.6) { // 如果足够接近路径点，则认为已到达
+        } else if (distanceToWaypoint < 0.6) {
             if (!atWaypoint) {
                 continueMovingAfterWaypoint = true;
                 waypointReachedTime = System.currentTimeMillis();
@@ -165,22 +165,26 @@ public class CropNuker {
     }
 
     private void handleWaypointProcessing() {
-        if (RotationUtils.isRotating()) return; // 检查是否还在旋转
+        if (RotationUtils.isRotating()) return;
 
-        if (needsDirectionChange) { // 处理方向变更
+        if (needsDirectionChange) {
             setMovementKeys(targetDirection);
             needsDirectionChange = false;
         }
 
-        if (!needsRotation && System.currentTimeMillis() - actionStartTime > 500L) { // 如果所有动作都已完成，继续到下一个路径点
+        if (!needsRotation && System.currentTimeMillis() - actionStartTime > 500L) {
             atWaypoint = false;
             currentWaypointIndex++;
             startNuker();
         }
     }
 
-    public static void reset(ResetReason reason) {
+    public static void reset() {
         stopNuker();
+        if (Necron.mc.thePlayer != null && Waypoint.getCurrentFile() != null && currentWaypointIndex > 0) {
+            Utils.modMessage("Go back to waypoint #" + currentWaypointIndex + "!");
+            Utils.modMessage("Type §a/ncd setIndex " + (currentWaypointIndex - 1) + " §7to continue.");
+        }
         cropNuker = false;
         pressed = false;
         targetBlockPos = null;
@@ -188,7 +192,6 @@ public class CropNuker {
         needsRotation = false;
         needsDirectionChange = false;
         atWaypoint = false;
-        Necron.LOGGER.warn("{} Disabled Crop Nuker.", reason.getMessage());
     }
 
     private void updateTargetBlock() {
