@@ -29,7 +29,9 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 带有预瞄准功能，可提高Router的速度。
 
 ## Fake Wipe
-开启后，每次进入Hypixel服务器会显示SkyBlock Wipe Book。（别真被擦了.jpg）
+- 开启后，每次进入Hypixel服务器会显示SkyBlock Wipe Book。（别真被擦了.jpg）
+- 开启Trigger GUI后，执行3次 `/ncd ban` 后，可以获得随机天数的封禁。
+- `!ban` 聊天命令可以让dev进入limbo并断开连接（其他人可见虚假封禁消息）
 
 ## Main Menu
 - 可加载自定义背景图，命名格式为 bg1.png，bg2.png……
@@ -47,12 +49,16 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
 ## RNG Meter HUD
 - 该功能来自[BloomModule](https://github.com/UnclaimedBloom6/BloomModule)
-- HUD使用OneConfig实现
-- 无法重置非稀有物品的RNG的问题已修复（2025.10.13 待验证）
+- 现支持地牢/Slayer RNG信息显示
+- 地牢分数计算需要验证（TODO: 2025.11.27）
+
+## Smooth Scrolling
+- 为游戏中列表添加平滑滚动 (TODO: 创造物品栏)
+- 快捷栏平滑切换
 
 ## Title Manager
-- Default Title Type: 显示为 Spongepowered v0.x.x 或自定义标题
-- Custom Title Type: 可选择显示玩家名，当前位置，神秘提示以及自定义前缀
+- Default Title: 显示为 Spongepowered v0.x.x 或自定义标题
+- Custom Title: 可选择显示玩家名，当前位置，神秘提示以及自定义前缀
 
 ## Waypoint
 
