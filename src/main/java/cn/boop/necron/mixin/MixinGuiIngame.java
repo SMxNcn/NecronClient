@@ -41,13 +41,13 @@ public class MixinGuiIngame {
         int currentSlot = inv.currentItem;
 
         if (currentSlot != lastSelectedSlot) {
-            if (lastSelectedSlot == 8 && currentSlot == 0) {
+            if ((lastSelectedSlot == 8 && currentSlot == 0) || (lastSelectedSlot == 1 && currentSlot == 8)) {
                 effectiveRollover -= 1;
-            } else if (lastSelectedSlot == 0 && currentSlot == 8) {
+            } else if ((lastSelectedSlot == 7 && currentSlot == 0) || (lastSelectedSlot == 0 && currentSlot == 8)) {
                 effectiveRollover += 1;
             } else {
                 int actualPosition = currentSlot * 20;
-                if (Math.abs(selectedPixelBuffer - actualPosition) > 140) {
+                if (Math.abs(selectedPixelBuffer - actualPosition) > 160) {
                     selectedPixelBuffer = actualPosition;
                     effectiveRollover = 0;
                 }
