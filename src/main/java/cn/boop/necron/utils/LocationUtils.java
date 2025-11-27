@@ -15,6 +15,7 @@ public class LocationUtils {
     public static Island currentIsland = null;
     public static String currentZone = null;
     public static Floor floor = null;
+    private static Floor cachedFloor = null;
     public static boolean inHypixel = false;
     public static boolean inSkyBlock = false;
     public static boolean inDungeon = false;
@@ -83,6 +84,7 @@ public class LocationUtils {
     public void onWorldLoad(WorldEvent.Load event) {
         if (event.world.isRemote) {
             ticks = 19;
+            cachedFloor = null;
             updateWorldStates();
             if (inSkyBlock) {
                 updateCurrentIsland();
@@ -161,7 +163,22 @@ public class LocationUtils {
             for(Floor floorOption : Floor.values()) {
                 if(cataLine.contains(floorOption.name)) {
                     floor = floorOption;
+                    cachedFloor = floorOption;
+                    return;
                 }
+            }
+        } else {
+            if (inDungeon && inBossRoom && cachedFloor != null) {
+                floor = cachedFloor;
+            } else if (inDungeon && inBossRoom) {
+                M7Phases phase = getM7Phase();
+                if (phase == M7Phases.P1 || phase == M7Phases.P5) {
+                    floor = Floor.MASTER_7;
+                } else {
+                    floor = cachedFloor;
+                }
+            } else {
+                floor = cachedFloor;
             }
         }
     }
