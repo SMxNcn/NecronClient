@@ -44,6 +44,8 @@ public class NCConfig extends Config {
     @SubConfig
     public static RouterOptionsImpl routerOptions = new RouterOptionsImpl();
     @SubConfig
+    public static ScrollingOptionsImpl scrollingOptions = new ScrollingOptionsImpl();
+    @SubConfig
     public static SlayerOptionsImpl slayerOptions = new SlayerOptionsImpl();
     @SubConfig
     public static TitleOptionsImpl titleOptions = new TitleOptionsImpl();
