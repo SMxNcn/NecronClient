@@ -91,6 +91,7 @@ public class DebugCommands extends CommandBase {
                     Utils.modMessage("Player Stats:\n§7§l | §r§7inHypixel: " + (LocationUtils.inHypixel ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7inSkyBlock: " + (LocationUtils.inSkyBlock ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7Island: " + LocationUtils.getCurrentIslandName() +
+                            "\n§7§l | §r§7Zone: " + LocationUtils.currentZone +
                             "\n§7§l | §r§7Held item ID: " + itemID +
                             "\n§7§l | §r§7Held item Name:§r " + itemName +
                             "\n§7§l | §r§7Player health: §c" + Necron.mc.thePlayer.getHealth() +
@@ -101,7 +102,16 @@ public class DebugCommands extends CommandBase {
                             "\n§7§l | §r§7Current M7 Phase: " + LocationUtils.getM7Phase()
                             );
                     break;
+                case "stoppath":
+                    AutoPath.stopNavigation();
+                    Utils.modMessage("Teleport pathfinder stop.");
+                    break;
                 case "test":
+                    break;
+                case "meme":
+                    int index = Utils.random.nextInt(SoundManager.soundCount);
+                    float pitch = 1.0f + Utils.random.nextFloat() * 0.5f;
+                    SoundManager.playSound(index, pitch);
                     break;
                 default:
                     Utils.modMessage("§cUnknown debug command.");

@@ -2,6 +2,7 @@ package cn.boop.necron.config.impl;
 
 import cc.polyfrost.oneconfig.config.annotations.Button;
 import cc.polyfrost.oneconfig.config.annotations.Number;
+import cc.polyfrost.oneconfig.config.annotations.Switch;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.ModConfig;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 public class NecronOptionsImpl extends ModConfig {
 
-    public NecronOptionsImpl () {
+    public NecronOptionsImpl() {
         super("Necron Settings", "necron/main.json");
         initialize();
     }
@@ -52,4 +53,9 @@ public class NecronOptionsImpl extends ModConfig {
             Necron.LOGGER.error("Failed to open background folder");
         }
     };
+
+    @Switch(name = "Meme" ,subcategory = "Meme")
+    public static boolean meme = false;
+    @Number(name = "Meme odds (%)", min = 1, max = 100, subcategory = "Meme")
+    public static int memeOdds = 5;
 }

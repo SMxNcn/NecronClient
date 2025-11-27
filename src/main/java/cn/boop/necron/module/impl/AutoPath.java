@@ -192,7 +192,7 @@ public class AutoPath {
         if (!currentPath.isEmpty()) {
             BlockPos target = currentPath.get(currentPath.size() - 1);
             RenderUtils.drawCircleOnBlock(target.getX(), target.getY(), target.getZ(),
-                    Color.RED, 3.0f, 0);
+                    Color.RED, 3.0f, 0.6f ,0);
 
             RenderUtils.draw3DText("目标",
                     target.getX() + 0.5, target.getY() + 2.5, target.getZ() + 0.5,

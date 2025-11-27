@@ -77,7 +77,7 @@ public class ChatCommands {
                 int luck = random.nextInt(101);
 
                 if (luck == 0) Utils.chatMessage("/pc " + player + " 今 天 是 0 ！");
-                else if (luck == 91) Utils.chatMessage("/pc " + player + " You got 91!  91? (O.o?)");
+                else if (luck == 91) Utils.chatMessage("/pc " + player + " You got 91?!");
                 else if (luck == 100) Utils.chatMessage("/pc " + player + " You got 100!  \\o/");
                 else Utils.chatMessage("/pc " + player + " You got " + luck + " !");
                 break;
