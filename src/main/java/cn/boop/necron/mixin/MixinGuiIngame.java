@@ -46,10 +46,10 @@ public class MixinGuiIngame {
             } else if (lastSelectedSlot == 0 && currentSlot == 8) {
                 effectiveRollover += 1;
             } else {
-                effectiveRollover = 0;
                 int actualPosition = currentSlot * 20;
-                if (Math.abs(selectedPixelBuffer - actualPosition) > 100) {
+                if (Math.abs(selectedPixelBuffer - actualPosition) > 140) {
                     selectedPixelBuffer = actualPosition;
+                    effectiveRollover = 0;
                 }
             }
             lastSelectedSlot = currentSlot;
