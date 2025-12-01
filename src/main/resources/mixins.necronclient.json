@@ -13,9 +13,13 @@
     "MixinGuiScrollingList",
     "MixinGuiSlot",
     "MixinInventoryPlayer",
+    "MixinMcProgress",
+    "MixinMinecraft",
     "MixinModList",
     "MixinNetHandlerPlayClient",
-    "MixinOCFonts"
+    "MixinOCFonts",
+    "MixinProgressManager",
+    "MixinSplashProgress"
   ],
   "client": [
     "MinecraftAccessor"

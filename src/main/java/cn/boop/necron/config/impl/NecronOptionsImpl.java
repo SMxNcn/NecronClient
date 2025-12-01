@@ -1,19 +1,21 @@
 package cn.boop.necron.config.impl;
 
 import cc.polyfrost.oneconfig.config.annotations.Button;
+import cc.polyfrost.oneconfig.config.annotations.Info;
 import cc.polyfrost.oneconfig.config.annotations.Number;
 import cc.polyfrost.oneconfig.config.annotations.Switch;
+import cc.polyfrost.oneconfig.config.data.InfoType;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.ModConfig;
 import cn.boop.necron.config.NotificationType;
+import cn.boop.necron.gui.LoadingScreen;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
 public class NecronOptionsImpl extends ModConfig {
-
     public NecronOptionsImpl() {
         super("Necron Settings", "necron/main.json");
         initialize();
@@ -54,8 +56,17 @@ public class NecronOptionsImpl extends ModConfig {
         }
     };
 
-    @Switch(name = "Meme" ,subcategory = "Meme")
-    public static boolean meme = false;
-    @Number(name = "Meme odds (%)", min = 1, max = 100, subcategory = "Meme")
-    public static int memeOdds = 5;
+    @Switch(name = "Custom Loading Screen", subcategory = "Client")
+    public static boolean customLoadingScreen = true;
+    @Button(name = "Black Background", text = "Open", subcategory = "Client")
+    Runnable splash = () -> {
+        try {
+            Desktop.getDesktop().open(LoadingScreen.CONFIG_FILE);
+        } catch (IllegalArgumentException | IOException e) {
+            ClientNotification.sendNotification("Action", "Failed to open splash file", NotificationType.WARN, 5000);
+            Necron.LOGGER.error("Failed to open splash file");
+        }
+    };
+    @Info(text = "背景更改将在游戏重启后生效", type = InfoType.WARNING, subcategory = "Client")
+    public static boolean ignore;
 }
