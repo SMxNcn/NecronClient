@@ -11,13 +11,17 @@ import cn.boop.necron.utils.RotationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class ClientCommands extends CommandBase {
+    private final List<String> commands = Arrays.asList("b64", "create", "rotate", "tips", "wl", "wp");
+
     @Override
     public String getCommandName() {
         return "necron";
@@ -36,6 +40,14 @@ public class ClientCommands extends CommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender) {
         return "/" + this.getCommandName();
+    }
+
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+        if (args.length == 1) {
+            return CommandBase.getListOfStringsMatchingLastWord(args, commands);
+        }
+        return new ArrayList<>();
     }
 
     @Override

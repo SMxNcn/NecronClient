@@ -1,8 +1,9 @@
 package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.ModuleManager;
-import cn.boop.necron.module.impl.ctjs.RngMeterManager;
+import cn.boop.necron.module.impl.AutoPath;
+import cn.boop.necron.module.impl.CropNuker;
+import cn.boop.necron.module.impl.FakeWipe;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
@@ -11,13 +12,12 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DebugCommands extends CommandBase {
     private static int banCount = 0;
     private static final String[] DENY_MESSAGES = {"No.", "STOP pls❤", "Alert!"};
+    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "stats", "stoppath", "test", ".add", ".remove", ".list", ".reset", ".get");
 
     @Override
     public String getCommandName() {
@@ -37,6 +37,14 @@ public class DebugCommands extends CommandBase {
     @Override
     public String getCommandUsage(ICommandSender sender) {
         return "/" + this.getCommandName();
+    }
+
+    @Override
+    public List<String> addTabCompletionOptions(ICommandSender sender, String[] args, BlockPos pos) {
+        if (args.length == 1) {
+            return CommandBase.getListOfStringsMatchingLastWord(args, commands);
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -73,7 +81,10 @@ public class DebugCommands extends CommandBase {
                         int x = Integer.parseInt(args[1]);
                         int y = Integer.parseInt(args[2]);
                         int z = Integer.parseInt(args[3]);
-                    new Thread(() -> ModuleManager.getAutoPath().setTarget(new BlockPos(x, y, z)));
+                        new Thread(() -> {
+                            AutoPath.startNavigation(new BlockPos(x, y, z));
+                            Utils.modMessage("Teleport pathfinder start.");
+                        }).start();
 
                     } catch (NumberFormatException e) {
                         Utils.modMessage("§cInvalid position format.");
