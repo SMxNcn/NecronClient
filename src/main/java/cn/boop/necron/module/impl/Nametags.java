@@ -15,12 +15,12 @@ import org.lwjgl.opengl.GL11;
 import java.awt.*;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.NametagsOptionsImpl.nametags;
+import static cn.boop.necron.config.impl.NametagsOptionsImpl.*;
 
 public final class Nametags {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRenderWorld(RenderWorldLastEvent event) {
-        if (!nametags || !LocationUtils.inSkyBlock) return;
+        if (!canDisplayNametags()) return;
 
         Entity viewer = Necron.mc.getRenderViewEntity();
         if (viewer == null) return;
@@ -74,8 +74,10 @@ public final class Nametags {
         float nw = -width / 2f - 4.6f;
         float width2 = nw - 2.0f * nw;
 
-        RenderUtils.drawRoundedRect(nw, -17.0f, width2, -1.0f, 3.0f, new Color(25, 25, 25, 114).getRGB());
-        Necron.mc.fontRendererObj.drawString(nametagText, (int)(nw + 4.0f), -13, 0xFFFFFF, true);
+        if (renderBg) {
+            RenderUtils.drawRoundedRect(nw, -17.0f, width2, -1.0f, 3.0f, new Color(25, 25, 25, 114).getRGB());
+        }
+        Necron.mc.fontRendererObj.drawString(nametagText, (int)(nw + 4.0f), -13, 0xFFFFFF, shadowText);
 
         GlStateManager.depthMask(true);
         GLUtils.restorePreviousRenderState();
@@ -97,11 +99,11 @@ public final class Nametags {
 
                 return classColor + "[" + classInitial + "] " + playerName;
             } else {
-                return "§7" + playerName;
+                return "§7[?] " + playerName;
             }
         } else {
             String displayName = entity.getDisplayName().getFormattedText();
-            return displayName + " §7" + distance + "m§r";
+            return displayName + (renderDistance ? " §7" + distance + "m§r" : "§r");
         }
     }
 
@@ -113,6 +115,10 @@ public final class Nametags {
             if (LocationUtils.inSkyBlock && nametags && isValidSkyBlockPlayer(player))
                 event.setCanceled(true);
         }
+    }
+
+    private boolean canDisplayNametags() {
+        return nametags && (forceSkyBlock || LocationUtils.inSkyBlock);
     }
 
     private boolean isValidSkyBlockPlayer(EntityPlayer entity) {
