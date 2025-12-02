@@ -53,7 +53,13 @@ public class AutoClicker {
             if (isBreakingBlock()) {
                 GameType gameType = Necron.mc.playerController.getCurrentGameType();
                 if (gameType == GameType.SURVIVAL || gameType == GameType.ADVENTURE) {
-                    return !ItemUtils.isHoldingTool();
+                    if (rightClick) {
+                        return rightClickAllowed && !ItemUtils.isHoldingTool();
+                    } else if (leftClick) {
+                        return leftClickAllowed && !ItemUtils.isHoldingTool();
+                    } else {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -94,7 +100,7 @@ public class AutoClicker {
 
         if (leftClick && Necron.mc.gameSettings.keyBindAttack.isKeyDown() && nowMillis >= nextLeftClick) {
             if (canClick()) {
-                while (clickDelay <= 0L) {
+                if (clickDelay <= 0L) {
                     clickPending = true;
                     clickDelay += getNextLClickDelay();
                     PlayerUtils.setKeyBindState(Necron.mc.gameSettings.keyBindAttack.getKeyCode(), false);
@@ -106,7 +112,7 @@ public class AutoClicker {
 
         if (rightClick && Necron.mc.gameSettings.keyBindUseItem.isKeyDown() && nowMillis >= nextRightClick) {
             if (canClick()) {
-                while (blockHitDelay <= 0L) {
+                if (blockHitDelay <= 0L) {
                     blockHitPending = true;
                     blockHitDelay += getNextRClickDelay();
                     PlayerUtils.setKeyBindState(Necron.mc.gameSettings.keyBindUseItem.getKeyCode(), false);

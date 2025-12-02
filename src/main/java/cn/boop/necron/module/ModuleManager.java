@@ -33,7 +33,6 @@ public class ModuleManager {
         modules.add(new ModuleList());
         modules.add(new M7Waypoints());
         modules.add(new Nametags());
-        modules.add(new RandomMeme());
         modules.add(new TitleManager());
 
         // Other utils/events
