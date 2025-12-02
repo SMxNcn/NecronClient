@@ -17,7 +17,7 @@ import java.util.*;
 public class DebugCommands extends CommandBase {
     private static int banCount = 0;
     private static final String[] DENY_MESSAGES = {"No.", "STOP pls❤", "Alert!"};
-    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "stats", "stoppath", "test", ".add", ".remove", ".list", ".reset", ".get");
+    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "setIndex", "stats", "stoppath");
 
     @Override
     public String getCommandName() {
@@ -111,18 +111,24 @@ public class DebugCommands extends CommandBase {
                             "\n§7§l | §r§7Floor: " + LocationUtils.floor +
                             "\n§7§l | §r§7Instance player(s): " + DungeonUtils.dungeonPlayers.size() +
                             "\n§7§l | §r§7Current M7 Phase: " + LocationUtils.getM7Phase()
-                            );
+                    );
                     break;
                 case "stoppath":
                     AutoPath.stopNavigation();
                     Utils.modMessage("Teleport pathfinder stop.");
                     break;
                 case "test":
+//                    List<String> scoreboard = ScoreboardUtils.getScoreboard();
+//                    String[] lines = new String[]{""};
+//                    for (String line : scoreboard) {
+//                        lines[scoreboard.indexOf(line)] = ScoreboardUtils.cleanSB(line) + "\n";
+//                    }
+                    //Utils.modMessage(Necron.mc.thePlayer.getUniqueID().toString());
+                    //Utils.chatMessage(B64Utils.encodeWithOffset(FakeWipe.triggerMsg));
                     break;
-                case "meme":
-                    int index = Utils.random.nextInt(SoundManager.soundCount);
-                    float pitch = 1.0f + Utils.random.nextFloat() * 0.5f;
-                    SoundManager.playSound(index, pitch);
+                case "setIndex":
+                    CropNuker.setIndex(Integer.parseInt(args[1]));
+                    Utils.modMessage("Set index to " + args[1]);
                     break;
                 default:
                     Utils.modMessage("§cUnknown debug command.");
