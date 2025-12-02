@@ -53,9 +53,12 @@ public class ChatCommands {
             case "loc":
                 if (!location) return;
                 String msg;
-                if (LocationUtils.inDungeon) msg = "/pc 当前位置: CATACOMBS_" + LocationUtils.floor;
-                else if (LocationUtils.inSkyBlock) msg = "/pc 当前位置: " + LocationUtils.getCurrentIslandName();
-                else {
+                if (LocationUtils.inDungeon) {
+                    msg = "/pc 当前位置: CATACOMBS_" + LocationUtils.floor;
+                } else if (LocationUtils.inSkyBlock) {
+                    String zoneString = LocationUtils.currentIsland == LocationUtils.Island.THE_RIFT ? "ф " : "⏣ " + LocationUtils.currentZone;
+                    msg = "/pc 当前位置: " + LocationUtils.getCurrentIslandName() + " | " + zoneString;
+                } else {
                     String title = ScoreboardUtils.getScoreboardTitle();
                     if (title.isEmpty()) msg = "/pc 当前位置: Limbo";
                     else msg = "/pc " + title + " (In game or Lobby)";
