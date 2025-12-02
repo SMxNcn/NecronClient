@@ -90,6 +90,7 @@ public class LoadingScreen {
 
     public static void finish() {
         try {
+            Necron.mc.resize(Display.getWidth(), Display.getHeight());
             mcLoaded = true;
 
             if (thread != null) {
@@ -215,7 +216,7 @@ public class LoadingScreen {
         float cornerRadius = 2.0f;
 
         int x = (width - barWidth) / 2;
-        int y = height - 135;
+        int y = (int) (height - 135 * (height / 720.0f));
         int fillWidth = (int) ((barWidth - padding * 2) * animatedProgress);
         fillWidth = Math.min(fillWidth, barWidth - padding * 2);
 

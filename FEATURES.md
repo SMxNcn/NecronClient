@@ -33,6 +33,11 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 开启Trigger GUI后，执行3次 `/ncd ban` 后，可以获得随机天数的封禁。
 - `!ban` 聊天命令可以让dev进入limbo并断开连接（其他人可见虚假封禁消息）
 
+## Loading Screen
+- 类似于高版本Minecraft的加载界面。
+- 配置中可选择黑色/红色背景。（需要重启游戏）
+- 配置文件可在 Necron Settings 中快速打开。
+
 ## Main Menu
 - 可加载自定义背景图，命名格式为 bg1.png，bg2.png……
 - 图片存放路径: `./config/necron/backgrounds/` （也可在配置界面中快捷打开）
@@ -53,8 +58,8 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 地牢分数计算需要验证（TODO: 2025.11.27）
 
 ## Smooth Scrolling
-- 为游戏中列表添加平滑滚动 (TODO: 创造物品栏)
-- 快捷栏平滑切换
+- 为游戏中列表添加平滑滚动。 (TODO: 创造物品栏)
+- 快捷栏平滑切换。（Smoothness设为0为禁用，10.0最慢）
 
 ## Title Manager
 - Default Title: 显示为 Spongepowered v0.x.x 或自定义标题

@@ -1,9 +1,7 @@
 package cn.boop.necron.config.impl;
 
-import cc.polyfrost.oneconfig.config.annotations.Checkbox;
-import cc.polyfrost.oneconfig.config.annotations.DualOption;
-import cc.polyfrost.oneconfig.config.annotations.Switch;
-import cc.polyfrost.oneconfig.config.annotations.Text;
+import cc.polyfrost.oneconfig.config.annotations.*;
+import cc.polyfrost.oneconfig.config.data.InfoType;
 import cn.boop.necron.config.ModConfig;
 
 public class TitleOptionsImpl extends ModConfig {
@@ -38,6 +36,8 @@ public class TitleOptionsImpl extends ModConfig {
 
     @Switch(name = "Change Icon", description = "Use Custom window icon")
     public static boolean icon = false;
+    @Info(text = "图标更改将在游戏重启后生效", type = InfoType.WARNING)
+    public static boolean ignore;
     @Switch(name = "Use your title text", size = 2)
     public static boolean customTitle = false;
     @Text(name = "Title Text", placeholder = "Text here")
