@@ -57,6 +57,10 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 - 现支持地牢/Slayer RNG信息显示
 - 地牢分数计算需要验证（TODO: 2025.11.27）
 
+## Scoreboard
+- 可控制背景颜色和圆角。
+- 服务器IP行可使用自定义文本。
+
 ## Smooth Scrolling
 - 为游戏中列表添加平滑滚动。 (TODO: 创造物品栏)
 - 快捷栏平滑切换。（Smoothness设为0为禁用，10.0最慢）
