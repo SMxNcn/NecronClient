@@ -14,8 +14,8 @@ import cn.boop.necron.utils.RenderUtils;
 
 import java.awt.*;
 
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.RngBackground;
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.rngMeter;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.RngBackground;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.rngMeter;
 
 public class RngMeterHUD extends BasicHud {
     public RngMeterHUD() {

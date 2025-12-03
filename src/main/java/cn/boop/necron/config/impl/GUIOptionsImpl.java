@@ -1,13 +1,13 @@
 package cn.boop.necron.config.impl;
 
-import cc.polyfrost.oneconfig.config.annotations.Color;
+import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.annotations.Number;
-import cc.polyfrost.oneconfig.config.annotations.Switch;
 import cc.polyfrost.oneconfig.config.core.OneColor;
+import cc.polyfrost.oneconfig.config.data.InfoType;
 import cn.boop.necron.config.ModConfig;
 
-public class ClientHUDOptionsImpl extends ModConfig {
-    public ClientHUDOptionsImpl() {
+public class GUIOptionsImpl extends ModConfig {
+    public GUIOptionsImpl() {
         super("GUI Options", "necron/guioptions.json");
         initialize();
     }
@@ -32,4 +32,21 @@ public class ClientHUDOptionsImpl extends ModConfig {
     public static boolean hasDaemon = false;
     @Number(name = "Daemon shard level", min = 1, max = 10, subcategory = "RNG Meter")
     public static int daemonLevel = 1;
+
+    @Switch(name = "Enabled", description = "Display custom scoreboard", subcategory = "Scoreboard")
+    public static boolean customSb = false;
+    @Switch(name = "Show red numbers", description = "Show red numbers", subcategory = "Scoreboard")
+    public static boolean redNumbers = true;
+    @Color(name = "Background Color", description = "Background color of the scoreboard", subcategory = "Scoreboard")
+    public static OneColor bgColor = new OneColor(0, 0, 0, 77);
+    @Slider(name = "X-Padding", description = "X-Padding of the scoreboard", min = 0, max = 5, subcategory = "Scoreboard")
+    public static int xPadding = 2;
+    @Slider(name = "Y-Padding", description = "Y-Padding of the scoreboard", min = 0, max = 5, subcategory = "Scoreboard")
+    public static int yPadding = 2;
+    @Slider(name = "Corner Radius", description = "Corner radius of the scoreboard", min = 0, max = 10, subcategory = "Scoreboard")
+    public static int cornerRadius = 4;
+    @Text(name = "Custom IP", description = "Custom IP-Line of the scoreboard", subcategory = "Scoreboard")
+    public static String customIp = "";
+    @Info(text = "'&' or '§' for Minecraft Color Codes", type = InfoType.INFO, subcategory = "Scoreboard")
+    private static boolean ignore1;
 }

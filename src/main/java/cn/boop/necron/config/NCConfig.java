@@ -26,7 +26,7 @@ public class NCConfig extends Config {
     @SubConfig
     public static ChatCommandsOptionsImpl chatCommandsOptions = new ChatCommandsOptionsImpl();
     @SubConfig
-    public static ClientHUDOptionsImpl moduleGUIOptions = new ClientHUDOptionsImpl();
+    public static GUIOptionsImpl moduleGUIOptions = new GUIOptionsImpl();
     @SubConfig
     public static DungeonOptionsImpl dungeonOptions = new DungeonOptionsImpl();
     @SubConfig

@@ -21,8 +21,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.daemonLevel;
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.hasDaemon;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.daemonLevel;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.hasDaemon;
 
 public class DungeonRngEventHandler {
     private static final Pattern SCORE_PATTERN = Pattern.compile("Team Score:\\s*(\\d+)\\s*\\((S\\+?)\\)$");

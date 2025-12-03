@@ -1,7 +1,7 @@
 package cn.boop.necron.module.impl.slayer;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.config.impl.ClientHUDOptionsImpl;
+import cn.boop.necron.config.impl.GUIOptionsImpl;
 import cn.boop.necron.utils.Utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -117,7 +117,7 @@ public class AatroxBuffChecker {
     public static double getSlayerXPMultiplier() {
         double multiplier = 1.0;
         if (isAatrox) multiplier *= 1.25;
-        if (ClientHUDOptionsImpl.hasDaemon) multiplier *= 1.0 + (ClientHUDOptionsImpl.daemonLevel * 0.01);
+        if (GUIOptionsImpl.hasDaemon) multiplier *= 1.0 + (GUIOptionsImpl.daemonLevel * 0.01);
 
         return multiplier;
     }

@@ -12,10 +12,13 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.chromaSpeed;
-import static cn.boop.necron.config.impl.ClientHUDOptionsImpl.colorOffset;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.chromaSpeed;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.colorOffset;
 
 public class RenderUtils {
+    private static final Tessellator tessellator = Tessellator.getInstance();
+    private static final WorldRenderer worldRenderer = tessellator.getWorldRenderer();
+
     public static void glColor(int hex) {
         float alpha = (float)(hex >> 24 & 0xFF) / 255.0f;
         float red = (float)(hex >> 16 & 0xFF) / 255.0f;
@@ -201,8 +204,6 @@ public class RenderUtils {
     }
 
     public static void drawOutlinedBoundingBox(AxisAlignedBB aa) {
-        Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
         worldRenderer.begin(3, DefaultVertexFormats.POSITION);
         worldRenderer.pos(aa.minX, aa.minY, aa.minZ).endVertex();
         worldRenderer.pos(aa.maxX, aa.minY, aa.minZ).endVertex();
