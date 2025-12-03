@@ -110,10 +110,7 @@ public final class Nametags {
     @SubscribeEvent
     public void onRenderName(RenderLivingEvent.Specials.Pre<EntityPlayer> event) {
         if (event.entity instanceof EntityPlayer && event.entity != Necron.mc.thePlayer) {
-            EntityPlayer player = (EntityPlayer) event.entity;
-
-            if (LocationUtils.inSkyBlock && nametags && isValidSkyBlockPlayer(player))
-                event.setCanceled(true);
+            if (canDisplayNametags()) event.setCanceled(true);
         }
     }
 
@@ -122,6 +119,7 @@ public final class Nametags {
     }
 
     private boolean isValidSkyBlockPlayer(EntityPlayer entity) {
+        if (forceSkyBlock) return true;
         String displayName = entity.getDisplayName().getFormattedText();
         String cleanName = StringUtils.stripControlCodes(displayName);
         return Pattern.matches("^\\[\\d{1,3}]\\s[a-zA-Z0-9_]{1,16}.*", cleanName);
