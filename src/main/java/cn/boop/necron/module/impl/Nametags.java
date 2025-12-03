@@ -119,9 +119,9 @@ public final class Nametags {
     }
 
     private boolean isValidSkyBlockPlayer(EntityPlayer entity) {
-        if (forceSkyBlock) return true;
         String displayName = entity.getDisplayName().getFormattedText();
         String cleanName = StringUtils.stripControlCodes(displayName);
+        if (forceSkyBlock) return (!cleanName.contains("[NPC]") || !cleanName.contains("CIT-"));
         return Pattern.matches("^\\[\\d{1,3}]\\s[a-zA-Z0-9_]{1,16}.*", cleanName);
     }
 }
