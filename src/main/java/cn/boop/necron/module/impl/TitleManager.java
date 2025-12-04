@@ -18,58 +18,54 @@ import static cn.boop.necron.config.impl.TitleOptionsImpl.*;
 
 public class TitleManager {
     private static boolean iconsSet = false;
-    private static boolean playerEnteredWorld = false;
     private static long lastTipUpdate = 0;
     private static String currentTip = "";
 
     @SubscribeEvent
     public void ClientTickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            if (Necron.mc.thePlayer != null && !playerEnteredWorld) {
-                playerEnteredWorld = true;
-            } else if (Necron.mc.thePlayer == null && playerEnteredWorld) {
-                playerEnteredWorld = false;
-            }
-        }
+        if (event.phase != TickEvent.Phase.END) return;
 
         try {
-            if (title && customType) {
-                String title = "Minecraft 1.8.9";
-                if (customPrefix) {
-                    title = prefixText;
-                }
-                if (showLocation) {
-                    String locationText = "";
-                    if (LocationUtils.inDungeon) locationText = "The Catacombs " + LocationUtils.floor.name.replaceAll("[()]", "");
-                    else if (LocationUtils.inSkyBlock && LocationUtils.currentIsland != null) locationText = LocationUtils.currentIsland.getDisplayName();
-
-                    if (!locationText.isEmpty()) title += " | " + locationText;
-                }
-                if (showPlayerName && Necron.mc.thePlayer != null) {
-                    title += " | " + Necron.mc.thePlayer.getName();
-                }
-                if (showTips) {
-                    long currentTime = System.currentTimeMillis();
-                    if (currentTime - lastTipUpdate > 10_000) {
-                        currentTip = Utils.randomSelect(ChatCommands.tipList);
-                        lastTipUpdate = currentTime;
-                    }
-                    title += " | "  + currentTip;
-                }
-                Display.setTitle(title);
-            } else if (customTitle) {
-                Display.setTitle(titleText);
-            } else if (title) {
-                Display.setTitle("Minecraft 1.8.9" + " - Spongepowered Mixin v" + Necron.VERSION);
-            }
+            setWindowTitle();
 
             if (!iconsSet && icon) {
                 setWindowIcon();
                 iconsSet = true;
             }
-
         } catch (Exception e) {
             Necron.LOGGER.warn(e.getMessage());
+        }
+    }
+
+    private void setWindowTitle() {
+        if (title && customType) {
+            String title = "Minecraft 1.8.9";
+            if (customPrefix) {
+                title = prefixText;
+            }
+            if (showLocation) {
+                String locationText = "";
+                if (LocationUtils.inDungeon) locationText = "The Catacombs " + LocationUtils.floor.name.replaceAll("[()]", "");
+                else if (LocationUtils.inSkyBlock && LocationUtils.currentIsland != null) locationText = LocationUtils.currentIsland.getDisplayName();
+
+                if (!locationText.isEmpty()) title += " | " + locationText;
+            }
+            if (showPlayerName && Necron.mc.thePlayer != null) {
+                title += " | " + Necron.mc.thePlayer.getName();
+            }
+            if (showTips) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastTipUpdate > 10_000) {
+                    currentTip = Utils.randomSelect(ChatCommands.tipList);
+                    lastTipUpdate = currentTime;
+                }
+                title += " | "  + currentTip;
+            }
+            Display.setTitle(title);
+        } else if (customTitle) {
+            Display.setTitle(titleText);
+        } else if (title) {
+            Display.setTitle("Minecraft 1.8.9 - Spongepowered Mixin v" + Necron.VERSION);
         }
     }
 
