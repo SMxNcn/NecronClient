@@ -141,13 +141,14 @@ public class DungeonUtils {
 
         Pattern playerPattern = Pattern.compile("^\\[(\\d+)]\\s+([^()]+?)\\s*\\(([A-Za-z]+)\\s+([0IVXL]+)\\)$");
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 5; i++) {
             String line = tabList.get(1 + i * 4);
             String cleanLine = StringUtils.stripControlCodes(line).trim();
 
             Matcher matcher = playerPattern.matcher(cleanLine);
             if (matcher.matches()) {
                 String playerName = matcher.group(2);
+                String originalName = matcher.group(2).trim();
                 String className = matcher.group(3);
                 String romanLevel = matcher.group(4);
 
@@ -224,6 +225,15 @@ public class DungeonUtils {
         player = dungeonPlayers.get(cleanName);
         if (player != null && player.getPlayerClass() != null) {
             return player.getPlayerClass().getColor();
+        }
+
+        for (Map.Entry<String, DungeonPlayer> entry : dungeonPlayers.entrySet()) {
+            if (cleanName.startsWith(entry.getKey()) && entry.getKey().length() >= 3) {
+                player = entry.getValue();
+                if (player != null && player.getPlayerClass() != null) {
+                    return player.getPlayerClass().getColor();
+                }
+            }
         }
 
         return "§f";
