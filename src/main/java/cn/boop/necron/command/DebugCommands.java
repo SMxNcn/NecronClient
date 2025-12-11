@@ -6,6 +6,7 @@ import cn.boop.necron.module.impl.CropNuker;
 import cn.boop.necron.module.impl.FakeWipe;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
+import cn.boop.necron.utils.ScoreboardUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -63,13 +64,24 @@ public class DebugCommands extends CommandBase {
                     }
                     break;
                 case "dungeonInfo":
-                    if (!DungeonUtils.dungeonPlayers.isEmpty()) {
-                        for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
-                            Utils.modMessage(String.valueOf(entry.getValue()));
-                        }
-                    } else {
+                    if (DungeonUtils.dungeonPlayers.isEmpty()) {
                         Utils.modMessage("§cNo dungeon players found.");
+                        return;
                     }
+                    StringBuilder message = new StringBuilder("dungeonInfo: [");
+                    boolean first = true;
+                    for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
+                        if (!first) {
+                            message.append(", ");
+                        }
+                        DungeonUtils.DungeonPlayer player = entry.getValue();
+                        message.append("{name='").append(player.getPlayerName())
+                                .append("', class='").append(player.getPlayerClass())
+                                .append("', level=").append(player.getClassLevel()).append("}");
+                        first = false;
+                    }
+                    message.append("]");
+                    Utils.modMessage(message.toString());
                     break;
                 case "findpath":
                     if (args.length < 4) {
@@ -118,12 +130,11 @@ public class DebugCommands extends CommandBase {
                     Utils.modMessage("Teleport pathfinder stop.");
                     break;
                 case "test":
-//                    List<String> scoreboard = ScoreboardUtils.getScoreboard();
-//                    String[] lines = new String[]{""};
-//                    for (String line : scoreboard) {
-//                        lines[scoreboard.indexOf(line)] = ScoreboardUtils.cleanSB(line) + "\n";
-//                    }
-                    //Utils.modMessage(Necron.mc.thePlayer.getUniqueID().toString());
+                    List<String> scoreboard = ScoreboardUtils.getScoreboard();
+                    for (String line : scoreboard) {
+                       // lines[scoreboard.indexOf(line)] = ScoreboardUtils.cleanSB(line) + "\n";
+                        System.out.println(line);
+                    }
                     //Utils.chatMessage(B64Utils.encodeWithOffset(FakeWipe.triggerMsg));
                     break;
                 case "setIndex":
