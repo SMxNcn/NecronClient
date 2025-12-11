@@ -2,6 +2,7 @@ package cn.boop.necron.command;
 
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
 import cn.boop.necron.Necron;
+import cn.boop.necron.config.script.ScriptManager;
 import cn.boop.necron.gui.GuiWaypointList;
 import cn.boop.necron.module.impl.ChatBlocker;
 import cn.boop.necron.module.impl.ChatCommands;
@@ -20,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ClientCommands extends CommandBase {
-    private final List<String> commands = Arrays.asList("b64", "create", "rotate", "tips", "wl", "wp");
+    private final List<String> commands = Arrays.asList("b64", "create", "reload", "rotate", "tips", "wl", "wp");
 
     @Override
     public String getCommandName() {
@@ -75,6 +76,9 @@ public class ClientCommands extends CommandBase {
                         break;
                     }
                     Waypoint.loadWaypoints(args[1], false);
+                    break;
+                case "reload":
+                    ScriptManager.reloadScripts();
                     break;
                 case "rotate":
                     if (args.length < 4) {

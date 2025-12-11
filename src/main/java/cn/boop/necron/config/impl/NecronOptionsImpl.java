@@ -69,4 +69,25 @@ public class NecronOptionsImpl extends ModConfig {
     };
     @Info(text = "背景更改将在游戏重启后生效", type = InfoType.WARNING, subcategory = "Client")
     public static boolean ignore;
+
+    @Button(name = "Open script file folder", text = "Open", subcategory = "Script")
+    Runnable openScriptPath = () -> {
+        try {
+            Desktop.getDesktop().open(new File(Necron.mc.mcDataDir + "/config/necron/scripts"));
+        } catch (IllegalArgumentException | IOException e) {
+            ClientNotification.sendNotification("Action", "Failed to open script folder", NotificationType.WARN, 5000);
+            Necron.LOGGER.error("Failed to open script folder");
+        }
+    };
+    @Button(name = "Open script guide", text = "Open", subcategory = "Script")
+    Runnable openScriptGuide = () -> {
+        try {
+            Desktop.getDesktop().browse(new java.net.URI("https://gitee.com/mixturedg/necron-client/blob/master/SCRIPT.md"));
+        } catch (Exception e) {
+            ClientNotification.sendNotification("Action", "Failed to open script guide", NotificationType.WARN, 5000);
+            Necron.LOGGER.error("Failed to open script guide");
+        }
+    };
+    @Switch(name = "Script Execute message", subcategory = "Script")
+    public static boolean executeMessage = false;
 }

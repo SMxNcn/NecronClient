@@ -5,6 +5,8 @@ import cn.boop.necron.command.DebugCommands;
 import cn.boop.necron.config.FontManager;
 import cn.boop.necron.config.NCConfig;
 import cn.boop.necron.config.UpdateChecker;
+import cn.boop.necron.config.script.ScriptManager;
+import cn.boop.necron.events.ScriptKeyEventHandler;
 import cn.boop.necron.module.ModuleManager;
 import cn.boop.necron.module.impl.rng.DungeonRngManager;
 import cn.boop.necron.module.impl.rng.RngManager;
@@ -52,6 +54,7 @@ public class Necron {
         File dataFile = new File(mc.mcDataDir, "config/necron/data/data.json");
         DungeonRngManager.INSTANCE.setDataFile(dataFile);
         SlayerRngManager.INSTANCE.setDataFile(dataFile);
+        ScriptKeyEventHandler.setScriptManager(new ScriptManager());
 
         DungeonRngManager.INSTANCE.load();
     }

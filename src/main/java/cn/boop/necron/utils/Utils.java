@@ -2,6 +2,7 @@ package cn.boop.necron.utils;
 
 import cn.boop.necron.Necron;
 import kotlin.Pair;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
@@ -100,5 +101,22 @@ public class Utils {
 
     public static String addNumSeparator(int number) {
         return String.format("%,d", number);
+    }
+
+    public static boolean clickInventorySlot(int slot) {
+        try {
+            if (Necron.mc.thePlayer == null || Necron.mc.thePlayer.openContainer == null) return false;
+            Container container = Necron.mc.thePlayer.openContainer;
+
+            if (slot < 0 || slot >= container.inventorySlots.size()) {
+                return false;
+            }
+
+            Necron.mc.playerController.windowClick(container.windowId, slot, 0, 0, Necron.mc.thePlayer);
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
