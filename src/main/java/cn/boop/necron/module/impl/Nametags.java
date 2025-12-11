@@ -5,6 +5,7 @@ import cn.boop.necron.utils.*;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -41,6 +42,7 @@ public final class Nametags {
             double distance = viewer.getDistance(pX, pY, pZ);
             if (entity.isDead || !entity.isEntityAlive()) continue;
             renderNametag(entity, pX, pY, pZ, (float) distance, partialTicks);
+            if (teammateESP) renderPlayerESP(entity, pX, pY, pZ, partialTicks);
         }
         GlStateManager.enableDepth();
         GlStateManager.disableBlend();
@@ -85,6 +87,22 @@ public final class Nametags {
         GL11.glPopMatrix();
     }
 
+    private void renderPlayerESP(EntityPlayer entity, double x, double y, double z, float partialTicks) {
+        if (!LocationUtils.inDungeon) return;
+
+        String cleanPlayerName = Utils.clearMcUsername(entity.getName());
+        DungeonUtils.DungeonPlayer dungeonPlayer = DungeonUtils.dungeonPlayers.get(cleanPlayerName);
+
+        if (dungeonPlayer != null && dungeonPlayer.getPlayerClass() != null) {
+            Color espColor = getDungeonClassColor(dungeonPlayer.getPlayerClass());
+
+            AxisAlignedBB interpolatedBB = entity.getEntityBoundingBox()
+                    .offset(x - entity.posX, y - entity.posY, z - entity.posZ);
+
+            RenderUtils.drawOutlinedBoundingBox(interpolatedBB, espColor, 2.0f, partialTicks);
+        }
+    }
+
     private String buildNametagText(EntityPlayer entity, int distance) {
         String playerName = entity.getName();
 
@@ -123,5 +141,22 @@ public final class Nametags {
         String cleanName = StringUtils.stripControlCodes(displayName);
         if (forceSkyBlock) return (!cleanName.contains("[NPC]") || !cleanName.contains("CIT-"));
         return Pattern.matches("^\\[\\d{1,3}]\\s[a-zA-Z0-9_]{1,16}.*", cleanName);
+    }
+
+    private Color getDungeonClassColor(DungeonUtils.DungeonClass playerClass) {
+        switch (playerClass) {
+            case Archer:
+                return new Color(255, 85, 85);  // §c
+            case Berserk:
+                return new Color(255, 170, 0);  // §6
+            case Healer:
+                return new Color(170, 0, 170);  // §d
+            case Mage:
+                return new Color(85, 255, 255);  // §b
+            case Tank:
+                return new Color(0, 170, 0);    // §2
+            default:
+                return new Color(170, 170, 170);// §7
+        }
     }
 }
