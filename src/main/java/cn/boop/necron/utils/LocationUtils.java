@@ -9,9 +9,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class LocationUtils {
     private static final HashMap<String, Island> ISLAND_MAPPING = createIslandMapping();
+    private static final Pattern dragonPattern = Pattern.compile(".*- .* Dragon|.*No Alive Dragons");
     public static Island currentIsland = null;
     public static String currentZone = null;
     public static Floor floor = null;
@@ -160,6 +162,7 @@ public class LocationUtils {
     }
 
     public static void updateFloor() {
+        List<String> sb = ScoreboardUtils.getScoreboard();
         String cataLine = ScoreboardUtils.getLineThatContains("The Catacombs");
         if (cataLine == null) return;
 
@@ -167,6 +170,10 @@ public class LocationUtils {
             if (cataLine.contains(floorOption.name)) {
                 floor = floorOption;
                 return;
+            } else {
+                for (String m7Line : sb) {
+                    if (dragonPattern.matcher(m7Line).matches()) floor = Floor.MASTER_7;
+                }
             }
         }
     }
