@@ -37,6 +37,8 @@ public class GUIOptionsImpl extends ModConfig {
     public static boolean customSb = false;
     @Switch(name = "Show red numbers", description = "Show red numbers", subcategory = "Scoreboard")
     public static boolean redNumbers = true;
+    @Switch(name = "Use Shadow Text", description = "Use shadow text", subcategory = "Scoreboard")
+    public static boolean shadowText = false;
     @Color(name = "Background Color", description = "Background color of the scoreboard", subcategory = "Scoreboard")
     public static OneColor bgColor = new OneColor(0, 0, 0, 77);
     @Slider(name = "X-Padding", description = "X-Padding of the scoreboard", min = 0, max = 5, subcategory = "Scoreboard")
@@ -49,4 +51,8 @@ public class GUIOptionsImpl extends ModConfig {
     public static String customIp = "";
     @Info(text = "'&' or '§' for Minecraft Color Codes", type = InfoType.INFO, subcategory = "Scoreboard")
     private static boolean ignore1;
+    @Switch(name = "Align Center", description = "Align the Custom IP to the center of the scoreboard", subcategory = "Scoreboard")
+    public static boolean alignCenter = false;
+    @Switch(name = "Show Client Name", description = "Show the client name", subcategory = "Scoreboard")
+    public static boolean clientName = false;
 }

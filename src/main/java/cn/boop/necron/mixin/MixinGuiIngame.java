@@ -101,10 +101,10 @@ public class MixinGuiIngame {
 
             if (currentIndex == 1 && !customIp.isEmpty()) continue;
 
-            fontObj.drawString(playerName, textLeftStart, textY, 553648127);
+            fontObj.drawString(playerName, textLeftStart, textY, 553648127, shadowText);
             if (redNumbers) {
                 String scoreValue = EnumChatFormatting.RED + "" + score.getScorePoints();
-                fontObj.drawString(scoreValue, rightEdge - fontObj.getStringWidth(scoreValue) - xPadding + 2, textY, 553648127);
+                fontObj.drawString(scoreValue, rightEdge - fontObj.getStringWidth(scoreValue) - xPadding + 2, textY, 553648127, shadowText);
             }
 
             if (currentIndex == collection.size()) {
@@ -113,7 +113,7 @@ public class MixinGuiIngame {
                 int titleLeftStart = scaledRes.getScaledWidth() - displayNameWidth - titleRightMargin - (redNumbers ? xPadding : 0);
                 int titleX = titleLeftStart + (redNumbers ? xPadding : -1) + displayNameWidth / 2 - fontObj.getStringWidth(displayName) / 2;
                 int titleY = textY - fontObj.FONT_HEIGHT - yPadding;
-                fontObj.drawString(displayName, titleX, titleY, 553648127);
+                fontObj.drawString(displayName, titleX, titleY, 553648127, shadowText);
             }
         }
 
@@ -125,9 +125,13 @@ public class MixinGuiIngame {
             int ipRightMargin = redNumbers ? (xPadding + 5) : (xPadding + 2);
             int ipLeftStart = scaledRes.getScaledWidth() - displayNameWidth - ipRightMargin - (redNumbers ? xPadding : 1);
 
-            int ipX = ipLeftStart + displayNameWidth / 2 - fontObj.getStringWidth(formattedIp) / 2;
-
-            fontObj.drawString(formattedIp, ipX, ipY, 553648127, false);
+            int ipX = alignCenter ? ipLeftStart + displayNameWidth / 2 - fontObj.getStringWidth(clientName ? "Necron Client" : formattedIp) / 2 : ipLeftStart;
+            fontObj.drawString(
+                    clientName ? "Necron Client" : formattedIp,
+                    ipX, ipY,
+                    clientName ? RenderUtils.getChromaColor(startColor.toJavaColor(), endColor.toJavaColor(), 6, chromaSpeed, colorOffset).getRGB() : 553648127,
+                    shadowText
+            );
         }
 
         ci.cancel();
