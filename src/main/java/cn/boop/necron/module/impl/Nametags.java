@@ -88,7 +88,7 @@ public final class Nametags {
     }
 
     private void renderPlayerESP(EntityPlayer entity, double x, double y, double z, float partialTicks) {
-        if (!LocationUtils.inDungeon) return;
+        if (!LocationUtils.inDungeon || entity == Necron.mc.thePlayer) return;
 
         String cleanPlayerName = Utils.clearMcUsername(entity.getName());
         DungeonUtils.DungeonPlayer dungeonPlayer = DungeonUtils.dungeonPlayers.get(cleanPlayerName);
@@ -99,7 +99,11 @@ public final class Nametags {
             AxisAlignedBB interpolatedBB = entity.getEntityBoundingBox()
                     .offset(x - entity.posX, y - entity.posY, z - entity.posZ);
 
+            GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS);
+            GLUtils.backupAndSetupRender();
             RenderUtils.drawOutlinedBoundingBox(interpolatedBB, espColor, 2.0f, partialTicks);
+            GLUtils.restorePreviousRenderState();
+            GL11.glPopAttrib();
         }
     }
 
@@ -146,17 +150,17 @@ public final class Nametags {
     private Color getDungeonClassColor(DungeonUtils.DungeonClass playerClass) {
         switch (playerClass) {
             case Archer:
-                return new Color(255, 85, 85);  // §c
+                return new Color(255, 85, 85);
             case Berserk:
-                return new Color(255, 170, 0);  // §6
+                return new Color(255, 170, 0);
             case Healer:
-                return new Color(170, 0, 170);  // §d
+                return new Color(255, 85, 255);
             case Mage:
-                return new Color(85, 255, 255);  // §b
+                return new Color(85, 255, 255);
             case Tank:
-                return new Color(0, 170, 0);    // §2
+                return new Color(0, 170, 0);
             default:
-                return new Color(170, 170, 170);// §7
+                return new Color(170, 170, 170);
         }
     }
 }
