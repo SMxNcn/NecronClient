@@ -2,15 +2,13 @@ package cn.boop.necron.utils;
 
 import cn.boop.necron.Necron;
 import kotlin.Pair;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChatComponentText;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class Utils {
     public static final Random random = new Random();
@@ -101,6 +99,18 @@ public class Utils {
 
     public static String addNumSeparator(int number) {
         return String.format("%,d", number);
+    }
+
+    public static List<String> getPlayerNames() {
+        List<String> playerNames = new ArrayList<>();
+        if (Necron.mc.theWorld != null && Necron.mc.theWorld.playerEntities != null) {
+            for (EntityPlayer entity : Necron.mc.theWorld.playerEntities) {
+                if (entity instanceof EntityPlayer && !entity.getName().contains("§")) {
+                    playerNames.add(clearMcUsername(entity.getName()));
+                }
+            }
+        }
+        return playerNames;
     }
 
     public static boolean clickInventorySlot(int slot) {

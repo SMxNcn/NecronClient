@@ -102,6 +102,10 @@ public class DebugCommands extends CommandBase {
                         Utils.modMessage("§cInvalid position format.");
                     }
                     break;
+                case "setIndex":
+                    CropNuker.setIndex(Integer.parseInt(args[1]));
+                    Utils.modMessage("Set index to " + args[1]);
+                    break;
                 case "stats":
                     String itemID, itemName;
                     if (Necron.mc.thePlayer.getHeldItem() != null) {
@@ -137,16 +141,12 @@ public class DebugCommands extends CommandBase {
                     }
                     //Utils.chatMessage(B64Utils.encodeWithOffset(FakeWipe.triggerMsg));
                     break;
-                case "setIndex":
-                    CropNuker.setIndex(Integer.parseInt(args[1]));
-                    Utils.modMessage("Set index to " + args[1]);
-                    break;
                 default:
                     Utils.modMessage("§cUnknown debug command.");
                     break;
             }
         } else {
-            Utils.modMessage("Debug Commands: dungeonInfo, findpath, stats");
+            Utils.modMessage("Debug Commands: ban, dungeonInfo, findpath, setIndex, stats, stoppath");
         }
     }
 }
