@@ -10,6 +10,17 @@ public class GUIOptionsImpl extends ModConfig {
     public GUIOptionsImpl() {
         super("GUI Options", "necron/guioptions.json");
         initialize();
+
+        addDependency("redNumbers", "customSb");
+        addDependency("shadowText", "customSb");
+        addDependency("bgColor", "customSb");
+        addDependency("xPadding", "customSb");
+        addDependency("yPadding", "customSb");
+        addDependency("cornerRadius", "customSb");
+        addDependency("customIp", "customSb");
+        addDependency("ignore1", "customSb");
+        addDependency("alignCenter", "customSb");
+        addDependency("clientName", "customSb");
     }
 
     @Switch(name = "Enabled", description = "Display active modules on the screen", subcategory = "Module List")
