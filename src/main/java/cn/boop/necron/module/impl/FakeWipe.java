@@ -110,7 +110,7 @@ public class FakeWipe {
             new Thread(() -> {
                 try {
                     Thread.sleep(3000);
-                    Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§cA player has been removed from your game."));
+                    Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§c§lA player has been removed from your game."));
                     Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bUse /report to continue helping out the server!"));
                 } catch (InterruptedException e) {
                     Necron.LOGGER.error(e);
