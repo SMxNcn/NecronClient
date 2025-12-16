@@ -1,6 +1,7 @@
 package cn.boop.necron.config.impl;
 
 import cc.polyfrost.oneconfig.config.annotations.Color;
+import cc.polyfrost.oneconfig.config.annotations.Number;
 import cc.polyfrost.oneconfig.config.annotations.Switch;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cn.boop.necron.config.ModConfig;
@@ -30,4 +31,11 @@ public class DungeonOptionsImpl extends ModConfig {
     public static boolean witherESP = false;
     @Color(name = "ESP Color", description = "Color of dungeon ESP", subcategory = "Dungeon")
     public static OneColor espColor = new OneColor(255, 182, 43);
+
+//    @Switch(name = "Auto i4", description = "Enable i4", subcategory = "Device")
+    public static boolean autoI4 = false;
+    @Number(name = "Rod Slot", min = 1, max = 8, subcategory = "Device")
+    public static int rodSlot = 4;
+    @Number(name = "Leap Slot", min = 1, max = 8, subcategory = "Device")
+    public static int leapSlot = 8;
 }

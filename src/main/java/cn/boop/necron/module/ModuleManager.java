@@ -19,6 +19,7 @@ public class ModuleManager {
         // Modules
         modules.add(new AutoClicker());
         modules.add(new AutoGG());
+        modules.add(new AutoI4());
         modules.add(new AutoPath());
         modules.add(new AutoWardrobe());
         modules.add(new ChatBlocker());
@@ -66,6 +67,7 @@ public class ModuleManager {
         if (RouterOptionsImpl.router) activeModules.add("EtherwarpRouter");
         if (HurtCameraOptionsImpl.hurtCam) activeModules.add("HurtCam");
         if (NametagsOptionsImpl.nametags) activeModules.add("Nametags");
+        if (DungeonOptionsImpl.autoI4) activeModules.add("AutoI4");
         if (WaypointOptionsImpl.waypoints) activeModules.add("Waypoints");
 
         return activeModules;

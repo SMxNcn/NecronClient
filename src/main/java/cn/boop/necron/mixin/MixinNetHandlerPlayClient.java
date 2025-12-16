@@ -17,3 +17,9 @@ public class MixinNetHandlerPlayClient {
             FailSafe.onPlayerTeleport("Crop Nuker");
         }
     }
+
+    @Inject(method = "handleBlockChange", at = @At("RETURN"))
+    public void handleBlockChange(S23PacketBlockChange packet, CallbackInfo ci) {
+        AutoI4.INSTANCE.onBlockChangePacket(packet);
+    }
+}
