@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DungeonUtils {
+    public static final DungeonUtils INSTANCE = new DungeonUtils();
     public static Map<String, DungeonPlayer> dungeonPlayers = new HashMap<>();
     private static boolean hasTriggered = false;
     private static boolean hasClassData = false;
@@ -127,7 +128,7 @@ public class DungeonUtils {
         }
     }
 
-    private void updateDungeonPlayers() {
+    public void updateDungeonPlayers() {
         try {
             List<String> tabList = getTabList();
             if (tabList == null || tabList.isEmpty()) return;

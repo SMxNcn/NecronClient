@@ -18,7 +18,7 @@ import java.util.*;
 public class DebugCommands extends CommandBase {
     private static int banCount = 0;
     private static final String[] DENY_MESSAGES = {"No.", "STOP pls❤", "Alert!"};
-    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "setIndex", "stats", "stoppath");
+    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "setIndex", "stats", "stoppath", "update");
 
     @Override
     public String getCommandName() {
@@ -141,12 +141,15 @@ public class DebugCommands extends CommandBase {
                     }
                     //Utils.chatMessage(B64Utils.encodeWithOffset(FakeWipe.triggerMsg));
                     break;
+                case "update":
+                    DungeonUtils.INSTANCE.updateDungeonPlayers();
+                    break;
                 default:
                     Utils.modMessage("§cUnknown debug command.");
                     break;
             }
         } else {
-            Utils.modMessage("Debug Commands: ban, dungeonInfo, findpath, setIndex, stats, stoppath");
+            Utils.modMessage("Debug Commands: ban, dungeonInfo, findpath, setIndex, stats, stoppath, update");
         }
     }
 }
