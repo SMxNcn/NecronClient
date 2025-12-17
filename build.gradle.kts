@@ -1,5 +1,5 @@
-import net.fabricmc.loom.task.RemapJarTask
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     idea
@@ -110,7 +110,6 @@ tasks {
     }
     named<ShadowJar>("shadowJar") {
         archiveClassifier.set("Necron")
-        archiveClassifier.set("dev")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         configurations = listOf(shadowImpl)
     }
