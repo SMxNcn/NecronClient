@@ -73,11 +73,13 @@ public class UpdateChecker {
     }
 
     public void onNewVersionAvailable(String current, String latest) {
+        Necron.mc.thePlayer.addChatComponentMessage(new ChatComponentText("§r"));
         Utils.modMessage("New version available! §8" + current + "§7 ->§a " + latest);
-        Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bNecron §8»§r §a§nClick to download")
+        Necron.mc.thePlayer.addChatMessage(new ChatComponentText("§bNecron §8»§r §a§nClick to download\n")
                 .setChatStyle(new ChatStyle()
                         .setUnderlined(true)
                         .setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://gitee.com/mixturedg/necron-client/releases/latest"))
                 ));
+        Necron.mc.thePlayer.playSound("note.pling", 0.8f, 1.0f);
     }
 }
