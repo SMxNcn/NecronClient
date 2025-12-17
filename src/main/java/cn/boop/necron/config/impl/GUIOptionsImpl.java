@@ -51,13 +51,13 @@ public class GUIOptionsImpl extends ModConfig {
     @Switch(name = "Use Shadow Text", description = "Use shadow text", subcategory = "Scoreboard")
     public static boolean shadowText = false;
     @Color(name = "Background Color", description = "Background color of the scoreboard", subcategory = "Scoreboard")
-    public static OneColor bgColor = new OneColor(0, 0, 0, 77);
+    public static OneColor sbBgColor = new OneColor(0, 0, 0, 77);
     @Slider(name = "X-Padding", description = "X-Padding of the scoreboard", min = 0, max = 5, subcategory = "Scoreboard")
     public static int xPadding = 2;
     @Slider(name = "Y-Padding", description = "Y-Padding of the scoreboard", min = 0, max = 5, subcategory = "Scoreboard")
     public static int yPadding = 2;
     @Slider(name = "Corner Radius", description = "Corner radius of the scoreboard", min = 0, max = 10, subcategory = "Scoreboard")
-    public static int cornerRadius = 4;
+    public static int sbCornerRadius = 4;
     @Text(name = "Custom IP", description = "Custom IP-Line of the scoreboard", subcategory = "Scoreboard")
     public static String customIp = "";
     @Info(text = "'&' or '§' for Minecraft Color Codes", type = InfoType.INFO, subcategory = "Scoreboard")
