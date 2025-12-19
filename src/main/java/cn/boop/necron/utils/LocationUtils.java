@@ -3,6 +3,7 @@ package cn.boop.necron.utils;
 import cc.polyfrost.oneconfig.utils.hypixel.HypixelUtils;
 import cn.boop.necron.Necron;
 import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.util.BlockPos;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -80,6 +81,26 @@ public class LocationUtils {
 
     public enum M7Phases {
         Unknown, P1, P2, P3, P4, P5
+    }
+
+    public enum P3Stages {
+        Unknown(new BlockPos(-7, 160, -7), new BlockPos(7, 160, 7)),
+        Tunnel(new BlockPos(39, 160, 54), new BlockPos(69, 112, 118)),
+        S1(new BlockPos(89, 153, 51), new BlockPos(111, 105, 121)),
+        S2(new BlockPos(89, 153, 121), new BlockPos(19, 105, 143)),
+        S3(new BlockPos(19, 153, 121), new BlockPos(-3, 105, 51)),
+        S4(new BlockPos(19, 153, 51), new BlockPos(89, 105, 29));
+
+        private final BlockPos corner1;
+        private final BlockPos corner2;
+
+        P3Stages(BlockPos corner1, BlockPos corner2) {
+            this.corner1 = corner1;
+            this.corner2 = corner2;
+        }
+
+        public BlockPos getCorner1() { return corner1; }
+        public BlockPos getCorner2() { return corner2; }
     }
 
     @SubscribeEvent
@@ -210,5 +231,24 @@ public class LocationUtils {
         } else {
             return M7Phases.P5;
         }
+    }
+
+    public static P3Stages getP3Stage() {
+        if (getM7Phase() != M7Phases.P3 || Necron.mc.thePlayer == null) return P3Stages.Unknown;
+
+        double posX = Necron.mc.thePlayer.posX;
+        double posY = Necron.mc.thePlayer.posY;
+        double posZ = Necron.mc.thePlayer.posZ;
+        BlockPos playerPos = new BlockPos(Math.floor(posX), Math.floor(posY), Math.floor(posZ));
+
+        for (P3Stages stage : P3Stages.values()) {
+            if (stage == P3Stages.Unknown) continue;
+
+            if (Utils.isPlayerInArea(stage.getCorner1(), stage.getCorner2(), playerPos)) {
+                return stage;
+            }
+        }
+
+        return P3Stages.Unknown;
     }
 }

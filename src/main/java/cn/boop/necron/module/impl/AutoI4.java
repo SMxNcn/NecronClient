@@ -2,10 +2,7 @@ package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.impl.DungeonOptionsImpl;
-import cn.boop.necron.utils.PlayerUtils;
-import cn.boop.necron.utils.RenderUtils;
-import cn.boop.necron.utils.RotationUtils;
-import cn.boop.necron.utils.Utils;
+import cn.boop.necron.utils.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -21,11 +18,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.autoI4;
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.rodSlot;
+import static cn.boop.necron.config.impl.DungeonOptionsImpl.*;
 
 public class AutoI4 {
     public static final AutoI4 INSTANCE = new AutoI4();
@@ -39,6 +37,12 @@ public class AutoI4 {
     private boolean isInterrupted = false;
     private long interruptStartTime = 0;
     private static final long MAX_INTERRUPT_TIME = 1500;
+
+    private final ExecutorService actionExecutor = Executors.newSingleThreadExecutor(r -> {
+        Thread t = new Thread(r, "AutoI4");
+        t.setDaemon(true);
+        return t;
+    });
 
     private static final Pattern DEV_COMPLETE_PATTERN = Pattern.compile("(\\w+) completed a device! \\((.*?)\\)");
     private static final Pattern DEV_FAILED_PATTERN = Pattern.compile("☠ (\\w{1,16}) .* and became a ghost\\.");
@@ -66,7 +70,7 @@ public class AutoI4 {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (Necron.mc.theWorld == null || Necron.mc.thePlayer == null) return;
-        if (!autoI4 || event.phase != TickEvent.Phase.START) return;
+        if (!autoI4 || LocationUtils.getP3Stage() != LocationUtils.P3Stages.S4 || event.phase != TickEvent.Phase.START) return;
 
         if (isInterrupted && System.currentTimeMillis() - interruptStartTime > MAX_INTERRUPT_TIME) {
             resumeShooting();
@@ -86,6 +90,7 @@ public class AutoI4 {
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
+        if (!autoI4) return;
         String message = event.message.getUnformattedText();
 
         Matcher devCompleteMatcher = DEV_COMPLETE_PATTERN.matcher(message);
@@ -106,52 +111,57 @@ public class AutoI4 {
         }
 
         if (bonzoMatcher.matches()) {
-            System.out.println("Bonzo proceed!");
+            if (!bonzoText.isEmpty()) Utils.chatMessage("/pc " + bonzoText);
             int spiritSlot = findMaskItems("SPIRIT");
             Utils.modMessage("Spirit Slot: " + spiritSlot);
 
-            /*interruptShooting();
+            interruptShooting();
             Utils.chatMessage("/eq");
-            Necron.mc.addScheduledTask(() -> {
+            actionExecutor.submit(() -> {
                 try {
+                    Thread.sleep(460 + Utils.random.nextInt(80));
+                    System.out.println("Clicking Spirit: " + spiritSlot);
+                    Utils.clickPlayerInventorySlot(spiritSlot);
                     Thread.sleep(160 + Utils.random.nextInt(80));
-                    if (Utils.clickInventorySlot(spiritSlot)) {
-                        Thread.sleep(160 + Utils.random.nextInt(80));
-                        Necron.mc.thePlayer.closeScreen();
-                        Thread.sleep(Utils.random.nextInt(50) + 50);
-                        resumeShooting();
-                    }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            });
-            return;*/
-        }
-
-        if (spiritMatcher.matches()) {
-            System.out.println("Spirit proceed!");
-            if (!isNormalRodSlot(DungeonOptionsImpl.rodSlot)) return;
-            Utils.modMessage("Rod Slot: " + rodSlot);
-
-            /*interruptShooting();
-            new Thread(() -> {
-                try {
-                    Thread.sleep(220 + Utils.random.nextInt(80));
-                    Necron.mc.thePlayer.inventory.currentItem = rodSlot;
-                    Thread.sleep(220 + Utils.random.nextInt(80));
-                    KeyBinding.onTick(Necron.mc.gameSettings.keyBindUseItem.getKeyCode());
-                    Thread.sleep(220 + Utils.random.nextInt(80));
-                    Necron.mc.thePlayer.inventory.currentItem = 0;
+                    Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.closeScreen());
                     Thread.sleep(Utils.random.nextInt(50) + 50);
                     resumeShooting();
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-            }).start();*/
+            });
+            return;
+        }
+
+        if (spiritMatcher.matches()) {
+            if (!spiritText.isEmpty()) Utils.chatMessage("/pc " + spiritText);
+            Utils.modMessage("Rod Slot: " + (rodSlot - 1));
+            if (!isNormalRodSlot(DungeonOptionsImpl.rodSlot - 1)) return;
+
+            interruptShooting();
+            actionExecutor.submit(() -> {
+                try {
+                    Thread.sleep(220 + Utils.random.nextInt(80));
+                    Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = rodSlot - 1);
+                    Thread.sleep(120 + Utils.random.nextInt(80));
+                    PlayerUtils.rightClick();
+                    Thread.sleep(220 + Utils.random.nextInt(80));
+                    Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = 0);
+                    Thread.sleep(Utils.random.nextInt(50) + 50);
+                    resumeShooting();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        }
+
+        if (phoenixMatcher.matches()) {
+            if (!phoenixText.isEmpty()) Utils.chatMessage("/pc " + phoenixText);
         }
     }
 
     public int findMaskItems(String maskName) {
+        if (maskName == null) return -1;
         for (int i = 0; i < Necron.mc.thePlayer.inventory.getSizeInventory(); i++) {
             ItemStack stack = Necron.mc.thePlayer.inventory.getStackInSlot(i);
 
@@ -385,7 +395,20 @@ public class AutoI4 {
         isRunning = false;
         isInterrupted = false;
         currentEmeraldPos = null;
-        Utils.modMessage("§ai4 Completed! Leap to: [" + "§a]");
+        Utils.modMessage("§ai4 Completed! Leap to: [§bMage§a]");
+        new Thread(() -> {
+            try {
+                Thread.sleep(200);
+                Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = leapSlot - 1);
+                Thread.sleep(200);
+                if (AutoLeap.isLeapItem(Necron.mc.thePlayer.getHeldItem())) PlayerUtils.rightClick();
+                else Utils.modMessage("§cYou are not holding a Leap!");
+                Thread.sleep(600);
+                AutoLeap.leapToClass(DungeonUtils.DungeonClass.Mage);
+            } catch (InterruptedException e) {
+                Necron.LOGGER.error("Error while completing detection: ", e);
+            }
+        }).start();
         deviceCompleted = false;
     }
 

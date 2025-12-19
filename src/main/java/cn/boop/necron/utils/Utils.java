@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
 import java.util.*;
@@ -113,20 +114,50 @@ public class Utils {
         return playerNames;
     }
 
-    public static boolean clickInventorySlot(int slot) {
+    public static void clickInventorySlot(int slot) {
         try {
-            if (Necron.mc.thePlayer == null || Necron.mc.thePlayer.openContainer == null) return false;
+            if (Necron.mc.thePlayer == null || Necron.mc.thePlayer.openContainer == null) return;
             Container container = Necron.mc.thePlayer.openContainer;
+            if (slot < 0 || slot >= container.inventorySlots.size()) return;
+            Necron.mc.playerController.windowClick(container.windowId, slot, 0, 0, Necron.mc.thePlayer);
+        } catch (Exception ignore) {
+        }
+    }
 
-            if (slot < 0 || slot >= container.inventorySlots.size()) {
-                return false;
+    public static void clickPlayerInventorySlot(int playerSlot) {
+        try {
+            if (Necron.mc.thePlayer == null || Necron.mc.thePlayer.openContainer == null) return;
+
+            Container container = Necron.mc.thePlayer.openContainer;
+            int containerSlots = container.inventorySlots.size();
+            int actualSlot;
+
+            if (playerSlot >= 0 && playerSlot < 9) {
+                actualSlot = containerSlots - 9 + playerSlot;
+            } else if (playerSlot >= 9 && playerSlot < 36) {
+                int containerBaseSlots = containerSlots - 36;
+                if (containerBaseSlots < 0) return;
+                actualSlot = containerBaseSlots + (playerSlot - 9);
+            } else {
+                return;
             }
 
-            Necron.mc.playerController.windowClick(container.windowId, slot, 0, 0, Necron.mc.thePlayer);
-            return true;
-
-        } catch (Exception e) {
-            return false;
+            if (actualSlot < 0 || actualSlot >= containerSlots) return;
+            Necron.mc.playerController.windowClick(container.windowId, actualSlot, 0, 0, Necron.mc.thePlayer);
+        } catch (Exception ignore) {
         }
+    }
+
+    public static boolean isPlayerInArea(BlockPos pos1, BlockPos pos2, BlockPos playerPos) {
+        int minX = Math.min(pos1.getX(), pos2.getX());
+        int maxX = Math.max(pos1.getX(), pos2.getX());
+        int minY = Math.min(pos1.getY(), pos2.getY());
+        int maxY = Math.max(pos1.getY(), pos2.getY());
+        int minZ = Math.min(pos1.getZ(), pos2.getZ());
+        int maxZ = Math.max(pos1.getZ(), pos2.getZ());
+
+        return playerPos.getX() >= minX && playerPos.getX() <= maxX &&
+                playerPos.getY() >= minY && playerPos.getY() <= maxY &&
+                playerPos.getZ() >= minZ && playerPos.getZ() <= maxZ;
     }
 }

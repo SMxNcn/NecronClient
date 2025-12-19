@@ -20,6 +20,7 @@ public class ModuleManager {
         modules.add(new AutoClicker());
         modules.add(new AutoGG());
         modules.add(new AutoI4());
+        modules.add(new AutoLeap());
         modules.add(new AutoPath());
         modules.add(new AutoWardrobe());
         modules.add(new ChatBlocker());

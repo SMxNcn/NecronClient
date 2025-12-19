@@ -1,12 +1,13 @@
 package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.module.impl.AutoLeap;
 import cn.boop.necron.module.impl.AutoPath;
 import cn.boop.necron.module.impl.CropNuker;
 import cn.boop.necron.module.impl.FakeWipe;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
-import cn.boop.necron.utils.ScoreboardUtils;
+import cn.boop.necron.utils.PlayerUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -126,7 +127,8 @@ public class DebugCommands extends CommandBase {
                             "\n§7§l | §r§7inDungeon: " + (LocationUtils.inDungeon ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7Floor: " + LocationUtils.floor +
                             "\n§7§l | §r§7Instance player(s): " + DungeonUtils.dungeonPlayers.size() +
-                            "\n§7§l | §r§7Current M7 Phase: " + LocationUtils.getM7Phase()
+                            "\n§7§l | §r§7Current M7 Phase: " + LocationUtils.getM7Phase() +
+                            "\n§7§l | §r§7Current P3 Stage: " + LocationUtils.getP3Stage()
                     );
                     break;
                 case "stoppath":
@@ -134,11 +136,22 @@ public class DebugCommands extends CommandBase {
                     Utils.modMessage("Teleport pathfinder stop.");
                     break;
                 case "test":
-                    List<String> scoreboard = ScoreboardUtils.getScoreboard();
-                    for (String line : scoreboard) {
-                       // lines[scoreboard.indexOf(line)] = ScoreboardUtils.cleanSB(line) + "\n";
-                        System.out.println(line);
-                    }
+//                    List<String> scoreboard = ScoreboardUtils.getScoreboard();
+//                    for (String line : scoreboard) {
+//                       // lines[scoreboard.indexOf(line)] = ScoreboardUtils.cleanSB(line) + "\n";
+//                        System.out.println(line);
+//                    }
+                    new Thread(() -> {
+                        try {
+                            if (AutoLeap.isLeapItem(Necron.mc.thePlayer.getHeldItem())) PlayerUtils.rightClick();
+                            else Utils.modMessage("§cYou are not holding a Leap!");
+                            Thread.sleep(600);
+                            AutoLeap.leapToPlayer(args[1]);
+                            //AutoLeap.leapToClass(DungeonUtils.DungeonClass.fromName(args[1]));
+                        } catch (Exception e) {
+                            Necron.LOGGER.error("Error while executing /test: ", e);
+                        }
+                    }).start();
                     //Utils.chatMessage(B64Utils.encodeWithOffset(FakeWipe.triggerMsg));
                     break;
                 case "update":
