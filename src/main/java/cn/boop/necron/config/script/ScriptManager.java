@@ -28,9 +28,6 @@ public class ScriptManager {
         loadAllScripts();
     }
 
-    /**
-     * 加载所有脚本文件
-     */
     public static void loadAllScripts() {
         clearScripts();
         try {
@@ -44,16 +41,10 @@ public class ScriptManager {
         rebuildTriggerMap();
     }
 
-    /**
-     * 重新加载脚本
-     */
     public static void reloadScripts() {
         loadAllScripts();
     }
 
-    /**
-     * 加载单个脚本文件
-     */
     private static void loadScriptFile(Path filePath) {
         try {
             String content = new String(Files.readAllBytes(filePath));
@@ -66,9 +57,6 @@ public class ScriptManager {
         }
     }
 
-    /**
-     * 根据文件名加载脚本
-     */
     public void loadScriptByName(String fileName) {
         Path filePath = Paths.get(scriptDirectory, fileName);
         if (Files.exists(filePath)) {
@@ -77,9 +65,6 @@ public class ScriptManager {
         }
     }
 
-    /**
-     * 重新构建触发键映射
-     */
     private static void rebuildTriggerMap() {
         triggerMap.clear();
         for (Script script : scripts) {
@@ -90,23 +75,14 @@ public class ScriptManager {
         }
     }
 
-    /**
-     * 获取指定触发键的脚本列表
-     */
     public List<Script> getScriptsByTriggerKey(int keyCode) {
         return triggerMap.getOrDefault(keyCode, new ArrayList<>());
     }
 
-    /**
-     * 获取所有脚本
-     */
     public List<Script> getAllScripts() {
         return new ArrayList<>(scripts);
     }
 
-    /**
-     * 根据名称获取脚本
-     */
     public Script getScriptByName(String name) {
         return scripts.stream()
                 .filter(script -> script.getName().equals(name))
@@ -114,9 +90,6 @@ public class ScriptManager {
                 .orElse(null);
     }
 
-    /**
-     * 启用/禁用脚本
-     */
     public void setScriptEnabled(String name, boolean enabled) {
         Script script = getScriptByName(name);
         if (script != null) {

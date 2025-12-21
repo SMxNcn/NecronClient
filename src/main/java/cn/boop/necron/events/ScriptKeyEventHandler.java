@@ -15,7 +15,7 @@ import java.util.List;
 
 public class ScriptKeyEventHandler {
     private static ScriptManager scriptManager;
-    private static final boolean[] keyPressed = new boolean[256]; // 记录按键状态
+    private static final boolean[] keyPressed = new boolean[256];
 
     public static void setScriptManager(ScriptManager manager) {
         scriptManager = manager;
@@ -51,7 +51,7 @@ public class ScriptKeyEventHandler {
 
         for (Script script : triggeredScripts) {
             if (script.isEnabled()) {
-                if (NecronOptionsImpl.executeMessage) Utils.modMessage("Executing script §a[" + script.getName() + "]§7on key §8[" + script.getTriggerKey() + "]");
+                if (NecronOptionsImpl.executeMessage) Utils.modMessage("Executing script §a[" + script.getName() + "] §7on key §8[" + script.getTriggerKey() + "]");
                 ScriptExecutor.executeScript(script);
             }
         }

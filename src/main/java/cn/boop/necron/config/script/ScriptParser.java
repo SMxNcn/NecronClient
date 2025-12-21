@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class ScriptParser {
     enum ParseState {
-        SCRIPT_LEVEL,    // 脚本级别指令解析
-        ACTION_BLOCK     // 动作块内解析
+        SCRIPT_LEVEL,
+        ACTION_BLOCK
     }
 
     private static Script parseScriptHeader(String line) {
