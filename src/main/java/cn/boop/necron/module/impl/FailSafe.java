@@ -3,6 +3,7 @@ package cn.boop.necron.module.impl;
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.NotificationType;
 import cn.boop.necron.config.ResetReason;
+import cn.boop.necron.utils.Utils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -10,6 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cn.boop.necron.config.impl.FarmingOptionsImpl.cnAutoKick;
 import static cn.boop.necron.config.impl.FarmingOptionsImpl.cropNuker;
 
 public class FailSafe {
@@ -42,6 +44,7 @@ public class FailSafe {
                 String playerName = visitMatcher.group(1);
                 if (!ChatBlocker.isPlayerWhitelisted(playerName)) {
                     CropNuker.reset();
+                    if (cnAutoKick) Utils.chatMessage("/sbkick " + playerName);
                     ClientNotification.sendNotification("Crop Nuker", ResetReason.PLAYER_VISIT.getMessage(), NotificationType.WARN, 5000);
                 }
             }

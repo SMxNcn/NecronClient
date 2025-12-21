@@ -33,4 +33,6 @@ public class FarmingOptionsImpl extends ModConfig {
     public static int delayTime = 50;
     @Checkbox(name = "Melon mode", description = "Max speed on advanced melon/pumpkin farm", subcategory = "Crop Nuker")
     public static boolean melonMode = false;
+    @Switch(name = "Auto Kick", description = "Auto kick players without whitelisted", subcategory = "Crop Nuker")
+    public static boolean cnAutoKick = false;
 }
