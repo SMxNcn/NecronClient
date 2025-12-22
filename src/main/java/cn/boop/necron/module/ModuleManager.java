@@ -35,6 +35,7 @@ public class ModuleManager {
         modules.add(new HurtCam());
         modules.add(new ModuleList());
         modules.add(new M7Waypoints());
+        modules.add(new MaskNotifier());
         modules.add(new Nametags());
         modules.add(new TitleManager());
 

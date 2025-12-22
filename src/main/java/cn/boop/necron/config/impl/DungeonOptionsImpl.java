@@ -31,19 +31,21 @@ public class DungeonOptionsImpl extends ModConfig {
     public static boolean witherESP = false;
     @Color(name = "ESP Color", description = "Color of dungeon ESP", subcategory = "Dungeon")
     public static OneColor espColor = new OneColor(255, 182, 43);
+    @Switch(name = "Mask Notifier", description = "Enable Mask/Phoenix used message", subcategory = "Dungeon")
+    public static boolean maskNotifier = false;
+    @Text(name = "Spirit Text", description = "Message when Spirit Mask used", subcategory = "Dungeon")
+    public static String spiritText = "";
+    @Text(name = "Bonzo Text", description = "Message when Spirit Mask used", subcategory = "Dungeon")
+    public static String bonzoText = "";
+    @Text(name = "Phoenix Text", description = "Message when Spirit Mask used", subcategory = "Dungeon")
+    public static String phoenixText = "";
 
     @Switch(name = "Enabled", description = "Enable i4", subcategory = "Auto i4")
     public static boolean autoI4 = false;
-    @Info(text = "Make sure to setup your Auto-pet rules!", type = InfoType.WARNING, subcategory = "Auto i4")
+    @Info(text = "Please use Bonzo's Mask First!", type = InfoType.WARNING, subcategory = "Auto i4")
     public static boolean ignore;
     @Number(name = "Rod Slot", min = 1, max = 8, description = "Slot of Fishing Rod", subcategory = "Auto i4")
     public static int rodSlot = 4;
     @Number(name = "Leap Slot", min = 1, max = 8, description = "Slot of Leap Item", subcategory = "Auto i4")
     public static int leapSlot = 8;
-    @Text(name = "Spirit Text", description = "Message when Spirit Mask used", subcategory = "Auto i4")
-    public static String spiritText = "";
-    @Text(name = "Bonzo Text", description = "Message when Spirit Mask used", subcategory = "Auto i4")
-    public static String bonzoText = "";
-    @Text(name = "Phoenix Text", description = "Message when Spirit Mask used", subcategory = "Auto i4")
-    public static String phoenixText = "";
 }

@@ -48,7 +48,6 @@ public class AutoI4 {
     private static final Pattern DEV_FAILED_PATTERN = Pattern.compile("☠ (\\w{1,16}) .* and became a ghost\\.");
     private static final Pattern BONZO_PATTERN = Pattern.compile("^Your (?:. )?Bonzo's Mask saved your life!$");
     private static final Pattern SPIRIT_PATTERN = Pattern.compile("^Second Wind Activated! Your Spirit Mask saved your life!$");
-    private static final Pattern PHOENIX_PATTERN = Pattern.compile("^Your Phoenix Pet saved you from certain death!$");
 
     private static final BlockPos PLATE_POS = new BlockPos(63, 127, 35);
 
@@ -97,7 +96,6 @@ public class AutoI4 {
         Matcher devFailedMatcher = DEV_FAILED_PATTERN.matcher(message);
         Matcher bonzoMatcher = BONZO_PATTERN.matcher(message);
         Matcher spiritMatcher = SPIRIT_PATTERN.matcher(message);
-        Matcher phoenixMatcher = PHOENIX_PATTERN.matcher(message);
 
         if (devCompleteMatcher.matches() && !deviceCompleted) {
             deviceCompleted = true;
@@ -111,16 +109,13 @@ public class AutoI4 {
         }
 
         if (bonzoMatcher.matches()) {
-            if (!bonzoText.isEmpty()) Utils.chatMessage("/pc " + bonzoText);
             int spiritSlot = findMaskItems("SPIRIT");
-            Utils.modMessage("Spirit Slot: " + spiritSlot);
 
             interruptShooting();
             Utils.chatMessage("/eq");
             actionExecutor.submit(() -> {
                 try {
                     Thread.sleep(460 + Utils.random.nextInt(80));
-                    System.out.println("Clicking Spirit: " + spiritSlot);
                     Utils.clickPlayerInventorySlot(spiritSlot);
                     Thread.sleep(160 + Utils.random.nextInt(80));
                     Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.closeScreen());
@@ -134,8 +129,6 @@ public class AutoI4 {
         }
 
         if (spiritMatcher.matches()) {
-            if (!spiritText.isEmpty()) Utils.chatMessage("/pc " + spiritText);
-            Utils.modMessage("Rod Slot: " + (rodSlot - 1));
             if (!isNormalRodSlot(DungeonOptionsImpl.rodSlot - 1)) return;
 
             interruptShooting();
@@ -153,10 +146,6 @@ public class AutoI4 {
                     Thread.currentThread().interrupt();
                 }
             });
-        }
-
-        if (phoenixMatcher.matches()) {
-            if (!phoenixText.isEmpty()) Utils.chatMessage("/pc " + phoenixText);
         }
     }
 
