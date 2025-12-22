@@ -4,6 +4,7 @@ import cn.boop.necron.config.impl.*;
 import cn.boop.necron.events.*;
 import cn.boop.necron.gui.MainMenu;
 import cn.boop.necron.module.impl.*;
+import cn.boop.necron.module.impl.autoleap.LeapRules;
 import cn.boop.necron.module.impl.hud.ModuleList;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
@@ -39,6 +40,7 @@ public class ModuleManager {
 
         // Other utils/events
         modules.add(new DungeonUtils());
+        modules.add(new LeapRules());
         modules.add(new LocationUtils());
         modules.add(new MainMenu());
         modules.add(new B64ChatEventHandler());
@@ -60,6 +62,7 @@ public class ModuleManager {
         List<String> activeModules = new ArrayList<>();
         if (AutoClickerOptionsImpl.autoClicker) activeModules.add("AutoClicker");
         if (AutoGGOptionsImpl.autoGG) activeModules.add("AutoGG");
+        if (AutoLeapOptionsImpl.autoLeap) activeModules.add("AutoLeap");
         if (AutoPathOptionsImpl.autoPath) activeModules.add("AutoPath");
         if (WardrobeOptionsImpl.wardrobe) activeModules.add("AutoWardrobe");
         if (ChatCommandsOptionsImpl.chatCommands) activeModules.add("ChatCommands");

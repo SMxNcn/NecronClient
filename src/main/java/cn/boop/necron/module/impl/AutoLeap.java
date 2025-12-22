@@ -12,14 +12,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import static cn.boop.necron.config.impl.DungeonOptionsImpl.autoLeap;
+import static cn.boop.necron.config.impl.AutoLeapOptionsImpl.autoLeap;
 
 public class AutoLeap {
-    private static boolean inLeapGui = false;
+    public static boolean inLeapGui = false;
     private static ContainerChest leapContainer;
 
     @SubscribeEvent()
-    public void onGuiOpen(TickEvent.ClientTickEvent event) {
+    public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) return;
 
         if (Necron.mc.currentScreen instanceof GuiChest && LocationUtils.inSkyBlock && autoLeap) {

@@ -32,9 +32,6 @@ public class DungeonOptionsImpl extends ModConfig {
     @Color(name = "ESP Color", description = "Color of dungeon ESP", subcategory = "Dungeon")
     public static OneColor espColor = new OneColor(255, 182, 43);
 
-    @Switch(name = "Auto Leap", description = "Auto leap to players in different cases", subcategory = "Auto Leap")
-    public static boolean autoLeap = false;
-
     @Switch(name = "Enabled", description = "Enable i4", subcategory = "Auto i4")
     public static boolean autoI4 = false;
     @Info(text = "Make sure to setup your Auto-pet rules!", type = InfoType.WARNING, subcategory = "Auto i4")

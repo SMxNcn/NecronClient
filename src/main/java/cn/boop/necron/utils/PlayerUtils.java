@@ -2,6 +2,7 @@ package cn.boop.necron.utils;
 
 import cn.boop.necron.Necron;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.util.BlockPos;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -32,5 +33,9 @@ public class PlayerUtils {
 
     public static void pressKeyOnce(int keyCode) {
         KeyBinding.onTick(keyCode);
+    }
+
+    public static BlockPos getPlayerPos(String name) {
+        return Necron.mc.theWorld.getPlayerEntityByName(name).getPosition();
     }
 }
