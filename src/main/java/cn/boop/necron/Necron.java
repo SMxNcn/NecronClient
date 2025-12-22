@@ -14,6 +14,7 @@ import cn.boop.necron.module.impl.rng.SlayerRngManager;
 import cn.boop.necron.module.impl.slayer.AatroxBuffChecker;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.RotationUtils;
+import cn.boop.necron.utils.SystemUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -22,6 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +47,7 @@ public class Necron {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(this);
+        SystemUtils.INSTANCE.initializeTray();
         ModuleManager.initModules();
         FontManager.initFonts();
 
@@ -91,5 +94,10 @@ public class Necron {
         if (event.type != 0 || !LocationUtils.inSkyBlock) return;
         String cleanMessage = Utils.removeFormatting(event.message.getFormattedText());
         if ("Everybody unlocks exclusive perks!".equals(cleanMessage)) AatroxBuffChecker.fetchElectionData();
+    }
+
+    @Mod.EventHandler
+    public void onShutdown(FMLServerStoppedEvent event) {
+        SystemUtils.INSTANCE.cleanup();
     }
 }

@@ -6,6 +6,10 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
  调试命令: `/ncdebug`，命令别名: `/ncd`
 
+## Auto Leap
+- 在F7/M7根据规则自动传送（左键Leap物品触发）
+- 使用**Old Terminal Rule**
+
 ## Auto Path
 - 使用A*算法的寻路系统 **(WIP)**
 - 使用 AOTV/AOTE 的**普通**传送技能进行寻路
@@ -64,6 +68,11 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ## Smooth Scrolling
 - 为游戏中列表添加平滑滚动。 (TODO: 创造物品栏)
 - 快捷栏平滑切换。（Smoothness设为0为禁用，10.0最慢）
+
+## System Notifications
+- 系统级通知功能。
+- Fail Safe可选择开启。
+- 双击系统托盘图标有神秘的事情发生哦~
 
 ## Title Manager
 - Default Title: 显示为 Spongepowered v0.x.x 或自定义标题

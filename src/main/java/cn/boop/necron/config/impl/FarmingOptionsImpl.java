@@ -35,4 +35,6 @@ public class FarmingOptionsImpl extends ModConfig {
     public static boolean melonMode = false;
     @Switch(name = "Auto Kick", description = "Auto kick players without whitelisted", subcategory = "Crop Nuker")
     public static boolean cnAutoKick = false;
+    @Switch(name = "System Notification", description = "Send system notification on FailSafe", subcategory = "Crop Nuker")
+    public static boolean cnSys = true;
 }

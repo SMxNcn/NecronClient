@@ -7,6 +7,9 @@ import cc.polyfrost.oneconfig.renderer.asset.Icon;
 import cc.polyfrost.oneconfig.renderer.asset.SVG;
 import cc.polyfrost.oneconfig.utils.Notifications;
 import cc.polyfrost.oneconfig.utils.gui.GuiUtils;
+import cn.boop.necron.utils.SystemUtils;
+
+import java.awt.*;
 
 public class ClientNotification {
     public static final SVG ENABLED_ICON = new SVG("/assets/necron/icons/NotificationEnabled.svg");
@@ -20,6 +23,12 @@ public class ClientNotification {
                 getIcon(type),
                 duration,
                 () -> animation.get(GuiUtils.getDeltaTime()));
+    }
+
+    public static void sendSystemNotification(String title, String message, TrayIcon.MessageType type) {
+        SystemUtils systemUtils = SystemUtils.INSTANCE;
+        if (!systemUtils.isInitialized()) return;
+        systemUtils.sendNotification(title, message, type);
     }
 
     private static Icon getIcon(NotificationType type) {
