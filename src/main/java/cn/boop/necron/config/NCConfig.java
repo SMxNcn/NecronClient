@@ -20,6 +20,8 @@ public class NCConfig extends Config {
     @SubConfig
     public static AutoGGOptionsImpl autoGGOptions = new AutoGGOptionsImpl();
     @SubConfig
+    public static AutoLeapOptionsImpl autoLeapOptions = new AutoLeapOptionsImpl();
+    @SubConfig
     public static AutoPathOptionsImpl autoPathOptions = new AutoPathOptionsImpl();
     @SubConfig
     public static ChatBlockerOptionsImpl chatBlockerOptions = new ChatBlockerOptionsImpl();
