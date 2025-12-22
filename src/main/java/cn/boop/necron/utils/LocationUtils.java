@@ -207,8 +207,7 @@ public class LocationUtils {
         double posZ = Necron.mc.thePlayer.posZ;
 
         if (inDungeon) {
-            String floorName = floor.name.replaceAll("[()]", "");
-            if (floorName.contains("F7") || floorName.contains("M7")) {
+            if (floor == Floor.FLOOR_7 || floor == Floor.MASTER_7) {
                 inBossRoom = posX > -7 && posZ > -7;
             } else {
                 inBossRoom = false;

@@ -113,7 +113,7 @@ public class SystemUtils {
             String memoryInfo = String.format("Mem: %d/%d MB (%.1f%%)",
                     usedMemory / 1024 / 1024,
                     maxMemory / 1024 / 1024,
-                    memoryUsage);
+                    memoryUsage * 100);
 
             if (mc.theWorld != null && mc.thePlayer != null) {
                 String player = mc.thePlayer.getName();
