@@ -32,9 +32,7 @@ public class TitleManager {
                 setWindowIcon();
                 iconsSet = true;
             }
-        } catch (Exception e) {
-            Necron.LOGGER.warn(e.getMessage());
-        }
+        } catch (Exception ignore) {}
     }
 
     private void setWindowTitle() {
