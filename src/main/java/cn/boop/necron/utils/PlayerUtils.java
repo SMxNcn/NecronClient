@@ -36,6 +36,7 @@ public class PlayerUtils {
     }
 
     public static BlockPos getPlayerPos(String name) {
+        if (name == null || Necron.mc.theWorld == null) return null;
         return Necron.mc.theWorld.getPlayerEntityByName(name).getPosition();
     }
 }
