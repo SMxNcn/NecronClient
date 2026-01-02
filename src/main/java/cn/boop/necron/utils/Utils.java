@@ -41,6 +41,19 @@ public class Utils {
         return "";
     }
 
+    public static int findItemByID(String itemID) {
+        if (itemID == null || Necron.mc.thePlayer == null) return -1;
+        for (int i = 0; i < Necron.mc.thePlayer.inventory.getSizeInventory(); i++) {
+            ItemStack stack = Necron.mc.thePlayer.inventory.getStackInSlot(i);
+
+            if (stack != null) {
+                String currentID = Utils.getSkyBlockID(stack);
+                if (currentID.contains(itemID)) return i;
+            }
+        }
+        return -1;
+    }
+
     public static <T> Pair<T, Double> weightedRandom(List<Pair<T, Double>> weightedList) {
         double total = weightedList.stream()
                 .mapToDouble(Pair::getSecond)

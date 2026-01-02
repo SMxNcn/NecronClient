@@ -1,6 +1,7 @@
 package cn.boop.necron.utils;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.module.impl.AutoI4;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.event.world.WorldEvent;
@@ -46,6 +47,7 @@ public class DungeonUtils {
     public static void resetData() {
         dungeonPlayers.clear();
         hasTriggered = false;
+        AutoI4.INSTANCE.reset();
     }
 
     public enum DungeonClass {

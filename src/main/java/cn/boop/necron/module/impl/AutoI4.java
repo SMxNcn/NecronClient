@@ -17,6 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -44,7 +45,9 @@ public class AutoI4 {
         return t;
     });
 
-    private static final Pattern DEV_COMPLETE_PATTERN = Pattern.compile("(\\w+) completed a device! \\((.*?)\\)");
+    private String berserkName = "";
+
+    private static final Pattern DEV_COMPLETE_PATTERN = Pattern.compile("(\\w{1,16}) completed a device! \\((.*?)\\)");
     private static final Pattern DEV_FAILED_PATTERN = Pattern.compile("☠ (\\w{1,16}) .* and became a ghost\\.");
     private static final Pattern BONZO_PATTERN = Pattern.compile("^Your (?:. )?Bonzo's Mask saved your life!$");
     private static final Pattern SPIRIT_PATTERN = Pattern.compile("^Second Wind Activated! Your Spirit Mask saved your life!$");
@@ -80,10 +83,21 @@ public class AutoI4 {
         } else if (atDevice() && !isInterrupted) {
             detectEmeraldBlock();
         }
+
+        if (berserkName.isEmpty()) {
+            for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
+                DungeonUtils.DungeonPlayer player = entry.getValue();
+                if (player != null && player.getPlayerClass() == DungeonUtils.DungeonClass.Berserk) {
+                    berserkName = player.getPlayerName();
+                    break;
+                }
+            }
+        }
     }
 
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event) {
+        if (LocationUtils.getP3Stage() != LocationUtils.P3Stages.S4) return;
         renderCircleIndicator(event.partialTicks);
     }
 
@@ -98,18 +112,32 @@ public class AutoI4 {
         Matcher spiritMatcher = SPIRIT_PATTERN.matcher(message);
 
         if (devCompleteMatcher.matches() && !deviceCompleted) {
-            deviceCompleted = true;
-            completeDetection();
+            String completedPlayer = devCompleteMatcher.group(1);
+
+            if (!berserkName.isEmpty() && completedPlayer.contains(berserkName)) {
+                completeDetection();
+                deviceCompleted = true;
+                Utils.modMessage("§ai4 Completed by " + (berserkName.isEmpty() ? "§6Berserk" : berserkName) + "§a!");
+            }
+
             return;
         }
 
         if (devFailedMatcher.matches()) {
-            deviceCompleted = false;
-            stopDetection();
+            String failedPlayer = devFailedMatcher.group(1);
+            if (!berserkName.isEmpty() && failedPlayer.contains(berserkName)) {
+                deviceCompleted = false;
+                stopDetection();
+                Utils.modMessage("§ai4 Incompleted!");
+            }
+            return;
         }
 
+        // 自动切换复活道具可在ee2/ee3等情况下使用
+        // 前提是你开启了Auto i4功能，并佩戴Bonzo‘s Mask开始ee
+
         if (bonzoMatcher.matches()) {
-            int spiritSlot = findMaskItems("SPIRIT");
+            int spiritSlot = Utils.findItemByID("SPIRIT_MASK");
 
             interruptShooting();
             Utils.chatMessage("/eq");
@@ -134,12 +162,13 @@ public class AutoI4 {
             interruptShooting();
             actionExecutor.submit(() -> {
                 try {
+                    int lastSlot = Necron.mc.thePlayer.inventory.currentItem;
                     Thread.sleep(220 + Utils.random.nextInt(80));
                     Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = rodSlot - 1);
                     Thread.sleep(120 + Utils.random.nextInt(80));
                     PlayerUtils.rightClick();
                     Thread.sleep(220 + Utils.random.nextInt(80));
-                    Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = 0);
+                    Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = lastSlot);
                     Thread.sleep(Utils.random.nextInt(50) + 50);
                     resumeShooting();
                 } catch (InterruptedException e) {
@@ -147,31 +176,6 @@ public class AutoI4 {
                 }
             });
         }
-    }
-
-    public int findMaskItems(String maskName) {
-        if (maskName == null) return -1;
-        for (int i = 0; i < Necron.mc.thePlayer.inventory.getSizeInventory(); i++) {
-            ItemStack stack = Necron.mc.thePlayer.inventory.getStackInSlot(i);
-
-            if (stack != null) {
-                String itemID = Utils.getSkyBlockID(stack);
-
-                switch (maskName) {
-                    case "BONZO":
-                        if (itemID.contains("BONZO_MASK")) {
-                            return i;
-                        }
-                        break;
-                    case "SPIRIT":
-                        if (itemID.contains("SPIRIT_MASK")) {
-                            return i;
-                        }
-                        break;
-                }
-            }
-        }
-        return -1;
     }
 
     public void onBlockChangePacket(S23PacketBlockChange packet) {
@@ -199,32 +203,38 @@ public class AutoI4 {
 
         isShooting = true;
         Vec3 aimPos = selectBestAimingPosition();
-        RotationUtils.asyncAimAt(aimPos, 0.3f);
+        RotationUtils.asyncAimAt(aimPos, 0.35f);
 
-        new Thread(() -> {
+        actionExecutor.submit(() -> {
             try {
-                if (!atDevice()) {
-                    isShooting = false;
-                    return;
-                }
-
-                if (isInterrupted) return;
+                if (Necron.mc.theWorld == null || Necron.mc.thePlayer == null || !atDevice() || isInterrupted) return;
 
                 PlayerUtils.leftClick();
-                isShooting = false;
                 int clickDelay = 85 + Utils.random.nextInt(26);
                 Thread.sleep(clickDelay);
 
-                Block currentBlock = Necron.mc.theWorld.getBlockState(currentEmeraldPos).getBlock();
-                if (currentBlock != Blocks.emerald_block && currentBlock != null) {
-                    handleEmeraldHit();
-                } else {
-                    currentEmeraldPos = null;
+                if (Necron.mc.theWorld != null && currentEmeraldPos != null) {
+                    Block currentBlock = Necron.mc.theWorld.getBlockState(currentEmeraldPos).getBlock();
+                    if (currentBlock != Blocks.emerald_block && currentBlock != null) {
+                        handleEmeraldHit();
+                    } else {
+                        currentEmeraldPos = null;
+                    }
                 }
             } catch (InterruptedException e) {
-                isShooting = false;
-            } catch (NullPointerException ignore) {}
-        }).start();
+                Thread.currentThread().interrupt();
+            } catch (Exception e) {
+                Necron.LOGGER.error("AutoI4 shooting error", e);
+            } finally {
+                synchronized (this) {
+                    isShooting = false;
+                }
+
+                if (currentEmeraldPos != null && hitPositions.contains(currentEmeraldPos)) {
+                    currentEmeraldPos = null;
+                }
+            }
+        });
     }
 
     private boolean isInTargetArea(BlockPos pos) {
@@ -336,7 +346,7 @@ public class AutoI4 {
     }
 
     private boolean atDevice() {
-        if (Necron.mc.thePlayer == null) return false;
+        if (Necron.mc.thePlayer == null || LocationUtils.getP3Stage() != LocationUtils.P3Stages.S4) return false;
 
         double x = Necron.mc.thePlayer.posX;
         double y = Necron.mc.thePlayer.posY;
@@ -381,11 +391,11 @@ public class AutoI4 {
     }
 
     private void completeDetection() {
+        if (LocationUtils.getP3Stage() != LocationUtils.P3Stages.S4) return;
         isRunning = false;
         isInterrupted = false;
         currentEmeraldPos = null;
-        Utils.modMessage("§ai4 Completed! Leap to: [§bMage§a]");
-        new Thread(() -> {
+        actionExecutor.submit(() -> {
             try {
                 Thread.sleep(200);
                 Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = leapSlot - 1);
@@ -394,10 +404,13 @@ public class AutoI4 {
                 else Utils.modMessage("§cYou are not holding a Leap!");
                 Thread.sleep(600);
                 AutoLeap.leapToClass(DungeonUtils.DungeonClass.Mage);
+                Thread.sleep(100);
+                reset();
             } catch (InterruptedException e) {
                 Necron.LOGGER.error("Error while completing detection: ", e);
+                deviceCompleted = true;
             }
-        }).start();
+        });
         deviceCompleted = false;
     }
 
@@ -407,7 +420,6 @@ public class AutoI4 {
         currentEmeraldPos = null;
         hitPositions.clear();
         hitCount = 0;
-        Utils.modMessage("§ai4 Incompleted!");
     }
 
     public void interruptShooting() {
@@ -437,5 +449,17 @@ public class AutoI4 {
                 }
             }
         return false;
+    }
+
+    public void reset() {
+        isRunning = false;
+        isInterrupted = false;
+        deviceCompleted = false;
+        hitCount = 0;
+        hitPositions.clear();
+        currentEmeraldPos = null;
+        isShooting = false;
+        berserkName = "";
+        interruptStartTime = 0;
     }
 }
