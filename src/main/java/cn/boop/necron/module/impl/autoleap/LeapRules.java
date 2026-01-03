@@ -158,7 +158,7 @@ public class LeapRules {
             return handlePreBossPhase();
         }
 
-        if (autoLeapF7 && (LocationUtils.floor == LocationUtils.Floor.MASTER_7 || LocationUtils.floor == LocationUtils.Floor.FLOOR_7)) {
+        if (autoLeapF7 && LocationUtils.floor == LocationUtils.Floor.MASTER_7) {
             return handleM7Phase();
         }
 
@@ -186,7 +186,14 @@ public class LeapRules {
         if (currentClass == null || currentPhase == LocationUtils.M7Phases.Unknown) return null;
 
         boolean isCore = false;
-        if (p3Stage == LocationUtils.P3Stages.S3) isCore = checkIfMageIsCore();
+        if (p3Stage == LocationUtils.P3Stages.S3) {
+            try {
+                isCore = checkIfMageIsCore();
+            } catch (NullPointerException e) {
+                Utils.modMessage("§cFailed to query rule: Mage position is null.");
+                isCore = true;
+            }
+        }
         return queryRule(currentClass, currentPhase, p3Stage, isCore);
     }
 
@@ -200,7 +207,7 @@ public class LeapRules {
 
         archerP3Rules.put(LocationUtils.P3Stages.S2, new SimpleRule(DungeonUtils.DungeonClass.Healer));
         archerP3Rules.put(LocationUtils.P3Stages.Tunnel, new SimpleRule(DungeonUtils.DungeonClass.Healer));
-        archerP3Rules.put(LocationUtils.P3Stages.S3, new ConditionalRule(DungeonUtils.DungeonClass.Mage, DungeonUtils.DungeonClass.Berserk));
+        archerP3Rules.put(LocationUtils.P3Stages.S3, new SimpleRule(DungeonUtils.DungeonClass.Mage));
         archerP3Rules.put(LocationUtils.P3Stages.S4, new SimpleRule(DungeonUtils.DungeonClass.Mage));
 
         archerRules.put(LocationUtils.M7Phases.P3, archerP3Rules);
@@ -215,7 +222,7 @@ public class LeapRules {
         berserkP3Rules.put(LocationUtils.P3Stages.S1, new SimpleRule(DungeonUtils.DungeonClass.Archer));
         berserkP3Rules.put(LocationUtils.P3Stages.S2, new SimpleRule(DungeonUtils.DungeonClass.Healer));
         berserkP3Rules.put(LocationUtils.P3Stages.Tunnel, new SimpleRule(DungeonUtils.DungeonClass.Healer));
-        berserkP3Rules.put(LocationUtils.P3Stages.S3, new ConditionalRule(DungeonUtils.DungeonClass.Mage, DungeonUtils.DungeonClass.Archer));
+        berserkP3Rules.put(LocationUtils.P3Stages.S3, new SimpleRule(DungeonUtils.DungeonClass.Mage));
         berserkP3Rules.put(LocationUtils.P3Stages.S4, new SimpleRule(DungeonUtils.DungeonClass.Mage));
 
         berserkRules.put(LocationUtils.M7Phases.P2, Collections.singletonMap(null, new SimpleRule(DungeonUtils.DungeonClass.Healer)));
@@ -229,7 +236,7 @@ public class LeapRules {
         Map<LocationUtils.P3Stages, TargetRule> healerP3Rules = new EnumMap<>(LocationUtils.P3Stages.class);
 
         healerP3Rules.put(LocationUtils.P3Stages.S1, new SimpleRule(DungeonUtils.DungeonClass.Archer));
-        healerP3Rules.put(LocationUtils.P3Stages.S3, new ConditionalRule(DungeonUtils.DungeonClass.Mage, DungeonUtils.DungeonClass.Archer));
+        healerP3Rules.put(LocationUtils.P3Stages.S3, new SimpleRule(DungeonUtils.DungeonClass.Mage));
         healerP3Rules.put(LocationUtils.P3Stages.S4, new SimpleRule(DungeonUtils.DungeonClass.Mage));
 
         healerRules.put(LocationUtils.M7Phases.P2, Collections.singletonMap(null, new SimpleRule(DungeonUtils.DungeonClass.Archer)));
@@ -261,7 +268,7 @@ public class LeapRules {
         tankP3Rules.put(LocationUtils.P3Stages.S1, new SimpleRule(DungeonUtils.DungeonClass.Archer));
         tankP3Rules.put(LocationUtils.P3Stages.S2, new SimpleRule(DungeonUtils.DungeonClass.Healer));
         tankP3Rules.put(LocationUtils.P3Stages.Tunnel, new SimpleRule(DungeonUtils.DungeonClass.Healer));
-        tankP3Rules.put(LocationUtils.P3Stages.S3, new ConditionalRule(DungeonUtils.DungeonClass.Mage, DungeonUtils.DungeonClass.Archer));
+        tankP3Rules.put(LocationUtils.P3Stages.S3, new SimpleRule(DungeonUtils.DungeonClass.Mage));
         tankP3Rules.put(LocationUtils.P3Stages.S4, new SimpleRule(DungeonUtils.DungeonClass.Mage));
 
         tankRules.put(LocationUtils.M7Phases.P1, Collections.singletonMap(null, new SimpleRule(DungeonUtils.DungeonClass.Berserk)));
@@ -290,14 +297,18 @@ public class LeapRules {
     private static boolean checkIfMageIsCore() {
         String mageName;
         BlockPos magePos = null;
-        for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
-            DungeonUtils.DungeonPlayer player = entry.getValue();
-            if (player != null && player.getPlayerClass() == DungeonUtils.DungeonClass.Mage) {
-                mageName = player.getPlayerName();
-                if (mageName == null) return false;
-                magePos = PlayerUtils.getPlayerPos(mageName);
-                break;
+        try {
+            for (Map.Entry<String, DungeonUtils.DungeonPlayer> entry : DungeonUtils.dungeonPlayers.entrySet()) {
+                DungeonUtils.DungeonPlayer player = entry.getValue();
+                if (player != null && player.getPlayerClass() == DungeonUtils.DungeonClass.Mage) {
+                    mageName = player.getPlayerName();
+                    if (mageName == null) return false;
+                    magePos = PlayerUtils.getPlayerPos(mageName);
+                    break;
+                }
             }
+        } catch (Exception e) {
+            Necron.LOGGER.warn(e);
         }
 
         if (magePos == null) return false;
