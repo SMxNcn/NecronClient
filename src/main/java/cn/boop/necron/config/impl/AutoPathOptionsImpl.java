@@ -5,7 +5,7 @@ import cn.boop.necron.config.ModConfig;
 
 public class AutoPathOptionsImpl extends ModConfig {
     public AutoPathOptionsImpl() {
-        super("AutoPath", "necron/autopath.json");
+        super("Auto Path", "necron/autopath.json");
         initialize();
     }
 

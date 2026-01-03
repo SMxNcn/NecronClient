@@ -1,10 +1,7 @@
 package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.AutoLeap;
-import cn.boop.necron.module.impl.AutoPath;
-import cn.boop.necron.module.impl.CropNuker;
-import cn.boop.necron.module.impl.FakeWipe;
+import cn.boop.necron.module.impl.*;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.PlayerUtils;
@@ -19,7 +16,7 @@ import java.util.*;
 public class DebugCommands extends CommandBase {
     private static int banCount = 0;
     private static final String[] DENY_MESSAGES = {"No.", "STOP pls❤", "Alert!"};
-    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "setIndex", "stats", "stoppath", "update");
+    private final List<String> commands = Arrays.asList("ban", "dungeonInfo", "findpath", "i4", "setIndex", "stats", "stoppath", "update");
 
     @Override
     public String getCommandName() {
@@ -102,6 +99,9 @@ public class DebugCommands extends CommandBase {
                     } catch (NumberFormatException e) {
                         Utils.modMessage("§cInvalid position format.");
                     }
+                    break;
+                case "i4":
+                    AutoI4.INSTANCE.reset();
                     break;
                 case "setIndex":
                     CropNuker.setIndex(Integer.parseInt(args[1]));

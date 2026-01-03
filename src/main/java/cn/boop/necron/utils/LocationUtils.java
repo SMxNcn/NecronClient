@@ -149,7 +149,7 @@ public class LocationUtils {
             ScoreObjective scoreboardObj = Necron.mc.theWorld.getScoreboard().getObjectiveInDisplaySlot(1);
             List<String> tabList = TabUtils.getTabList();
             String dungeonLine = null;
-            if (tabList != null && tabList.size() > 41) dungeonLine = TabUtils.getTabList().get(41);
+            if (tabList != null && tabList.size() > 41) dungeonLine = tabList.get(41);
 
             inHypixel = HypixelUtils.INSTANCE.isHypixel();
             inSkyBlock = scoreboardObj != null && Utils.removeFormatting(ScoreboardUtils.getScoreboardTitle()).contains("SKYBLOCK");
