@@ -20,6 +20,8 @@ public class DungeonOptionsImpl extends ModConfig {
     public static boolean rerollProtect = true;
     @Switch(name = "Send RNG to party", description = "Send your RNG to teammates", subcategory = "Reroll Protector")
     public static boolean sendToParty = true;
+    @DualOption(name = "RNG Message type", left = "Normal", right = "Meme", description = "Message type of RNG", subcategory = "Reroll Protector")
+    public static boolean memeRng = false;
 
     @Switch(name = "P5 Waypoints", subcategory = "Dungeon")
     public static boolean m7Waypoints = false;

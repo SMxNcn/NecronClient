@@ -100,6 +100,7 @@ public class LootEventHandler {
     private void checkAllItems(GuiChest guiChest) {
         ContainerChest container = (ContainerChest) guiChest.inventorySlots;
         IInventory lowerChest = container.getLowerChestInventory();
+        String chestName = lowerChest.getDisplayName().getUnformattedText();
         if (!LocationUtils.inDungeon) return;
 
         String floor = LocationUtils.floor.name.replaceAll("[()]", "");
@@ -108,7 +109,7 @@ public class LootEventHandler {
             ItemStack stack = lowerChest.getStackInSlot(i);
             if (stack != null) {
                 String itemName = Utils.removeFormatting(stack.getDisplayName());
-                if (checkRngMeter(itemName, floor)) {
+                if (checkRngMeter(itemName, floor, chestName)) {
                     break;
                 }
             }
@@ -125,16 +126,18 @@ public class LootEventHandler {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack == null) return;
             String itemName = Utils.removeFormatting(stack.getDisplayName());
+            String chestName = inventory.getDisplayName().getUnformattedText();
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
             if (LootProtector.isRareItemByName(itemName)) {
                 blockSent = true;
                 System.out.println("Chest item: " + itemName);
                 System.out.println("Called from floor: " + floor);
                 if (!rngMsgSent) {
-                    if (!checkRngMeter(itemName, floor))
+                    if (!checkRngMeter(itemName, floor, chestName))
                         Utils.modMessage("§dRng Item §7dropped! (" + stack.getDisplayName() + "§7)");
                     if (sendToParty && LocationUtils.inDungeon) {
-                        Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
+                        if (memeRng) Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
+                        else Utils.modMessage("/pc NC » " + itemName + " in " + chestName + "!");
                     }
                     rngMsgSent = true;
                 }
@@ -143,7 +146,7 @@ public class LootEventHandler {
         }
     }
 
-    private boolean checkRngMeter(String droppedItemName, String floor) {
+    private boolean checkRngMeter(String droppedItemName, String floor, String chest) {
         RngMeterHUD.RngMeterData currentMeter = DungeonRngManager.INSTANCE.getMeterForFloor(floor);
 
         if (currentMeter != null && currentMeter.item != null && !currentMeter.item.isEmpty()) {
@@ -157,7 +160,8 @@ public class LootEventHandler {
                 DungeonRngManager.INSTANCE.addScore(floor, DungeonRngEventHandler.getLastScore());
                 DungeonRngEventHandler.setLastScore(0);
                 if (sendToParty && LocationUtils.inDungeon) {
-                    Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
+                    if (memeRng) Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
+                    else Utils.modMessage("/pc NC » " + droppedItemName + " in " + chest + "!");
                 }
                 rngMsgSent = true;
                 return true;
