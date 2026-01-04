@@ -13,7 +13,6 @@ public class DungeonOptionsImpl extends ModConfig {
         initialize();
 
         addDependency("daemonLevel", "hasDaemon");
-        registerKeyBind(switchKey, () -> {/* Only used for register keybind */});
     }
 
     @Switch(name = "Enable", description = "Enable Reroll Protector", subcategory = "Reroll Protector")
