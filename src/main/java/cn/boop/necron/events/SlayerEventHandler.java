@@ -125,7 +125,7 @@ public class SlayerEventHandler {
         int baseXP = getSlayerXPRequirement(slayer, level);
 
         if (baseXP > 0) {
-            double multiplier = AatroxBuffChecker.getSlayerXPMultiplier();
+            double multiplier = AatroxBuffChecker.getSlayerXPMultiplier() * 2.0f; // Aura 2x progress
             int actualXP = (int) Math.round(baseXP * multiplier);
 
             String slayerName = slayer.getDisplayName();

@@ -58,7 +58,7 @@ public class DungeonRngEventHandler {
                 score *= (int) (1 + daemonLevel / 100.0);
             }
 
-            DungeonRngManager.INSTANCE.addScore(floor, score);
+            DungeonRngManager.INSTANCE.addScore(floor, score * 2); // Aura 2x progress
             lastScore = score;
             System.out.println("Added score " + score + " to " + floor);
         }
