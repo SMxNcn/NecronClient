@@ -13,6 +13,7 @@
     "MixinGuiScrollingList",
     "MixinGuiSlot",
     "MixinInventoryPlayer",
+    "MixinItemStack",
     "MixinMcProgress",
     "MixinMinecraft",
     "MixinModList",
