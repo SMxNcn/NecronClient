@@ -27,6 +27,7 @@ public class ModuleManager {
         modules.add(new ChatBlocker());
         modules.add(new ChatCommands());
         modules.add(new CropNuker());
+        modules.add(new Dungeonbreaker());
         modules.add(new DungeonESP());
         modules.add(new Etherwarp());
         modules.add(new EtherwarpRouter());

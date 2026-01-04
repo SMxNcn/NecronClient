@@ -46,6 +46,7 @@ public class AutoI4 {
     });
 
     private String berserkName = "";
+    public boolean isSwitching = false;
 
     private static final Pattern DEV_COMPLETE_PATTERN = Pattern.compile("(\\w{1,16}) completed a device! \\((.*?)\\)");
     private static final Pattern DEV_FAILED_PATTERN = Pattern.compile("☠ (\\w{1,16}) .* and became a ghost\\.");
@@ -137,6 +138,7 @@ public class AutoI4 {
         // 前提是你开启了Auto i4功能，并佩戴Bonzo‘s Mask开始ee
 
         if (bonzoMatcher.matches()) {
+            isSwitching = true;
             int spiritSlot = Utils.findItemByID("SPIRIT_MASK");
 
             interruptShooting();
@@ -149,6 +151,8 @@ public class AutoI4 {
                     Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.closeScreen());
                     Thread.sleep(Utils.random.nextInt(50) + 50);
                     resumeShooting();
+                    Thread.sleep(100);
+                    isSwitching = false;
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
@@ -158,6 +162,7 @@ public class AutoI4 {
 
         if (spiritMatcher.matches()) {
             if (!isNormalRodSlot(DungeonOptionsImpl.rodSlot - 1)) return;
+            isSwitching = true;
 
             interruptShooting();
             actionExecutor.submit(() -> {
@@ -171,6 +176,8 @@ public class AutoI4 {
                     Necron.mc.addScheduledTask(() -> Necron.mc.thePlayer.inventory.currentItem = lastSlot);
                     Thread.sleep(Utils.random.nextInt(50) + 50);
                     resumeShooting();
+                    Thread.sleep(100);
+                    isSwitching = false;
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

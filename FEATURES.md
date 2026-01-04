@@ -6,6 +6,10 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
  调试命令: `/ncdebug`，命令别名: `/ncd`
 
+## Auto I4
+- 自动完成F7/M7 s4射箭device。
+- 自动切换复活道具（需先使用Bonzo's Mask；且可在其它情况下使用）
+
 ## Auto Leap
 - 在F7/M7根据规则自动传送（左键Leap物品触发）
 - 使用**Old Terminal Rule**
@@ -26,6 +30,9 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 **使用风险自负！！！**
 - 带有简易的FailSafe **(WIP)** 检测。
 - 农业路径点设置详见Waypoints部分。
+
+## Dungeonbreaker
+- 按住绑定的按键，自动切换到Dungeonbreaker；松开后切回原槽位。
 
 ## Etherwarp Router
 - 左键点击时，自动瞄准并etherwarp至下一个路径点（从#1开始）。

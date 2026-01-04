@@ -3,6 +3,7 @@ package cn.boop.necron.config.impl;
 import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.annotations.Number;
 import cc.polyfrost.oneconfig.config.core.OneColor;
+import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import cc.polyfrost.oneconfig.config.data.InfoType;
 import cn.boop.necron.config.ModConfig;
 
@@ -12,6 +13,7 @@ public class DungeonOptionsImpl extends ModConfig {
         initialize();
 
         addDependency("daemonLevel", "hasDaemon");
+        registerKeyBind(switchKey, () -> {/* Only used for register keybind */});
     }
 
     @Switch(name = "Enable", description = "Enable Reroll Protector", subcategory = "Reroll Protector")
@@ -50,4 +52,9 @@ public class DungeonOptionsImpl extends ModConfig {
     public static int rodSlot = 4;
     @Number(name = "Leap Slot", min = 1, max = 8, description = "Slot of Leap Item", subcategory = "Auto i4")
     public static int leapSlot = 8;
+
+    @Switch(name = "Enabled", description = "Better Dungeonbreaker", subcategory = "Dungeonbreaker")
+    public static boolean betterDgb = false;
+    @KeyBind(name = "Switch Key", description = "Hold to switch",subcategory = "Dungeonbreaker")
+    public static OneKeyBind switchKey = new OneKeyBind();
 }
