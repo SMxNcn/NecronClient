@@ -44,6 +44,9 @@ public class GUIOptionsImpl extends ModConfig {
     @Number(name = "Daemon shard level", min = 1, max = 10, subcategory = "RNG Meter")
     public static int daemonLevel = 1;
 
+    @Switch(name = "Display Item Upgrade", description = "Display item stars as stack count", subcategory = "SkyBlock")
+    public static boolean displayUpgrade = false;
+
     @Switch(name = "Enabled", description = "Display custom scoreboard", subcategory = "Scoreboard")
     public static boolean customSb = false;
     @Switch(name = "Show red numbers", description = "Show red numbers", subcategory = "Scoreboard")
