@@ -1,16 +1,15 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.config.impl.RouterOptionsImpl;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.PlayerUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.input.Mouse;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,9 +17,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static cn.boop.necron.config.impl.EtherwarpOptionsImpl.etherwarp;
+import static cn.boop.necron.config.impl.RouterOptionsImpl.router;
 
 public class Etherwarp {
-    private boolean lastLeftClick = false;
+    private long lastMouseClickTime = 0;
     private boolean wasInGui = false;
     private int guiCloseDelay = 0;
     private static final ExecutorService executor = Executors.newFixedThreadPool(2, new ThreadFactory() {
@@ -35,29 +35,36 @@ public class Etherwarp {
     });
 
     @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (!etherwarp || !LocationUtils.inSkyBlock) return;
-
-        boolean currentLeftClick = Mouse.isButtonDown(0);
+    public void onMouseInput(MouseEvent event) {
+        if (Necron.mc.thePlayer == null || !etherwarp || !LocationUtils.inSkyBlock) return;
         boolean currentlyInGui = Necron.mc.currentScreen != null;
 
         if (wasInGui && !currentlyInGui) guiCloseDelay = 10;
         wasInGui = currentlyInGui;
 
-        if (currentlyInGui) {
-            if (guiCloseDelay > 0) {
-                guiCloseDelay--;
+        if (currentlyInGui || guiCloseDelay > 0) return;
+
+        if (event.button == 0 && event.buttonstate) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastMouseClickTime < 50) return;
+
+            ItemStack currentItem = Necron.mc.thePlayer.inventory.getCurrentItem();
+            if (isEtherwarpItem(currentItem)) {
+                if (EtherwarpRouter.waypointCache.isEmpty() || EtherwarpRouter.currentWaypointIndex == -1 || !router) {
+                    useEtherwarp(false);
+                    lastMouseClickTime = currentTime;
+                }
+                event.setCanceled(true);
             }
-            lastLeftClick = currentLeftClick;
-            return;
         }
+    }
 
-        if (Necron.mc.thePlayer.inventory.getCurrentItem() == null || !isEtherwarpItem(Necron.mc.thePlayer.inventory.getCurrentItem())) return;
+    @SubscribeEvent
+    public void onTick(TickEvent.ClientTickEvent event) {
+        if (!etherwarp || !LocationUtils.inSkyBlock) return;
+        if (guiCloseDelay > 0) guiCloseDelay--;
 
-        if (EtherwarpRouter.waypointCache.isEmpty() || EtherwarpRouter.currentWaypointIndex == -1 || !RouterOptionsImpl.router) {
-            if (!lastLeftClick && currentLeftClick) useEtherwarp(false);
-        }
-        lastLeftClick = currentLeftClick;
+        wasInGui = Necron.mc.currentScreen != null;
     }
 
     public static void useEtherwarp(boolean sneak) {

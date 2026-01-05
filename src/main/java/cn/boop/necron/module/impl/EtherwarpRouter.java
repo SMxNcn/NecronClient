@@ -5,6 +5,7 @@ import cn.boop.necron.events.WaypointEventHandler;
 import cn.boop.necron.utils.*;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.jetbrains.annotations.NotNull;
@@ -54,6 +55,13 @@ public class EtherwarpRouter {
 
         if (waypointCache.isEmpty()) {
             routeCompleted = routerNotified = true;
+        }
+    }
+
+    @SubscribeEvent
+    public void onMouseInput(MouseEvent event) {
+        if (event.button == 0 && event.buttonstate) {
+            if (Etherwarp.isEtherwarpItem(Necron.mc.thePlayer.getHeldItem())) event.setCanceled(true);
         }
     }
 
