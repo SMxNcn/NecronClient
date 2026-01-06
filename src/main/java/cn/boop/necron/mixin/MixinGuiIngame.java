@@ -1,6 +1,7 @@
 package cn.boop.necron.mixin;
 
 import cn.boop.necron.module.impl.hud.CustomScoreboard;
+import cn.boop.necron.module.impl.item.ItemOverlay;
 import cn.boop.necron.module.impl.smoothscroll.SmoothHotbar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import static cn.boop.necron.config.impl.GUIOptionsImpl.customSb;
+import static cn.boop.necron.config.impl.GUIOptionsImpl.displayRarity;
 
 @Mixin(GuiIngame.class)
 public class MixinGuiIngame {
@@ -58,6 +60,13 @@ public class MixinGuiIngame {
     private void afterSelectedSlot(ScaledResolution res, float partialTicks, CallbackInfo ci) {
         if (smoothHotbar.isMasked()) {
             smoothHotbar.disableScissor();
+        }
+    }
+
+    @Inject(method = "renderTooltip", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiIngame;drawTexturedModalRect(IIIIII)V", ordinal = 0, shift = At.Shift.AFTER))
+    private void onRenderHotbarBackground(ScaledResolution sr, float partialTicks, CallbackInfo ci) {
+        if (displayRarity) {
+            ItemOverlay.renderHotbarRarityBackground(sr);
         }
     }
 

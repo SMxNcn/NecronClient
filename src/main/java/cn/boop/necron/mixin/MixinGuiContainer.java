@@ -1,8 +1,11 @@
 package cn.boop.necron.mixin;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.module.impl.item.EnumRarity;
 import cn.boop.necron.module.impl.item.GuiType;
+import cn.boop.necron.module.impl.item.ItemOverlay;
 import cn.boop.necron.module.impl.item.ItemProtector;
+import cn.boop.necron.utils.LocationUtils;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
@@ -12,6 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static cn.boop.necron.config.impl.GUIOptionsImpl.displayRarity;
 
 @Mixin(GuiContainer.class)
 public class MixinGuiContainer {
@@ -152,6 +157,16 @@ public class MixinGuiContainer {
         isDragging = false;
 
         if (isClickingOutside) pendingDropItem = null;
+    }
+
+    @Inject(method = "drawSlot", at = @At("HEAD"))
+    private void onDrawSlot(Slot slotIn, CallbackInfo ci) {
+        if (slotIn.getHasStack() && LocationUtils.inSkyBlock && displayRarity) {
+            EnumRarity rarity = ItemOverlay.getRarityFromStack(slotIn.getStack());
+            if (rarity != EnumRarity.NONE) {
+                ItemOverlay.renderRarityBackground(slotIn.xDisplayPosition, slotIn.yDisplayPosition, rarity);
+            }
+        }
     }
 
     @Unique

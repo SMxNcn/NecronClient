@@ -46,6 +46,10 @@ public class GUIOptionsImpl extends ModConfig {
 
     @Switch(name = "Display Item Upgrade", description = "Display item stars as stack count", subcategory = "SkyBlock")
     public static boolean displayUpgrade = false;
+    @Switch(name = "Display Item Rarity", description = "Display item rarity", subcategory = "SkyBlock")
+    public static boolean displayRarity = false;
+    @Slider(name = "Rarity Opacity", min = 0, max = 100, subcategory = "SkyBlock")
+    public static int rarityOpacity = 50;
 
     @Switch(name = "Enabled", description = "Display custom scoreboard", subcategory = "Scoreboard")
     public static boolean customSb = false;
