@@ -5,8 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinCreditsPage",
+    "MixinEntityPlayerSP",
     "MixinFontRenderer",
     "MixinGuiConnecting",
+    "MixinGuiContainer",
     "MixinGuiDisconnected",
     "MixinGuiIngame",
     "MixinGuiMainMenu",
@@ -19,6 +21,7 @@
     "MixinModList",
     "MixinNetHandlerPlayClient",
     "MixinOCFonts",
+    "MixinPlayerControllerMP",
     "MixinProgressManager",
     "MixinRenderItem",
     "MixinSplashProgress"

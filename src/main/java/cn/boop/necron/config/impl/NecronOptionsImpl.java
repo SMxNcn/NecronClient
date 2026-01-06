@@ -1,15 +1,16 @@
 package cn.boop.necron.config.impl;
 
+import cc.polyfrost.oneconfig.config.annotations.*;
 import cc.polyfrost.oneconfig.config.annotations.Button;
-import cc.polyfrost.oneconfig.config.annotations.Info;
 import cc.polyfrost.oneconfig.config.annotations.Number;
-import cc.polyfrost.oneconfig.config.annotations.Switch;
+import cc.polyfrost.oneconfig.config.core.OneKeyBind;
 import cc.polyfrost.oneconfig.config.data.InfoType;
 import cn.boop.necron.Necron;
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.ModConfig;
 import cn.boop.necron.config.NotificationType;
 import cn.boop.necron.gui.LoadingScreen;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.io.File;
@@ -90,4 +91,9 @@ public class NecronOptionsImpl extends ModConfig {
     };
     @Switch(name = "Script Execute message", subcategory = "Script")
     public static boolean executeMessage = false;
+
+    @Switch(name = "Enabled", description = "Item Protector", subcategory = "Item Protect")
+    public static boolean itemProtector = true;
+    @KeyBind(name = "Protect Item Key", description = "Protected hovered item with uuid", subcategory = "Item Protect")
+    public static OneKeyBind protectKey = new OneKeyBind(Keyboard.KEY_P);
 }

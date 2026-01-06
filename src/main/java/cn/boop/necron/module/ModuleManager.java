@@ -47,6 +47,7 @@ public class ModuleManager {
         modules.add(new MainMenu());
         modules.add(new B64ChatEventHandler());
         modules.add(new DungeonRngEventHandler());
+        modules.add(new ItemProtectorEventHandler());
         modules.add(new LootEventHandler());
         modules.add(new SlayerEventHandler());
         modules.add(new SlayerRngEventHandler());

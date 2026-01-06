@@ -8,6 +8,7 @@ import cn.boop.necron.config.UpdateChecker;
 import cn.boop.necron.config.script.ScriptManager;
 import cn.boop.necron.events.ScriptKeyEventHandler;
 import cn.boop.necron.module.ModuleManager;
+import cn.boop.necron.module.impl.item.ItemProtector;
 import cn.boop.necron.module.impl.rng.DungeonRngManager;
 import cn.boop.necron.module.impl.rng.RngManager;
 import cn.boop.necron.module.impl.rng.SlayerRngManager;
@@ -49,6 +50,7 @@ public class Necron {
         MinecraftForge.EVENT_BUS.register(this);
         SystemUtils.INSTANCE.initializeTray();
         ModuleManager.initModules();
+        ItemProtector.initUuids();
         FontManager.initFonts();
 
         Map<String, Map<String, Integer>> rngMeterValues = RngManager.loadRngMeterValues();

@@ -7,6 +7,8 @@ import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.item.*;
 
+import java.util.List;
+
 public class ItemUtils {
     public static boolean isHoldingSword() {
         ItemStack itemStack = Necron.mc.thePlayer.getHeldItem();
@@ -41,5 +43,18 @@ public class ItemUtils {
         return block instanceof BlockChest ||
                 block instanceof BlockFurnace ||
                 block instanceof BlockDispenser;
+    }
+
+    public static List<String> getItemLore(ItemStack itemStack) {
+        if (itemStack == null) return null;
+        return itemStack.getTooltip(Necron.mc.thePlayer, true);
+    }
+
+    public static String getItemLoreLine(ItemStack itemStack, int index) {
+        if (itemStack == null) return null;
+
+        List<String> lore = getItemLore(itemStack);
+        if (index < 0 || index >= lore.size()) return null;
+        return lore.get(index);
     }
 }

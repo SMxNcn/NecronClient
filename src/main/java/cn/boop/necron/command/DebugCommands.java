@@ -2,6 +2,7 @@ package cn.boop.necron.command;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.*;
+import cn.boop.necron.module.impl.item.ItemProtector;
 import cn.boop.necron.utils.DungeonUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.PlayerUtils;
@@ -108,13 +109,15 @@ public class DebugCommands extends CommandBase {
                     Utils.modMessage("Set index to " + args[1]);
                     break;
                 case "stats":
-                    String itemID, itemName;
+                    String itemID, itemName, itemUUID;
                     if (Necron.mc.thePlayer.getHeldItem() != null) {
                         itemID = Utils.getSkyBlockID(Necron.mc.thePlayer.getHeldItem());
                         itemName = Necron.mc.thePlayer.getHeldItem().getDisplayName();
+                        itemUUID = Utils.getItemUUID(Necron.mc.thePlayer.getHeldItem());
                     } else {
                         itemID = "";
                         itemName = "";
+                        itemUUID = "";
                     }
                     Utils.modMessage("Player Stats:\n§7§l | §r§7inHypixel: " + (LocationUtils.inHypixel ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7inSkyBlock: " + (LocationUtils.inSkyBlock ? "§atrue" : "§cfalse") +
@@ -122,7 +125,8 @@ public class DebugCommands extends CommandBase {
                             "\n§7§l | §r§7Zone: " + LocationUtils.currentZone +
                             "\n§7§l | §r§7Held item ID: " + itemID +
                             "\n§7§l | §r§7Held item Name:§r " + itemName +
-                            "\n§7§l | §r§7Player health: §c" + Necron.mc.thePlayer.getHealth() +
+                            "\n§7§l | §r§7Held item UUID: " + itemUUID +
+                            "\n§7§l | §r§7Item protected: " + (ItemProtector.isItemProtected(Necron.mc.thePlayer.getHeldItem()) ? "§atrue" : "§cfalse") +
                             "\n§7" +
                             "\n§7§l | §r§7inDungeon: " + (LocationUtils.inDungeon ? "§atrue" : "§cfalse") +
                             "\n§7§l | §r§7Floor: " + LocationUtils.floor +
@@ -162,7 +166,7 @@ public class DebugCommands extends CommandBase {
                     break;
             }
         } else {
-            Utils.modMessage("Debug Commands: ban, dungeonInfo, findpath, setIndex, stats, stoppath, update");
+            Utils.modMessage("Debug Commands: ban, dungeonInfo, findpath, i4, setIndex, stats, stoppath, update");
         }
     }
 }

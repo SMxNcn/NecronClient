@@ -41,6 +41,16 @@ public class Utils {
         return "";
     }
 
+    public static String getItemUUID(ItemStack item) {
+        if (item != null) {
+            NBTTagCompound extraAttributes = item.getSubCompound("ExtraAttributes", false);
+            if (extraAttributes != null && extraAttributes.hasKey("uuid")) {
+                return extraAttributes.getString("uuid");
+            }
+        }
+        return "";
+    }
+
     public static int findItemByID(String itemID) {
         if (itemID == null || Necron.mc.thePlayer == null) return -1;
         for (int i = 0; i < Necron.mc.thePlayer.inventory.getSizeInventory(); i++) {

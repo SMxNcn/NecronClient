@@ -11,9 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class JsonUtils {
     private static final Gson GSON = new GsonBuilder()
@@ -146,6 +144,35 @@ public class JsonUtils {
             }
         } catch (Exception e) {
             Necron.LOGGER.error("Error saving whitelist: {}", e.getMessage());
+        }
+    }
+
+    public static Set<String> loadProtectedItems() {
+        try {
+            Path protectedItemsPath = Paths.get("config/necron/protected_items.json");
+            if (!Files.exists(protectedItemsPath)) {
+                return new HashSet<>();
+            }
+            String content = new String(Files.readAllBytes(protectedItemsPath), StandardCharsets.UTF_8);
+            return GSON.fromJson(content, new TypeToken<Set<String>>(){}.getType());
+        } catch (Exception e) {
+            Necron.LOGGER.error("Error loading protected items: {}", e.getMessage());
+            return new HashSet<>();
+        }
+    }
+
+    public static void saveProtectedItems(Set<String> protectedItems) {
+        try {
+            Path protectedItemsPath = Paths.get("config/necron/protected_items.json");
+            Files.createDirectories(protectedItemsPath.getParent());
+            if (!Files.exists(protectedItemsPath)) {
+                Files.createFile(protectedItemsPath);
+            }
+            try (Writer writer = new OutputStreamWriter(Files.newOutputStream(protectedItemsPath), StandardCharsets.UTF_8)) {
+                GSON.toJson(protectedItems, writer);
+            }
+        } catch (Exception e) {
+            Necron.LOGGER.error("Error saving protected items: {}", e.getMessage());
         }
     }
 
