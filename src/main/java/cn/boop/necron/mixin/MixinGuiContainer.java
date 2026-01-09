@@ -1,10 +1,7 @@
 package cn.boop.necron.mixin;
 
 import cn.boop.necron.Necron;
-import cn.boop.necron.module.impl.item.EnumRarity;
-import cn.boop.necron.module.impl.item.GuiType;
-import cn.boop.necron.module.impl.item.ItemOverlay;
-import cn.boop.necron.module.impl.item.ItemProtector;
+import cn.boop.necron.module.impl.item.*;
 import cn.boop.necron.utils.LocationUtils;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -30,6 +27,7 @@ public class MixinGuiContainer {
 
     @Inject(method = "drawScreen", at = @At("HEAD"))
     private void onDrawScreen(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+        RarityRenderer.beginFrame();
         GuiContainer gui = (GuiContainer) (Object) this;
         lastHoveredSlot = gui.getSlotUnderMouse();
 
@@ -38,6 +36,11 @@ public class MixinGuiContainer {
         } else if (gui.mc.currentScreen != null && mouseX >= 0 && mouseX <= gui.mc.currentScreen.width && mouseY >= 0 && mouseY <= gui.mc.currentScreen.height) {
             lastHoveredItem = null;
         }
+    }
+
+    @Inject(method = "drawScreen", at = @At("TAIL"))
+    private void onDrawScreenTail(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+        RarityRenderer.endFrame();
     }
 
     @Inject(method = "handleMouseClick", at = @At("HEAD"), cancellable = true)
@@ -164,8 +167,15 @@ public class MixinGuiContainer {
         if (slotIn.getHasStack() && LocationUtils.inSkyBlock && displayRarity) {
             EnumRarity rarity = ItemOverlay.getRarityFromStack(slotIn.getStack());
             if (rarity != EnumRarity.NONE) {
-                ItemOverlay.renderRarityBackground(slotIn.xDisplayPosition, slotIn.yDisplayPosition, rarity);
+                ItemOverlay.submitRarityBackground(slotIn.xDisplayPosition, slotIn.yDisplayPosition, rarity);
             }
+        }
+    }
+
+    @Inject(method = "drawSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/RenderItem;renderItemAndEffectIntoGUI(Lnet/minecraft/item/ItemStack;II)V", ordinal = 0/*, shift = At.Shift.BEFORE*/))
+    private void onBeforeRenderItem(Slot slotIn, CallbackInfo ci) {
+        if (slotIn.getHasStack() && LocationUtils.inSkyBlock && displayRarity) {
+            RarityRenderer.flushBatch();
         }
     }
 

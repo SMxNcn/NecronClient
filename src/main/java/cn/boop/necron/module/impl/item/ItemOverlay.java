@@ -16,22 +16,9 @@ import java.util.List;
 import static cn.boop.necron.config.impl.GUIOptionsImpl.rarityOpacity;
 
 public class ItemOverlay {
-    public static void renderRarityBackground(int slotX, int slotY, EnumRarity rarity) {
-        GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
-        GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
-
-        Color color = rarity.getColor();
+    public static void submitRarityBackground(int slotX, int slotY, EnumRarity rarity) {
         int opacity = (int) (rarityOpacity / 100f * 255);
-        GlStateManager.color(rarity.getGLRed(), rarity.getGLGreen(), rarity.getGLBlue(), 0.3f);
-
-        Gui.drawRect(slotX, slotY, slotX + 16, slotY + 16, new Color(color.getRed(), color.getGreen(), color.getBlue(), opacity).getRGB());
-
-        GlStateManager.color(1f, 1f, 1f, 1f);
-        GlStateManager.popAttrib();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RarityRenderer.submitRarityBackground(slotX, slotY, rarity, opacity);
     }
 
     public static void renderHotbarRarityBackground(ScaledResolution sr) {
@@ -44,7 +31,22 @@ public class ItemOverlay {
             if (rarity != EnumRarity.NONE) {
                 int slotX = sr.getScaledWidth() / 2 - 90 + i * 20 + 2;
                 int slotY = sr.getScaledHeight() - 16 - 3;
-                ItemOverlay.renderRarityBackground(slotX, slotY, rarity);
+
+                GlStateManager.pushMatrix();
+                GlStateManager.pushAttrib();
+                GlStateManager.enableBlend();
+                GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+
+                Color color = rarity.getColor();
+                int opacity = (int) (rarityOpacity / 100f * 255);
+                GlStateManager.color(rarity.getGLRed(), rarity.getGLGreen(), rarity.getGLBlue(), 0.3f);
+
+                Gui.drawRect(slotX, slotY, slotX + 16, slotY + 16, new Color(color.getRed(), color.getGreen(), color.getBlue(), opacity).getRGB());
+
+                GlStateManager.color(1f, 1f, 1f, 1f);
+                GlStateManager.popAttrib();
+                GlStateManager.disableBlend();
+                GlStateManager.popMatrix();
             }
         }
     }
