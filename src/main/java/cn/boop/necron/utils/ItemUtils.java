@@ -57,4 +57,14 @@ public class ItemUtils {
         if (index < 0 || index >= lore.size()) return null;
         return lore.get(index);
     }
+
+    public static int getItemUpgradeLevel(ItemStack item) {
+        if (item != null) {
+            NBTTagCompound extraAttributes = item.getSubCompound("ExtraAttributes", false);
+            if (extraAttributes != null && extraAttributes.hasKey("upgrade_level")) {
+                return extraAttributes.getInteger("upgrade_level");
+            }
+        }
+        return 0;
+    }
 }
