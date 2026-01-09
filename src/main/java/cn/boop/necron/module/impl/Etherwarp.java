@@ -1,9 +1,9 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.utils.ItemUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.PlayerUtils;
-import cn.boop.necron.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.client.event.MouseEvent;
@@ -90,7 +90,7 @@ public class Etherwarp {
 
     public static boolean isEtherwarpItem(ItemStack itemStack) {
         if (itemStack == null) return false;
-        String itemID = Utils.getSkyBlockID(itemStack);
+        String itemID = ItemUtils.getSkyBlockID(itemStack);
         boolean isCorrectItem = "ASPECT_OF_THE_END".equals(itemID) || "ASPECT_OF_THE_VOID".equals(itemID);
 
         NBTTagCompound extraAttributes = itemStack.getSubCompound("ExtraAttributes", false);

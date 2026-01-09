@@ -1,6 +1,7 @@
 package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.utils.ItemUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -54,7 +55,7 @@ public class Dungeonbreaker {
         for (int i = 0; i < 8; i++) {
             ItemStack itemStack = Necron.mc.thePlayer.inventory.getStackInSlot(i);
 
-            if (itemStack != null && Utils.getSkyBlockID(itemStack).equals("DUNGEONBREAKER")) {
+            if (itemStack != null && ItemUtils.getSkyBlockID(itemStack).equals("DUNGEONBREAKER")) {
                 dgbSlot = i;
                 break;
             }

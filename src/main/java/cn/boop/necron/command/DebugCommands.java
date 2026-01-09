@@ -3,16 +3,18 @@ package cn.boop.necron.command;
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.*;
 import cn.boop.necron.module.impl.item.ItemProtector;
-import cn.boop.necron.utils.DungeonUtils;
-import cn.boop.necron.utils.LocationUtils;
-import cn.boop.necron.utils.PlayerUtils;
-import cn.boop.necron.utils.Utils;
+import cn.boop.necron.utils.*;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.*;
+import java.util.List;
 
 public class DebugCommands extends CommandBase {
     private static int banCount = 0;
@@ -101,6 +103,18 @@ public class DebugCommands extends CommandBase {
                         Utils.modMessage("§cInvalid position format.");
                     }
                     break;
+                case "nbt":
+                    ItemStack held = Necron.mc.thePlayer.getHeldItem();
+                    if (held == null || held.getItem() == null) return;
+                    NBTTagCompound nbt = new NBTTagCompound();
+                    held.writeToNBT(nbt);
+
+                    String nbtString = nbt.toString();
+                    Toolkit.getDefaultToolkit()
+                            .getSystemClipboard()
+                            .setContents(new StringSelection(nbtString), null);
+                    Utils.modMessage("§aNBT data copied to clipboard!");
+                    break;
                 case "i4":
                     AutoI4.INSTANCE.reset();
                     break;
@@ -111,9 +125,9 @@ public class DebugCommands extends CommandBase {
                 case "stats":
                     String itemID, itemName, itemUUID;
                     if (Necron.mc.thePlayer.getHeldItem() != null) {
-                        itemID = Utils.getSkyBlockID(Necron.mc.thePlayer.getHeldItem());
+                        itemID = ItemUtils.getSkyBlockID(Necron.mc.thePlayer.getHeldItem());
                         itemName = Necron.mc.thePlayer.getHeldItem().getDisplayName();
-                        itemUUID = Utils.getItemUUID(Necron.mc.thePlayer.getHeldItem());
+                        itemUUID = ItemUtils.getItemUUID(Necron.mc.thePlayer.getHeldItem());
                     } else {
                         itemID = "";
                         itemName = "";
