@@ -6,6 +6,7 @@ import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
 

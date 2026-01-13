@@ -4,7 +4,9 @@ import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.LootProtector;
 import cn.boop.necron.module.impl.hud.RngMeterHUD;
 import cn.boop.necron.module.impl.rng.DungeonRngManager;
+import cn.boop.necron.utils.ItemUtils;
 import cn.boop.necron.utils.LocationUtils;
+import cn.boop.necron.utils.PriceUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.init.Items;
@@ -28,6 +30,9 @@ public class LootEventHandler {
     private boolean messageSent = false;
     private boolean rngMsgSent = false;
     private boolean blockSent = false;
+
+    private static String itemId = "";
+    private static String itemPrice = "";
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent event) {
@@ -80,6 +85,7 @@ public class LootEventHandler {
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         rngMsgSent = false;
+        itemId = itemPrice = "";
     }
 
     private void checkForRareItems(GuiChest guiChest) {
@@ -87,6 +93,11 @@ public class LootEventHandler {
         IInventory lowerChest = container.getLowerChestInventory();
 
         if (LootProtector.hasRareLoot(lowerChest)) {
+            ItemStack stack = lowerChest.getStackInSlot(LootProtector.getRareItemSlot());
+            String name = Utils.removeFormatting(stack.getDisplayName());
+            itemId = ItemUtils.getSkyBlockID(stack);
+            itemPrice = PriceUtils.getItemPrice(LootProtector.getPriceType(name), itemId);
+
             if (!messageSent) {
                 sendRareItemNames(lowerChest);
                 messageSent = true;
@@ -130,14 +141,16 @@ public class LootEventHandler {
             String floor = LocationUtils.floor.name.replaceAll("[()]", "");
             if (LootProtector.isRareItemByName(itemName)) {
                 blockSent = true;
-                System.out.println("Chest item: " + itemName);
-                System.out.println("Called from floor: " + floor);
                 if (!rngMsgSent) {
                     if (!checkRngMeter(itemName, floor, chestName))
                         Utils.modMessage("§dRng Item §7dropped! (" + stack.getDisplayName() + "§7)");
                     if (sendToParty && LocationUtils.inDungeon) {
-                        if (memeRng) Utils.chatMessage("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿");
-                        else Utils.modMessage("/pc NC » " + itemName + " in " + chestName + "!");
+                        String rngMsg = memeRng ?
+                                ("/pc NC » 我只是解锁了" + itemName + " 就被管家活活打断了双腿") :
+                                ("/pc NC » " + itemName + " in " + chestName + "!");
+
+                        if (!itemPrice.isEmpty()) rngMsg += " (+" + itemPrice + ")";
+                        Utils.chatMessage(rngMsg);
                     }
                     rngMsgSent = true;
                 }
@@ -160,8 +173,12 @@ public class LootEventHandler {
                 DungeonRngManager.INSTANCE.addScore(floor, DungeonRngEventHandler.getLastScore());
                 DungeonRngEventHandler.setLastScore(0);
                 if (sendToParty && LocationUtils.inDungeon) {
-                    if (memeRng) Utils.chatMessage("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿");
-                    else Utils.modMessage("/pc NC » " + droppedItemName + " in " + chest + "!");
+                    String rngMsg = memeRng ?
+                            ("/pc NC » 我只是解锁了" + droppedItemName + " 就被管家活活打断了双腿") :
+                            ("/pc NC » " + droppedItemName + " in " + chest + "!");
+
+                    if (!itemPrice.isEmpty()) rngMsg += " (+" + itemPrice + ")";
+                    Utils.chatMessage(rngMsg);
                 }
                 rngMsgSent = true;
                 return true;
@@ -173,7 +190,7 @@ public class LootEventHandler {
     private boolean isRerollButton(ItemStack stack) {
         if (stack == null) return false;
         String itemName = Utils.removeFormatting(stack.getDisplayName());
-        return stack.getItem() == Items.feather && itemName.contains("Reroll Chest");
+        return stack.getItem() == Items.feather && itemName.equals("Reroll Chest");
     }
 
     private boolean isNormalChest(String chestName) {

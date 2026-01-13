@@ -13,10 +13,7 @@ import cn.boop.necron.module.impl.rng.DungeonRngManager;
 import cn.boop.necron.module.impl.rng.RngManager;
 import cn.boop.necron.module.impl.rng.SlayerRngManager;
 import cn.boop.necron.module.impl.slayer.AatroxBuffChecker;
-import cn.boop.necron.utils.LocationUtils;
-import cn.boop.necron.utils.RotationUtils;
-import cn.boop.necron.utils.SystemUtils;
-import cn.boop.necron.utils.Utils;
+import cn.boop.necron.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -52,6 +49,7 @@ public class Necron {
         ModuleManager.initModules();
         ItemProtector.initUuids();
         FontManager.initFonts();
+        PriceUtils.initPrices();
 
         Map<String, Map<String, Integer>> rngMeterValues = RngManager.loadRngMeterValues();
         DungeonRngManager.INSTANCE.loadValuesFile(rngMeterValues);
@@ -88,6 +86,10 @@ public class Necron {
                     } catch (InterruptedException ignored) {}
                 }).start();
             }
+
+            if (Necron.mc.theWorld != null && Necron.mc.theWorld.getWorldTime() % (20 * PriceUtils.UPDATE_INTERVAL) == 0) {
+                PriceUtils.forceUpdate();
+            }
         }
     }
 
@@ -101,5 +103,6 @@ public class Necron {
     @Mod.EventHandler
     public void onShutdown(FMLServerStoppedEvent event) {
         SystemUtils.INSTANCE.cleanup();
+        PriceUtils.shutdown();
     }
 }

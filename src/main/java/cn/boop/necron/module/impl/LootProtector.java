@@ -1,53 +1,59 @@
 package cn.boop.necron.module.impl;
 
-import cn.boop.necron.utils.Utils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LootProtector {
-    private static final Set<String> RARE_ITEM = new HashSet<>();
+    public enum PriceType {
+        AUCTION,
+        BAZAAR
+    }
+
+    private static final Map<String, PriceType> RARE_ITEM_MAP = new HashMap<>();
+    private static int rareItemSlot = -1;
 
     static {
-        RARE_ITEM.add("Shiny Necron's Handle");
-        RARE_ITEM.add("Necron's Handle");
-        RARE_ITEM.add("Implosion");
-        RARE_ITEM.add("Wither Shield");
-        RARE_ITEM.add("Shadow Warp");
-        RARE_ITEM.add("Dark Claymore");
-        RARE_ITEM.add("Master Skull - Tier 5");
-        RARE_ITEM.add("Necron Dye");
-        RARE_ITEM.add("Fifth Master Star");
-        RARE_ITEM.add("Fourth Master Star");
-        RARE_ITEM.add("Third Master Star");
-        RARE_ITEM.add("Second Master Star");
-        RARE_ITEM.add("First Master Star");
-        RARE_ITEM.add("Giant's Sword");
-        RARE_ITEM.add("Shadow Fury");
-        RARE_ITEM.add("Livid Dye");
+        RARE_ITEM_MAP.put("Shiny Necron's Handle", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Necron's Handle", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Implosion", PriceType.BAZAAR);
+        RARE_ITEM_MAP.put("Wither Shield", PriceType.BAZAAR);
+        RARE_ITEM_MAP.put("Shadow Warp", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Dark Claymore", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Giant's Sword", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Shadow Fury", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Necron Dye", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Livid Dye", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Master Skull - Tier 5", PriceType.AUCTION);
+        RARE_ITEM_MAP.put("Fifth Master Star", PriceType.BAZAAR);
+        RARE_ITEM_MAP.put("Fourth Master Star", PriceType.BAZAAR);
+        RARE_ITEM_MAP.put("Third Master Star", PriceType.BAZAAR);
+        RARE_ITEM_MAP.put("Second Master Star", PriceType.BAZAAR);
+        RARE_ITEM_MAP.put("First Master Star", PriceType.BAZAAR);
     }
 
     public static boolean hasRareLoot(IInventory inventory) {
         for (int i = 9; i <= 26 && i < inventory.getSizeInventory(); i++) {
             ItemStack stack = inventory.getStackInSlot(i);
             if (stack != null) {
-                String itemName = Utils.removeFormatting(stack.getDisplayName());
-                if (RARE_ITEM.contains(itemName)) {
-                    return true;
-                }
+                rareItemSlot = i;
+                return isRareItemByName(stack.getDisplayName());
             }
         }
         return false;
     }
 
     public static boolean isRareItemByName(String itemName) {
-        for (String rareName : RARE_ITEM) {
-            if (rareName.equals(itemName)) {
-                return true;
-            }
-        }
-        return false;
+        return RARE_ITEM_MAP.containsKey(itemName);
+    }
+
+    public static PriceType getPriceType(String itemName) {
+        return RARE_ITEM_MAP.getOrDefault(itemName, null);
+    }
+
+    public static int getRareItemSlot() {
+        return rareItemSlot;
     }
 }
