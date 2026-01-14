@@ -451,7 +451,7 @@ public class AutoI4 {
             ItemStack stack = Necron.mc.thePlayer.inventory.getStackInSlot(slot);
             if (stack != null && stack.getItem() != null) {
                 if (stack.getItem() == Items.fishing_rod) {
-                    String skyBlockId = Utils.getSkyBlockID(stack);
+                    String skyBlockId = ItemUtils.getSkyBlockID(stack);
                     return !"FLAMING_FLAY".equals(skyBlockId) && !"SOUL_WHIP".equals(skyBlockId);
                 }
             }

@@ -5,7 +5,6 @@ import kotlin.Pair;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
@@ -31,33 +30,13 @@ public class Utils {
         return list.get(index);
     }
 
-    public static String getSkyBlockID(ItemStack item) {
-        if (item != null) {
-            NBTTagCompound extraAttributes = item.getSubCompound("ExtraAttributes", false);
-            if (extraAttributes != null && extraAttributes.hasKey("id")) {
-                return extraAttributes.getString("id");
-            }
-        }
-        return "";
-    }
-
-    public static String getItemUUID(ItemStack item) {
-        if (item != null) {
-            NBTTagCompound extraAttributes = item.getSubCompound("ExtraAttributes", false);
-            if (extraAttributes != null && extraAttributes.hasKey("uuid")) {
-                return extraAttributes.getString("uuid");
-            }
-        }
-        return "";
-    }
-
     public static int findItemByID(String itemID) {
         if (itemID == null || Necron.mc.thePlayer == null) return -1;
         for (int i = 0; i < Necron.mc.thePlayer.inventory.getSizeInventory(); i++) {
             ItemStack stack = Necron.mc.thePlayer.inventory.getStackInSlot(i);
 
             if (stack != null) {
-                String currentID = Utils.getSkyBlockID(stack);
+                String currentID = ItemUtils.getSkyBlockID(stack);
                 if (currentID.contains(itemID)) return i;
             }
         }

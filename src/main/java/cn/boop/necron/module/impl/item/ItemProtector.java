@@ -44,7 +44,7 @@ public class ItemProtector {
         if (hoveredSlot == null || !hoveredSlot.getHasStack()) return;
 
         ItemStack hoveredItem = hoveredSlot.getStack();
-        String uuid = Utils.getItemUUID(hoveredItem);
+        String uuid = ItemUtils.getItemUUID(hoveredItem);
 
         if (uuid == null || uuid.isEmpty()) {
             Utils.modMessage("§cYou can't protect an item without UUID!");
@@ -71,7 +71,7 @@ public class ItemProtector {
     public static boolean isItemProtected(ItemStack itemStack) {
         if (!itemProtector || itemStack == null) return false;
 
-        String uuid = Utils.getItemUUID(itemStack);
+        String uuid = ItemUtils.getItemUUID(itemStack);
         return uuid != null && !uuid.isEmpty() && PROTECTED_UUIDS.contains(uuid);
     }
 

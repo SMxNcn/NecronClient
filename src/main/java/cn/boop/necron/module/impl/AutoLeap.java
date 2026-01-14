@@ -2,6 +2,7 @@ package cn.boop.necron.module.impl;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.utils.DungeonUtils;
+import cn.boop.necron.utils.ItemUtils;
 import cn.boop.necron.utils.LocationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -34,7 +35,7 @@ public class AutoLeap {
     }
 
     public static boolean isLeapItem(ItemStack itemStack) {
-        String skyBlockID = Utils.getSkyBlockID(itemStack);
+        String skyBlockID = ItemUtils.getSkyBlockID(itemStack);
         return skyBlockID.contains("SPIRIT_LEAP") || skyBlockID.contains("INFINITE_SPIRIT_LEAP");
     }
 
