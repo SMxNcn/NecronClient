@@ -73,4 +73,11 @@ public class GUIOptionsImpl extends ModConfig {
     public static boolean alignCenter = false;
     @Switch(name = "Show Client Name", description = "Show the client name", subcategory = "Scoreboard")
     public static boolean clientName = false;
+
+    @Switch(name = "Enabled", description = "Display chest profit", subcategory = "Chest Profit")
+    public static boolean chestProfit = false;
+    @Switch(name = "Background", description = "Display a background", subcategory = "Chest Profit")
+    public static boolean chestProfitBg = false;
+    @Color(name = "Background Color", description = "Background color of the chest profit", subcategory = "Chest Profit")
+    public static OneColor cpBgColor = new OneColor(202, 202, 202, 180);
 }

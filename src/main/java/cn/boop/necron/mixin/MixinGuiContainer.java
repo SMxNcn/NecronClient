@@ -1,6 +1,7 @@
 package cn.boop.necron.mixin;
 
 import cn.boop.necron.Necron;
+import cn.boop.necron.module.impl.hud.ChestProfitHUD;
 import cn.boop.necron.module.impl.item.*;
 import cn.boop.necron.utils.LocationUtils;
 import net.minecraft.client.gui.inventory.GuiChest;
@@ -13,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static cn.boop.necron.config.impl.GUIOptionsImpl.chestProfit;
 import static cn.boop.necron.config.impl.GUIOptionsImpl.displayRarity;
 
 @Mixin(GuiContainer.class)
@@ -35,6 +37,19 @@ public class MixinGuiContainer {
             lastHoveredItem = lastHoveredSlot.getStack();
         } else if (gui.mc.currentScreen != null && mouseX >= 0 && mouseX <= gui.mc.currentScreen.width && mouseY >= 0 && mouseY <= gui.mc.currentScreen.height) {
             lastHoveredItem = null;
+        }
+    }
+
+    @Inject(method = "drawScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;popMatrix()V", shift = At.Shift.AFTER))
+    private void onDrawScreenBeforeTooltipCondition(int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+        if (chestProfit && Necron.mc.currentScreen instanceof GuiChest) {
+            GuiChest guiChest = (GuiChest) Necron.mc.currentScreen;
+
+            if (ChestProfitHUD.isDungeonRewardOverview(guiChest)) {
+                ChestProfitHUD.onRenderDungeonRewardOverview(guiChest);
+            } else {
+                ChestProfitHUD.onRenderChest(guiChest);
+            }
         }
     }
 

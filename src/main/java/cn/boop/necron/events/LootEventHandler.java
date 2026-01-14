@@ -2,6 +2,7 @@ package cn.boop.necron.events;
 
 import cn.boop.necron.Necron;
 import cn.boop.necron.module.impl.LootProtector;
+import cn.boop.necron.module.impl.hud.ChestProfitHUD;
 import cn.boop.necron.module.impl.hud.RngMeterHUD;
 import cn.boop.necron.module.impl.rng.DungeonRngManager;
 import cn.boop.necron.utils.ItemUtils;
@@ -77,7 +78,15 @@ public class LootEventHandler {
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START && (inRewardChest || inNormalChest)) {
             if (Necron.mc.currentScreen instanceof GuiChest) {
-                checkAllItems((GuiChest) Necron.mc.currentScreen);
+                GuiChest guiChest = (GuiChest) Necron.mc.currentScreen;
+
+                checkAllItems(guiChest);
+
+                if (ChestProfitHUD.isDungeonRewardOverview(guiChest)) {
+                    ChestProfitHUD.onRenderDungeonRewardOverview(guiChest);
+                } else {
+                    ChestProfitHUD.onRenderChest(guiChest);
+                }
             }
         }
     }
