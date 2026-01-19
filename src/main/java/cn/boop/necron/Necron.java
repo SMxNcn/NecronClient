@@ -41,6 +41,7 @@ public class Necron {
     public static final Logger LOGGER = LogManager.getLogger(Necron.class);
 
     private static boolean playerEnteredWorld = false;
+    private static long lastPriceUpdateTime = 0;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -87,8 +88,12 @@ public class Necron {
                 }).start();
             }
 
-            if (Necron.mc.theWorld != null && Necron.mc.theWorld.getWorldTime() % (20 * PriceUtils.UPDATE_INTERVAL) == 0) {
-                PriceUtils.forceUpdate();
+            if (Necron.mc.theWorld != null) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastPriceUpdateTime >= (PriceUtils.UPDATE_INTERVAL * 1000)) {
+                    lastPriceUpdateTime = currentTime;
+                    PriceUtils.forceUpdate();
+                }
             }
         }
     }
