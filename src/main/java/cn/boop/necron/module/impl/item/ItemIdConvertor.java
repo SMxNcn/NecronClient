@@ -58,9 +58,14 @@ public class ItemIdConvertor {
                     String level = parts[parts.length - 1];
                     String enchantmentName = String.join("_", Arrays.copyOf(parts, parts.length - 1));
 
-                    int levelInt = Utils.romanToInt(level);
-                    if (levelInt == 0 && Character.isDigit(level.charAt(0))) {
-                        levelInt = Integer.parseInt(level);
+                    int levelInt;
+                    if (level != null && !level.isEmpty()) {
+                        levelInt = Utils.romanToInt(level);
+                        if (levelInt == 0 && Character.isDigit(level.charAt(0))) {
+                            levelInt = Integer.parseInt(level);
+                        }
+                    } else {
+                        levelInt = 1;
                     }
 
                     enchantmentName = enchantmentName.toUpperCase().replace(" ", "_").replace("-", "_");

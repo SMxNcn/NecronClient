@@ -1,5 +1,6 @@
 package cn.boop.necron.module.impl.rng;
 
+import cn.boop.necron.module.impl.item.EnumRarity;
 import cn.boop.necron.module.impl.item.ItemIdConvertor;
 import cn.boop.necron.module.impl.item.PetInfo;
 import cn.boop.necron.utils.ItemUtils;
@@ -227,6 +228,19 @@ public class ChestProfit {
 
     private static String getBookDisplayName(ItemStack itemStack, String originalDisplayName, String apiId) {
         if (apiId != null && apiId.startsWith("ENCHANTMENT_")) {
+            List<String> lore = ItemUtils.getItemLore(itemStack);
+            if (lore != null) {
+                for (String loreLine : lore) {
+                    if (EnumRarity.RARITY_PATTERN.matcher(loreLine).find()) {
+                        EnumRarity rarity = EnumRarity.parseRarity(loreLine);
+                        String enchantName = ItemUtils.getItemLoreLine(itemStack, 1);
+                        if (enchantName != null) {
+                            return rarity.getColorCode() + Utils.removeFormatting(enchantName);
+                        }
+                    }
+                }
+            }
+
             String loreLine = ItemUtils.getItemLoreLine(itemStack, 1);
             if (loreLine != null) return loreLine;
         }

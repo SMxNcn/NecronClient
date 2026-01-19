@@ -63,7 +63,7 @@ public class Utils {
     }
 
     public static int romanToInt(String roman) {
-        if (roman.startsWith("0")) return 0;
+        if (roman.startsWith("0") || roman.isEmpty()) return 0;
 
         Map<Character, Integer> romanMap = new HashMap<>();
         romanMap.put('I', 1);
@@ -75,11 +75,22 @@ public class Utils {
         int result = 0;
 
         for (int i = 0; i < roman.length(); i++) {
-            int current = romanMap.get(roman.charAt(i));
-            if (i < roman.length() - 1 && current < romanMap.get(roman.charAt(i + 1))) {
-                result -= current;
+            char currentChar = roman.charAt(i);
+            Integer currentValue = romanMap.get(currentChar);
+            if (currentValue == null) {
+                if (Character.isDigit(currentChar)) return Integer.parseInt(String.valueOf(currentChar));
+                return 0;
+            }
+
+            if (i < roman.length() - 1) {
+                Integer nextValue = romanMap.get(roman.charAt(i + 1));
+                if (nextValue != null && currentValue < nextValue) {
+                    result -= currentValue;
+                } else {
+                    result += currentValue;
+                }
             } else {
-                result += current;
+                result += currentValue;
             }
         }
 
