@@ -1,5 +1,6 @@
 package cn.boop.necron.module.impl;
 
+import cn.boop.necron.Necron;
 import cn.boop.necron.config.ClientNotification;
 import cn.boop.necron.config.NotificationType;
 import cn.boop.necron.config.ResetReason;
@@ -21,7 +22,7 @@ public class FailSafe {
     @SubscribeEvent
     public void onWorldChange(WorldEvent.Load event) {
         if (cropNuker) {
-            CropNuker.reset();
+            if (cnReset) CropNuker.reset();
             Waypoint.unloadWaypoints();
             ClientNotification.sendNotification("Crop Nuker", ResetReason.WORLD_CHANGE.getMessage(), NotificationType.WARN, 6000);
             if (cnSys) ClientNotification.sendSystemNotification("Crop Nuker", ResetReason.WORLD_CHANGE.getMessage(), TrayIcon.MessageType.WARNING);
@@ -39,13 +40,13 @@ public class FailSafe {
             }
 
             if ("[ዞ]".equals(message)) {
-                CropNuker.reset();
+                if (cnReset) CropNuker.reset();
                 ClientNotification.sendNotification("Crop Nuker", "ADMIN正在视奸你！！！", NotificationType.WARN, 10000);
                 if (cnSys) ClientNotification.sendSystemNotification("Crop Nuker", "注意，ADMIN正在视奸你！！！", TrayIcon.MessageType.WARNING);
             } else if (visitMatcher.matches()) {
                 String playerName = visitMatcher.group(1);
                 if (!ChatBlocker.isPlayerWhitelisted(playerName)) {
-                    CropNuker.reset();
+                    if (cnReset) CropNuker.reset();
                     if (cnAutoKick) Utils.chatMessage("/sbkick " + playerName);
                     ClientNotification.sendNotification("Crop Nuker", ResetReason.PLAYER_VISIT.getMessage(), NotificationType.WARN, 5000);
                     if (cnSys) ClientNotification.sendSystemNotification("Crop Nuker", ResetReason.PLAYER_VISIT.getMessage(), TrayIcon.MessageType.WARNING);
@@ -56,7 +57,8 @@ public class FailSafe {
 
     public static void onPlayerTeleport(String calledModule) {
         if (cropNuker && !voidFalling) {
-            CropNuker.reset();
+            if (cnReset) CropNuker.reset();
+            Utils.modMessage("Last location: " + Necron.mc.thePlayer.getPosition().toString());
             ClientNotification.sendNotification(calledModule, ResetReason.TELEPORT.getMessage(), NotificationType.WARN, 5000);
             if (cnSys) ClientNotification.sendSystemNotification(calledModule, ResetReason.TELEPORT.getMessage(), TrayIcon.MessageType.WARNING);
         }

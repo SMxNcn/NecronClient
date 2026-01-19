@@ -37,4 +37,6 @@ public class FarmingOptionsImpl extends ModConfig {
     public static boolean cnAutoKick = false;
     @Switch(name = "System Notification", description = "Send system notification on FailSafe", subcategory = "Crop Nuker")
     public static boolean cnSys = true;
+    @Switch(name = "Reset when FailSafe triggered", description = "Reset Crop Nuker when FailSafe triggered", subcategory = "Crop Nuker")
+    public static boolean cnReset = false;
 }
