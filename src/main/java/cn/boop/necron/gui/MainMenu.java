@@ -24,18 +24,14 @@ import static cn.boop.necron.config.impl.NecronOptionsImpl.*;
 
 public final class MainMenu extends GuiScreen {
     private static final List<ResourceLocation> BACKGROUND_TEXTURES = new ArrayList<>();
-    private static final ResourceLocation MOD_ICON =
-            new ResourceLocation("necron", "gui/icon.png");
-    private static int currentBackgroundIndex = 0;
-    private static int nextBackgroundIndex = 1;
-    private static long lastSwitchTime = System.currentTimeMillis();
-    private static float fadeProgress = 0.0f;
-    private static boolean isFading = false;
+    private final ResourceLocation MOD_ICON = new ResourceLocation("necron", "gui/icon.png");
+    private int currentBackgroundIndex = 0;
+    private int nextBackgroundIndex = 1;
+    private long lastSwitchTime = System.currentTimeMillis();
+    private float fadeProgress = 0.0f;
+    private boolean isFading = false;
 
     private float mouseXOffset, mouseYOffset;
-    private static final float MAX_OFFSET = 0.05f;
-    private static final float PARALLAX_FACTOR = 0.5f;
-    private static final float SMOOTH_FACTOR = 0.15f;
 
     public MainMenu() {
         if (Necron.mc != null && Necron.mc.getTextureManager() != null) {
@@ -49,10 +45,10 @@ public final class MainMenu extends GuiScreen {
 
         float centerX = this.width / 2.0f;
         float centerY = this.height / 2.0f;
-        float targetXOffset = (mouseX - centerX) / centerX * MAX_OFFSET;
-        float targetYOffset = (mouseY - centerY) / centerY * MAX_OFFSET;
-        mouseXOffset += (targetXOffset - mouseXOffset) * SMOOTH_FACTOR;
-        mouseYOffset += (targetYOffset - mouseYOffset) * SMOOTH_FACTOR;
+        float targetXOffset = (mouseX - centerX) / centerX * 0.05f;
+        float targetYOffset = (mouseY - centerY) / centerY * 0.05f;
+        mouseXOffset += (targetXOffset - mouseXOffset) * 0.15f;
+        mouseYOffset += (targetYOffset - mouseYOffset) * 0.15f;
 
         this.mc.getTextureManager().bindTexture(BACKGROUND_TEXTURES.get(currentBackgroundIndex));
         drawBackgroundQuad();
@@ -150,8 +146,8 @@ public final class MainMenu extends GuiScreen {
 
     private void drawBackgroundQuad() {
         GlStateManager.pushMatrix();
-        float parallaxX = mouseXOffset * width * PARALLAX_FACTOR;
-        float parallaxY = mouseYOffset * height * PARALLAX_FACTOR;
+        float parallaxX = mouseXOffset * width * 0.5f;
+        float parallaxY = mouseYOffset * height * 0.5f;
         GlStateManager.translate(parallaxX, parallaxY, 0);
 
         Tessellator tess = Tessellator.getInstance();

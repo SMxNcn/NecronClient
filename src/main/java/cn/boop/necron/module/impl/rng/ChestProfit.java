@@ -235,6 +235,7 @@ public class ChestProfit {
                         EnumRarity rarity = EnumRarity.parseRarity(loreLine);
                         String enchantName = ItemUtils.getItemLoreLine(itemStack, 1);
                         if (enchantName != null) {
+                            if (enchantName.contains("§d")) return "§d§l" + Utils.removeFormatting(enchantName);
                             return rarity.getColorCode() + Utils.removeFormatting(enchantName);
                         }
                     }

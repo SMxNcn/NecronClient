@@ -81,10 +81,7 @@ public class ItemProtector {
 
     public static boolean shouldPreventGuiClick(GuiChest guiChest, ItemStack itemStack) {
         if (!itemProtector || !isItemProtected(itemStack)) return false;
-
-        GuiType guiType = getGuiType(guiChest);
-        System.out.println("Gui Type: " + guiType.toString());
-        return guiType != GuiType.UNKNOWN;
+        return getGuiType(guiChest) != GuiType.UNKNOWN;
     }
 
     public static GuiType getGuiType(GuiChest guiChest) {
