@@ -9,6 +9,8 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
     public static final Random random = new Random();
@@ -40,6 +42,7 @@ public class Utils {
                 if (currentID.contains(itemID)) return i;
             }
         }
+
         return -1;
     }
 
@@ -59,6 +62,7 @@ public class Utils {
                 return entry;
             }
         }
+
         return null;
     }
 
@@ -117,13 +121,19 @@ public class Utils {
 
     public static List<String> getPlayerNames() {
         List<String> playerNames = new ArrayList<>();
-        if (Necron.mc.theWorld != null && Necron.mc.theWorld.playerEntities != null) {
-            for (EntityPlayer entity : Necron.mc.theWorld.playerEntities) {
-                if (entity instanceof EntityPlayer && !entity.getName().contains("§")) {
-                    playerNames.add(clearMcUsername(entity.getName()));
-                }
-            }
+        if (Necron.mc.theWorld == null || Necron.mc.theWorld.playerEntities == null) return playerNames;
+
+        for (EntityPlayer entity : Necron.mc.theWorld.playerEntities) {
+            String playerName = entity.getDisplayName().getFormattedText();
+            Pattern playerPattern = Pattern.compile("^\\[\\d{1,3}]\\s([a-zA-Z0-9_]{1,16}).*");
+            Matcher playerMatcher = playerPattern.matcher(Utils.removeFormatting(playerName));
+
+            if (entity instanceof EntityPlayer && entity.getName().contains("§")) continue;
+            if (!playerMatcher.matches()) continue;
+
+            playerNames.add(playerMatcher.group(1));
         }
+
         return playerNames;
     }
 
@@ -133,8 +143,7 @@ public class Utils {
             Container container = Necron.mc.thePlayer.openContainer;
             if (slot < 0 || slot >= container.inventorySlots.size()) return;
             Necron.mc.playerController.windowClick(container.windowId, slot, 0, 0, Necron.mc.thePlayer);
-        } catch (Exception ignore) {
-        }
+        } catch (Exception ignore) {}
     }
 
     public static void clickPlayerInventorySlot(int playerSlot) {
@@ -157,8 +166,7 @@ public class Utils {
 
             if (actualSlot < 0 || actualSlot >= containerSlots) return;
             Necron.mc.playerController.windowClick(container.windowId, actualSlot, 0, 0, Necron.mc.thePlayer);
-        } catch (Exception ignore) {
-        }
+        } catch (Exception ignore) {}
     }
 
     public static boolean isPlayerInArea(BlockPos pos1, BlockPos pos2, BlockPos playerPos) {

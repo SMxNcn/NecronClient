@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ClientCommands extends CommandBase {
-    private final List<String> commands = Arrays.asList("b64", "create", "pf", "profile", "reload", "rotate", "tips", "wl", "wp");
+    private final List<String> commands = Arrays.asList("b64", "create", "profile", "reload", "rotate", "tips", "wl", "wp");
 
     @Override
     public String getCommandName() {
@@ -50,7 +50,7 @@ public class ClientCommands extends CommandBase {
         if (args.length == 1) {
             return CommandBase.getListOfStringsMatchingLastWord(args, commands);
         }
-        if (args.length == 2 && ("profile".equals(args[0]) || "pf".equals(args[0]))) {
+        if (args.length == 2 && "profile".equals(args[0])) {
             return CommandBase.getListOfStringsMatchingLastWord(args, Utils.getPlayerNames());
         }
         return new ArrayList<>();
