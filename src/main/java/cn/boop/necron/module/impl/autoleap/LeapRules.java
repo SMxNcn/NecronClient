@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.AutoLeapOptionsImpl.autoLeapF7;
+import static cn.boop.necron.config.impl.AutoLeapOptionsImpl.autoLeap;
 
 public class LeapRules {
     private static final Pattern LEAP_PATTERN = Pattern.compile("^You have teleported to (\\w{1,16})!$");
@@ -38,17 +38,15 @@ public class LeapRules {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase != TickEvent.Phase.START || Necron.mc.thePlayer == null || !autoLeapF7) return;
+        if (event.phase != TickEvent.Phase.START || Necron.mc.thePlayer == null || !autoLeap) return;
 
         if (cooldownTicks > 0) {
             cooldownTicks--;
             return;
         }
 
-        if (Necron.mc.thePlayer.ticksExisted % 20 == 0) {
-            checkForLeapItem();
-            shouldCheckLeap = AutoLeap.inLeapGui;
-        }
+        checkForLeapItem();
+        if (Necron.mc.thePlayer.ticksExisted % 20 == 0) shouldCheckLeap = AutoLeap.inLeapGui;
 
         if (leapCheckDelay > 0) {
             leapCheckDelay--;
@@ -68,18 +66,18 @@ public class LeapRules {
 
     @SubscribeEvent
     public void onMouseInput(MouseEvent event) {
-        if (Necron.mc.thePlayer == null) return;
+        if (Necron.mc.thePlayer == null || !autoLeap) return;
         if (event.button == 0 && event.buttonstate) {
-            if (AutoLeap.isLeapItem(Necron.mc.thePlayer.getHeldItem())) {
-                hasActiveLeapItem = true;
+            if (hasActiveLeapItem) {
                 if (cooldownTicks <= 0) startLeftClickAutoLeap();
-                event.setCanceled(true);
+                if (autoLeap) event.setCanceled(true);
             }
         }
     }
 
     @SubscribeEvent
     public void onChat(ClientChatReceivedEvent event) {
+        if (!autoLeap) return;
         String message = event.message.getUnformattedText();
         Matcher matcher = LEAP_PATTERN.matcher(message);
 
@@ -104,6 +102,7 @@ public class LeapRules {
         }
 
         if (!hasTeammate || targetClass == null) {
+            Utils.modMessage("§cFailed to leap: no teammate found.");
             processingLeftClickLeap = false;
             return;
         }
@@ -138,28 +137,21 @@ public class LeapRules {
     }
 
     private static void checkForLeapItem() {
-        if (Necron.mc.thePlayer == null || Necron.mc.thePlayer.inventory == null) {
+        if (Necron.mc.thePlayer == null || Necron.mc.thePlayer.inventory == null || Necron.mc.thePlayer.getHeldItem() == null) {
             hasActiveLeapItem = false;
             return;
         }
 
-        hasActiveLeapItem = false;
-
-        for (int i = 0; i <= 8; i++) {
-            if (Necron.mc.thePlayer.inventory.getStackInSlot(i) != null) {
-                hasActiveLeapItem = AutoLeap.isLeapItem(Necron.mc.thePlayer.inventory.getStackInSlot(i));
-                return;
-            }
-        }
+        hasActiveLeapItem = AutoLeap.isLeapItem(Necron.mc.thePlayer.getHeldItem());
     }
 
     private static DungeonUtils.DungeonClass selectLeapTarget() {
-        if (LocationUtils.inDungeon && !LocationUtils.inBossRoom) {
-            return handlePreBossPhase();
-        }
+        if (!LocationUtils.inDungeon) return null;
 
-        if (autoLeapF7 && LocationUtils.floor == LocationUtils.Floor.MASTER_7) {
+        if (LocationUtils.inBossRoom && LocationUtils.floor == LocationUtils.Floor.MASTER_7) {
             return handleM7Phase();
+        } else if (!LocationUtils.inBossRoom) {
+            return handlePreBossPhase();
         }
 
         return null;
