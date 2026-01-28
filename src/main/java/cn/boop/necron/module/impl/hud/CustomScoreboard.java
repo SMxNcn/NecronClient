@@ -65,7 +65,7 @@ public class CustomScoreboard {
             int textRightMargin = redNumbers ? (xPadding + 5) : (xPadding + 2);
             int textLeftStart = scaledRes.getScaledWidth() - displayNameWidth - textRightMargin - (redNumbers ? xPadding : 1);
 
-            if (currentIndex == 1 && !customIp.isEmpty()) continue;
+            if (currentIndex == 1 && (!customIp.isEmpty() || clientName)) continue;
 
             fontObj.drawString(playerName, textLeftStart, textY, 553648127, shadowText);
             if (redNumbers) {
@@ -83,8 +83,8 @@ public class CustomScoreboard {
             }
         }
 
-        if (!customIp.isEmpty() && !collection.isEmpty()) {
-            String formattedIp = customIp.replace('&', '§');
+        if ((!customIp.isEmpty() || clientName) && !collection.isEmpty()) {
+            String formattedIp = customIp.isEmpty() ? "" : customIp.replace('&', '§');
 
             int lastIndex = 1;
             int ipY = startY - lastIndex * fontObj.FONT_HEIGHT;
