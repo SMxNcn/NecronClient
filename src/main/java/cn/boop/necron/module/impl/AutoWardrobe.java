@@ -120,9 +120,7 @@ public class AutoWardrobe {
     }
 
     private boolean shouldCancelEquipmentAction(int guiSlot) {
-        if (!unEquip) return false;
-        if (blockInDungeon && !LocationUtils.inDungeon) return false;
-
+        boolean isEquippedSlot = false;
         if (Necron.mc.currentScreen instanceof GuiChest) {
             GuiChest gui = (GuiChest) Necron.mc.currentScreen;
             if (guiSlot >= 36 && guiSlot <= 44) {
@@ -131,12 +129,14 @@ public class AutoWardrobe {
                     ItemStack stack = slot.getStack();
                     if (stack != null && stack.getItem() == Items.dye) {
                         EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getMetadata());
-                        return dyeColor == EnumDyeColor.LIME;
+                        isEquippedSlot = dyeColor == EnumDyeColor.LIME;
                     }
                 }
             }
         }
-        return false;
+
+        if (!unEquip) return false;
+        return blockInDungeon ? LocationUtils.inDungeon && isEquippedSlot : isEquippedSlot;
     }
 
     private void handlePageNavigation(boolean isPreviousPage) {
