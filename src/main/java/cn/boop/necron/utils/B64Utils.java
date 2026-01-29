@@ -1,11 +1,12 @@
 package cn.boop.necron.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Random;
 
 public class B64Utils {
     public static String encodeWithOffset(String input) {
-        String base64Encoded = Base64.getEncoder().encodeToString(input.getBytes());
+        String base64Encoded = Base64.getEncoder().encodeToString(input.getBytes(StandardCharsets.UTF_8));
 
         Random random = new Random();
         int offset;
@@ -48,7 +49,7 @@ public class B64Utils {
             String originalBase64 = applyOffset(base64Part, -offset);
 
             byte[] decodedBytes = Base64.getDecoder().decode(originalBase64);
-            return new String(decodedBytes);
+            return new String(decodedBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
             return null;
         }

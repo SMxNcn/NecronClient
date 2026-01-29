@@ -7,7 +7,6 @@ import cn.boop.necron.gui.GuiWaypointList;
 import cn.boop.necron.module.impl.ChatBlocker;
 import cn.boop.necron.module.impl.ChatCommands;
 import cn.boop.necron.module.impl.Waypoint;
-import cn.boop.necron.utils.B64Utils;
 import cn.boop.necron.utils.RotationUtils;
 import cn.boop.necron.utils.Utils;
 import net.minecraft.command.CommandBase;
@@ -23,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ClientCommands extends CommandBase {
-    private final List<String> commands = Arrays.asList("b64", "create", "profile", "reload", "rotate", "tips", "wl", "wp");
+    private final List<String> commands = Arrays.asList("create", "profile", "reload", "rotate", "tips", "wl", "wp");
 
     @Override
     public String getCommandName() {
@@ -60,21 +59,6 @@ public class ClientCommands extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) {
         if (args.length > 0) {
             switch (args[0]) {
-                case "b64":
-                    if (args.length < 2) {
-                        Utils.modMessage("Usage: b64 <message>");
-                        break;
-                    }
-                    StringBuilder messageBuilder = new StringBuilder();
-                    for (int i = 1; i < args.length; i++) {
-                        if (i > 1) messageBuilder.append(" ");
-                        messageBuilder.append(args[i]);
-                    }
-                    String message = messageBuilder.toString();
-
-                    String encoded = B64Utils.encodeWithOffset(message);
-                    Utils.chatMessage(encoded);
-                    break;
                 case "create":
                     if (args.length < 2) {
                         Utils.modMessage("Usage: create <fileName>");
@@ -185,7 +169,7 @@ public class ClientCommands extends CommandBase {
             "§8§m-------------------------------------\n" +
             "§b             NecronClient §7v" + Necron.VERSION + "\n" +
             "§r \n" +
-            "§b/necron b64 <message> §f§l»§r§7 发送Base64加密消息\n" +
+            "§b/ncc <message> §f§l»§r§7 发送Base64加密消息\n" +
             "§b/necron create <fileName> §f§l»§r§7 在目录下新建路径点\n" +
             "§b/necron profile <player> §f§l»§r§7 获取玩家资料链接\n" +
             "§b/necron reload §f§l»§r§7 重新加载所有脚本\n" +

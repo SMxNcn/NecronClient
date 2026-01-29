@@ -2,6 +2,7 @@ package cn.boop.necron;
 
 import cn.boop.necron.command.ClientCommands;
 import cn.boop.necron.command.DebugCommands;
+import cn.boop.necron.command.NecronChatCommands;
 import cn.boop.necron.config.FontManager;
 import cn.boop.necron.config.NCConfig;
 import cn.boop.necron.config.UpdateChecker;
@@ -18,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -42,6 +44,7 @@ public class Necron {
 
     private static boolean playerEnteredWorld = false;
     private static long lastPriceUpdateTime = 0;
+    public static boolean isSkyHanni = false;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -67,7 +70,10 @@ public class Necron {
     public void onInit(FMLInitializationEvent event) {
         ClientCommandHandler.instance.registerCommand(new ClientCommands());
         ClientCommandHandler.instance.registerCommand(new DebugCommands());
+        ClientCommandHandler.instance.registerCommand(new NecronChatCommands());
         NCConfig.INSTANCE.preload();
+
+        isSkyHanni = Loader.isModLoaded("skyhanni");
     }
 
     @SubscribeEvent
