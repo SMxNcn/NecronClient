@@ -13,13 +13,11 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cn.boop.necron.config.impl.AutoLeapOptionsImpl.autoLeap;
+import static cn.boop.necron.config.impl.AutoLeapOptionsImpl.*;
 
 public class LeapRules {
     private static final Pattern LEAP_PATTERN = Pattern.compile("^You have teleported to (\\w{1,16})!$");
@@ -79,13 +77,23 @@ public class LeapRules {
     public void onChat(ClientChatReceivedEvent event) {
         if (!autoLeap) return;
         String message = event.message.getUnformattedText();
-        Matcher matcher = LEAP_PATTERN.matcher(message);
+        Matcher leapMatcher = LEAP_PATTERN.matcher(message);
 
-        if (matcher.matches()) {
+        if (leapMatcher.matches()) {
             shouldCheckLeap = false;
             leapCheckDelay = 0;
             processingLeftClickLeap = false;
             cooldownTicks = 40;
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (leapNotifier && leapText != null && !leapText.isEmpty()) {
+                        String playerName = leapMatcher.group(1);
+                        Utils.chatMessage("/cc " + leapText.replace("%p", playerName));
+                        Utils.modMessage("Leaped to " + playerName + "!");
+                    }
+                }
+            }, 50);
         }
     }
 
