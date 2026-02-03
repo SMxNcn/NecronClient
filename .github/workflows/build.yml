@@ -33,5 +33,5 @@ jobs:
       - name: Upload mod JAR
         uses: actions/upload-artifact@v4.3.0
         with:
-          name: NecronClient-${{ env.MOD_VERSION }}.jar
+          name: NecronClient-${{ env.MOD_VERSION }}
           path: build/libs/NecronClient-[0-9]*.[0-9]*.[0-9]*.jar

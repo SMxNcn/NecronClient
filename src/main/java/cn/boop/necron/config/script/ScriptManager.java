@@ -51,7 +51,7 @@ public class ScriptManager {
             List<Script> parsedScripts = ScriptParser.parse(content);
             scripts.addAll(parsedScripts);
             if (Necron.mc.thePlayer != null) Utils.modMessage("Loaded " + scripts.size() + " scripts.");
-            else Necron.LOGGER.info("Loaded {} scripts.", scripts.size());
+            else Necron.LOGGER.info("Loaded {} script(s).", scripts.size());
         } catch (IOException e) {
             Necron.LOGGER.error("Failed to load script file: {}", filePath, e);
         }

@@ -109,7 +109,7 @@ tasks {
         archiveClassifier.set("")
     }
     named<ShadowJar>("shadowJar") {
-        archiveClassifier.set("Necron")
+        archiveClassifier.set("dev")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         configurations = listOf(shadowImpl)
     }

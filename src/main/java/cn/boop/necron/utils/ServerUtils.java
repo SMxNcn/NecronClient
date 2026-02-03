@@ -11,12 +11,18 @@ public class ServerUtils {
     public static GuiScreen parentScreen;
 
     public static void reconnectToServer() {
-        ServerAddress serverAddress = ServerAddress.fromString(lastServerData.serverIP);
-        Necron.mc.displayGuiScreen(new GuiConnecting(
-                parentScreen,
-                Necron.mc,
-                serverAddress.getIP(),
-                serverAddress.getPort()
-        ));
+        if (lastServerData == null || parentScreen == null) return;
+
+        try {
+            ServerAddress serverAddress = ServerAddress.fromString(lastServerData.serverIP);
+            Necron.mc.displayGuiScreen(new GuiConnecting(
+                    parentScreen,
+                    Necron.mc,
+                    serverAddress.getIP(),
+                    serverAddress.getPort()
+            ));
+        } catch (Exception e) {
+            Necron.LOGGER.error("Error reconnecting to server", e);
+        }
     }
 }

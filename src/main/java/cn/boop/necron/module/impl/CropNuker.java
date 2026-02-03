@@ -154,11 +154,11 @@ public class CropNuker {
     }
 
     private void handleWaypointActions(Waypoint waypoint) {
-        float targetRotation = RotationUtils.normalizeAngle(waypoint.getRotation()); // 设置目标旋转角度
+        float targetRotation = RotationUtils.normalizeAngle(waypoint.getRotation());
         RotationUtils.smoothRotateTo(targetRotation, RotationUtils.pitch(), 8.0f);
         needsRotation = false;
 
-        targetDirection = waypoint.getDirection(); // 设置目标方向
+        targetDirection = waypoint.getDirection();
         needsDirectionChange = true;
 
         setMovementKeys(targetDirection);
@@ -192,6 +192,13 @@ public class CropNuker {
         needsRotation = false;
         needsDirectionChange = false;
         atWaypoint = false;
+    }
+
+    public static void stopNotReset() {
+        stopNuker();
+        cropNuker = false;
+        pressed = false;
+        Utils.modMessage("CropNuker stopped!");
     }
 
     private void updateTargetBlock() {

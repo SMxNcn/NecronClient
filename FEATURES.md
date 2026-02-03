@@ -4,6 +4,8 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 
  主命令: `/necron`，命令别名: `/nc`
 
+ b64聊天命令: `/nchat`，命令别名: `/ncc`
+
  调试命令: `/ncdebug`，命令别名: `/ncd`
 
 ## Auto I4
@@ -84,6 +86,9 @@ Mod配置界面可在OneConfig中的 "3rd Party" 分类中找到。
 ## Title Manager
 - Default Title: 显示为 Spongepowered v0.x.x 或自定义标题
 - Custom Title: 可选择显示玩家名，当前位置，神秘提示以及自定义前缀
+
+## B64 Chat
+- 具体用法请输入`/ncc`查看
 
 ## Waypoint
 
